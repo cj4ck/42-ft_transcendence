@@ -1,12 +1,12 @@
-FROM Node.20 AS development
+FROM node:20
 
 WORKDIR /api/src/app
 
 COPY package*.json ./
 
-RUN nmp install
+RUN npm install
 
-COPY . .
+COPY . . 
 
 RUN npm run build
 
