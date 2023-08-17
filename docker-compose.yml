@@ -9,9 +9,9 @@ services:
     volumes:
       - ./api:/api/src/app
       - /api/src/app/node_modules
-    command: npm run start:dev
+    command: npm run start
     depends_on:
-      -  postgres
+      - postgres
     environment:
       DATABASE_URL: postgres://user:user@postgres:5432/database
       PORT: 3000
