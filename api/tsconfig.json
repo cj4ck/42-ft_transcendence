@@ -10,6 +10,10 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@nestjs/config": ["node_modules/@nestjs/config/dist/config.module"],
+      "@nestjs/typeorm": ["node_modules/@nestjs/typeorm/dist/typeorm.module"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
