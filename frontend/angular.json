@@ -25,10 +25,7 @@
               "src/assets"
             ],
             "styles": [
-<<<<<<< HEAD
-=======
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
->>>>>>> users
               "src/styles.css"
             ],
             "scripts": []
@@ -92,10 +89,7 @@
               "src/assets"
             ],
             "styles": [
-<<<<<<< HEAD
-=======
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
->>>>>>> users
               "src/styles.css"
             ],
             "scripts": []
@@ -103,11 +97,8 @@
         }
       }
     }
-<<<<<<< HEAD
-=======
   },
   "cli": {
     "analytics": false
->>>>>>> users
   }
 }
