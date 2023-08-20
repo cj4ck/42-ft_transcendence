@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 100px;
+    min-width: 350px;
+}
+
+.container .login {
+    margin-bottom: 20px;
+}
+
+.container mat-card mat-card-content form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.container mat-card mat-card-content form mat-form-field {
+    width: 100%;
+    min-width: 300px;
+}
+
+.container mat-card .button {
+    display: flex;
+    justify-content: flex-end;
+}
