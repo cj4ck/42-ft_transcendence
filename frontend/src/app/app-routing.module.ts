@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'private',
-    canActivate: [authGuard],
+    canActivate: [AuthGuard],
     loadChildren: () => import('./private/private.module').then(m => m.PrivateModule)
   },
   {
