@@ -1,9 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-<<<<<<< HEAD
-
-const routes: Routes = [];
-=======
 import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -22,7 +18,6 @@ const routes: Routes = [
     pathMatch: 'full'
   }
 ];
->>>>>>> users
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
