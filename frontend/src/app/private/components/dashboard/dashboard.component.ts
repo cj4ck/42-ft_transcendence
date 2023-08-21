@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChatService } from '../../services/chat-service/chat.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -6,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
+
+  title = this.chatService.getMessage();
+
+  constructor(private chatService: ChatService) {}
 
 }

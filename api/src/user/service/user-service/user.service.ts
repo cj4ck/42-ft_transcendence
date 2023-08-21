@@ -89,4 +89,8 @@ export class UserService {
             map((user: UserI) => !!user)
         );
     }
+
+    public getOne(id: number): Promise<UserI> {
+        return this.userRepository.findOneOrFail({ where: {id}});
+    }
 }
