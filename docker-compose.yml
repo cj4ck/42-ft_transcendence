@@ -6,8 +6,9 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./api
+    container_name: api
     volumes:
-      - ./api:/api/src/app
+      - api:/api/src/app
       - /api/src/app/node_modules/
     command: npm run start
     depends_on:
@@ -19,13 +20,17 @@ services:
     ports:
       - 3000:3000
       - 9229:9229
+    networks:
+      - transcendence
+    restart: always
 
   frontend:
     build:
       dockerfile: Dockerfile
       context: ./frontend
+    container_name: frontend
     volumes:
-      - ./frontend:/frontend/src/app
+      - frontend:/frontend/src/app
       - /frontend/src/app/node_modules/
     command: npm run start
     environment:
@@ -34,18 +39,28 @@ services:
       - 4200:4200
     links:
       - api
+    networks:
+      - transcendence
+    restart: always
 
   postgres:
     image: postgres:15.4
+    container_name: postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
       POSTGRES_DB: database
     ports:
       - 35000:5432
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    networks:
+      - transcendence
+    restart: always
 
   postgres_admin:
     image: dpage/pgadmin4:7.5
+    container_name: postgres_admin
     depends_on:
       - postgres
     environment:
@@ -53,3 +68,32 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - 5050:80
+    networks:
+      - transcendence
+    restart: always
+
+networks:
+  transcendence:
+    driver: bridge
+
+volumes:
+  db-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./postgres_data
+
+  frontend:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./frontend
+
+  api:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./api
