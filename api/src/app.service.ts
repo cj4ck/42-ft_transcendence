@@ -3,6 +3,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
   getHello(): Object {
-    return {title: "PentaCode", body: "_-_-_-_-_-_"};
+    return {title: "test", body: "_-_-_-_-_-_"};
   }
 }
