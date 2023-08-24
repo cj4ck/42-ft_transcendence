@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserI } from 'src/app/model/user.interface';
+import { ChatService } from '../../services/chat-service/chat.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-room',
   templateUrl: './create-room.component.html',
   styleUrls: ['./create-room.component.css']
 })
-export class CreateRoomComponent implements OnInit {
+export class CreateRoomComponent {
 
   form: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
@@ -15,13 +17,13 @@ export class CreateRoomComponent implements OnInit {
     users: new FormArray([], [Validators.required])
   })
 
-  constructor() {}
-
-  ngOnInit(): void {
-  }
+  constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   create() {
-
+    if (this.form.valid) {
+      this.chatService.createRoom(this.form.getRawValue());
+      this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute});
+    }
   }
 
   initUser(user: UserI) {
@@ -37,8 +39,13 @@ export class CreateRoomComponent implements OnInit {
   }
 
   removeUser(userId: number) {
-    
-  }
+    if (userId !== undefined) {
+      const index = this.users.value.findIndex((user: UserI) => user.id === userId);
+      if (index !== -1) {
+        this.users.removeAt(index);
+      }
+    }
+  }  
 
   get name(): FormControl {
     return this.form.get('name') as FormControl;

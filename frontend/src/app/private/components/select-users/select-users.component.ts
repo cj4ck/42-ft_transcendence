@@ -41,14 +41,13 @@ export class SelectUsersComponent implements OnInit{
     this.filteredUsers = [];
     this.selectedUser = null;
     this.searchUsername.setValue(null);
+  }
 
+  removeUserFromForm(user: UserI) {
+    this.removeuser.emit(user);
   }
 
   displayFn(user: UserI) {
-    if(user.username) {
-      return user.username;
-    } else {
-      return ''; 
-    }
+    return user.username || '';
   }
 }
