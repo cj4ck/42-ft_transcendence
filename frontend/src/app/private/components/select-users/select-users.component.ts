@@ -48,6 +48,6 @@ export class SelectUsersComponent implements OnInit{
   }
 
   displayFn(user: UserI) {
-    return user.username || '';
+    return user?.username || '';
   }
 }

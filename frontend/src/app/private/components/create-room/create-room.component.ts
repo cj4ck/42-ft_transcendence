@@ -28,9 +28,9 @@ export class CreateRoomComponent {
 
   initUser(user: UserI) {
     return new FormControl({
-      id: user.id,
-      username: user.username,
-      email: user.email
+      id: user?.id,
+      username: user?.username,
+      email: user?.email
     });
   }
 
@@ -38,7 +38,7 @@ export class CreateRoomComponent {
     this.users.push(userFormControl);
   }
 
-  removeUser(userId: number) {
+  removeUser(userId: number | undefined) {
     if (userId !== undefined) {
       const index = this.users.value.findIndex((user: UserI) => user.id === userId);
       if (index !== -1) {

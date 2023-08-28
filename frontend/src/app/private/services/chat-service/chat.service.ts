@@ -29,7 +29,7 @@ export class ChatService {
 
   createRoom(room: RoomI) {
     this.socket.emit('createRoom', room);
-    this.snackbar.open(`Room $(room.name) created successfully`, 'Close', {
+    this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
       duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
     });
   }
