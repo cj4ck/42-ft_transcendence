@@ -6,6 +6,7 @@ import { UserI } from '../model/user.interface';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
+import { LoginResponseI } from '../model/login-response.interface';
 
 @Controller('users')
 export class UserController {
@@ -32,9 +33,18 @@ export class UserController {
 	}
 
 	@Post('login')
-	login(@Body() loginUserDto: LoginUserDto): Observable<boolean> {
+	login(@Body() loginUserDto: LoginUserDto): Observable<LoginResponseI> {
 		return this.userHelperService.loginUserDtoToEntity(loginUserDto).pipe(
-			switchMap((user: UserI) => this.userService.login(user))
+			switchMap((user: UserI) => this.userService.login(user).pipe(
+				map((jwt: string) => {
+					const loginResponse: LoginResponseI = {
+						access_token: jwt,
+						token_type: 'JWT',
+						expires_in: 10000
+					} 
+				}
+				return loginResponse;
+			))
 		)
 	}
 }
