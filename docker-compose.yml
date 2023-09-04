@@ -9,7 +9,7 @@ services:
     volumes:
       - ./api:/api/src/app
       - /api/src/app/node_modules
-    command: npm run start
+    command: npm run start:dev
     depends_on:
       - postgres
     environment:
@@ -26,7 +26,6 @@ services:
     volumes:
       - ./frontend:/frontend/src/app
       - /frontend/src/app/node_modules
-    command: npm run start
     environment:
       PORT: 4200
     ports:

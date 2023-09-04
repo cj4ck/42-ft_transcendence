@@ -1,12 +1,13 @@
-FROM node:20
+FROM node:20 AS development
 
 WORKDIR /api/src/app
 
 COPY package*.json ./
 
-RUN npm install
+# warning, I added this myself bc docker compose build wouldn't work
+COPY tsconfig.json ./
 
-COPY . . 
+RUN npm install
 
 RUN npm run build
 
