@@ -1,4 +1,6 @@
-FROM node:20
+# 💡 warning - I degraded the node version from 20 to 18 bc apparently babel was breaking angular's cli
+# link that helped me resolve: https://github.com/angular/angular-cli/issues/25782
+FROM node:18
 
 WORKDIR /frontend/src/app
 

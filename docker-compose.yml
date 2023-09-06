@@ -8,12 +8,13 @@ services:
       context: ./api
     volumes:
       - ./api:/api/src/app
-      - /api/src/app/node_modules
-    command: npm run start:dev
+      - /api/src/app/node_modules/
+    command: npm run start
     depends_on:
       - postgres
     environment:
       DATABASE_URL: postgres://user:user@postgres:5432/database
+      JWT_SECRET: hard_to_guess_secret_123
       PORT: 3000
     ports:
       - 3000:3000
@@ -25,7 +26,7 @@ services:
       context: ./frontend
     volumes:
       - ./frontend:/frontend/src/app
-      - /frontend/src/app/node_modules
+      - /frontend/src/app/node_modules/
     environment:
       PORT: 4200
     ports:

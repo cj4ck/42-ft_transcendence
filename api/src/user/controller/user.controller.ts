@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { createUserDto } from '../model/dto/create-user.dto';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { UserService } from '../service/user-service/user.service';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { UserI } from '../model/user.interface';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
+import { LoginResponseI } from '../model/login-response.interface';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('user')
 export class UserController {
@@ -20,6 +22,8 @@ export class UserController {
 	)
   }
 
+  // this endpoint has a guard now, so it can only be requested by sm1 with jwt
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(
 	@Query('page') page: number = 1,
@@ -31,9 +35,17 @@ export class UserController {
   }
 
   @Post('login')
-  login(@Body() LoginUserDto: LoginUserDto): Observable<boolean> {
-	return this.userHelperService.loginUserDtoIdentity(LoginUserDto).pipe(
-		switchMap((user: UserI) => this.userService.login(user))
+  login(@Body() loginUserDto: LoginUserDto): Observable<LoginResponseI> {
+	return this.userHelperService.loginUserDtoIdentity(loginUserDto).pipe(
+		switchMap((user: UserI) => this.userService.login(user).pipe(
+			map((jwt:string) => {
+				return {
+					access_token: jwt,
+					token_type: 'JWT',
+					expires_in: 10000
+				}
+			})
+		))
 	)
   }
 }
