@@ -25,7 +25,7 @@ export class LoginComponent {
         email: this.email.value,
         password: this.password.value
       }).pipe(
-        tap(() => this.router.navigate(['../../private/dashboard']))
+        tap(() => this.router.navigate(['../../private/components/dashboard']))
       ).subscribe()
     }
   }
