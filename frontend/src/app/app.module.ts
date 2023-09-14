@@ -8,13 +8,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { JwtModule } from '@auth0/angular-jwt';
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 export function tokenGetter() {
-  return localStorage.getItem('nestjs_chat_app');
+  // problemo with jwt local storage item
+  return (localStorage.getItem("nestjs_chat_app") || '{}');
 }
-
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [
@@ -31,8 +29,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
         tokenGetter: tokenGetter,
         allowedDomains: ['localhost:3000']
       }
-    }),
-    SocketIoModule.forRoot(config)
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
