@@ -8,7 +8,7 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column()
+	@Column({unique: true})
 	username: string;
 	
 	@Column({unique: true}) //unique bc there cannot be two users with the same email

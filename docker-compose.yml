@@ -27,6 +27,7 @@ services:
     volumes:
       - ./frontend:/frontend/src/app
       - /frontend/src/app/node_modules/
+    command: npm run start
     environment:
       PORT: 4200
     ports:
