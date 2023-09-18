@@ -23,14 +23,15 @@ export class UserController {
   }
 
   // this endpoint has a guard now, so it can only be requested by sm1 with jwt
-  @UseGuards(JwtAuthGuard)
+  // MIDDLEWARE removes this line:
+//   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(
 	@Query('page') page: number = 1,
 	@Query('limit') limit: number = 10
 	): Observable<Pagination<UserI>> {
 		limit = limit > 100 ? 100: limit;
-		return this.userService.findAll({page, limit, route: 'http://localhost:300/api/users'})
+		return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/user'})
 
   }
 
@@ -42,7 +43,7 @@ export class UserController {
 				return {
 					access_token: jwt,
 					token_type: 'JWT',
-					expires_in: 10000
+					expires_in: 100000
 				}
 			})
 		))

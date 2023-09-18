@@ -21,5 +21,8 @@ export class AuthService {
 		return from<string>(bcrypt.hash(password, 12));
 	}
 
-
+	//MIDDLEWARE
+	verifyJwt(jwt: string): Promise<any> {
+		return this.jwtService.verifyAsync(jwt);
+	}
 }
