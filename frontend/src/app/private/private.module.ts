@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { PrivateRoutingModule } from './private-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
   ],
   imports: [
     CommonModule,
-    PrivateRoutingModule
+    PrivateRoutingModule,
+    MatListModule
   ]
 })
 export class PrivateModule { }
