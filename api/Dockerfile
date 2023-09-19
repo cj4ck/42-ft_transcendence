@@ -1,4 +1,4 @@
-FROM node:20 AS development
+FROM node:16
 
 WORKDIR /api/src/app
 
