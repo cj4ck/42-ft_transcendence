@@ -1,6 +1,7 @@
 // to store sth into our database
 
-import { Column, PrimaryGeneratedColumn, Entity, BeforeInsert } from "typeorm";
+import { RoomEntity } from "src/chat/model/room.entity";
+import { Column, PrimaryGeneratedColumn, Entity, BeforeInsert, ManyToMany } from "typeorm";
 
 @Entity()
 export class UserEntity {
@@ -16,6 +17,9 @@ export class UserEntity {
 
 	@Column({select: false}) //if we make request with typeORM and try to find the user, this will automatically strip password from the return 
 	password: string;
+
+	@ManyToMany(() => RoomEntity, room => room.users)
+	rooms: RoomEntity[]
 
 	@BeforeInsert()
 	emailToLowerCase() {

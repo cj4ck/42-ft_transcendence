@@ -1,2 +1,13 @@
 <p>dashboard works!</p>
-{{title | async}}
+
+<mat-selection-list [multiple]="false">
+	<mat-list-option *ngFor="let room of (rooms$ | async)?.items" [value]="room">
+		Name: {{room.name}} ID {{room.id}}
+	</mat-list-option>
+	<!-- TESTING -->
+	<mat-list-option *ngFor="let island of islands" [value]="island">
+		{{ island.name }}
+	</mat-list-option>
+</mat-selection-list>
+
+
