@@ -1,7 +1,7 @@
 // to store sth into our database
 
 import { RoomEntity } from "src/chat/model/room.entity";
-import { Column, PrimaryGeneratedColumn, Entity, BeforeInsert, ManyToMany } from "typeorm";
+import { Column, PrimaryGeneratedColumn, Entity, BeforeInsert, ManyToMany, BeforeUpdate } from "typeorm";
 
 @Entity()
 export class UserEntity {
@@ -22,7 +22,9 @@ export class UserEntity {
 	rooms: RoomEntity[]
 
 	@BeforeInsert()
+	@BeforeUpdate()
 	emailToLowerCase() {
 		this.email = this.email.toLocaleLowerCase();
+		this.username = this.username.toLowerCase();
 	}
 }

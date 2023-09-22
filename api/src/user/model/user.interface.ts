@@ -5,7 +5,7 @@ export interface UserI {
   username?: string;
   email: string;
   password?: string;
-  rooms: RoomEntity[];
+//   rooms: RoomEntity[];
 }
 
 // properties with ? are optional

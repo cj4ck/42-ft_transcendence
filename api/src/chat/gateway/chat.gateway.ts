@@ -49,6 +49,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           page: 1,
           limit: 10,
         });
+		rooms.meta.currentPage = rooms.meta.currentPage - 1; //to match angular material paginator
 
         //only emit rooms to specific connected client
         return this.server.to(socket.id).emit('rooms', rooms);
@@ -74,9 +75,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return this.roomService.createRoom(room, socket.data.user);
   }
 
-  @SubscribeMessage('paginateRoom')
+  @SubscribeMessage('paginateRooms')
   async onPaginateRoom(socket: Socket, page: PageI) {
 	page.limit = page.limit > 100 ? 100: page.limit;
+	page.page = page.page + 1;
 	const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, page);
 	return this.server.to(socket.id).emit('rooms', rooms);
   }
