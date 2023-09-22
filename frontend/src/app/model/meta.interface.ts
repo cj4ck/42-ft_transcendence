@@ -2,7 +2,7 @@
 export interface Meta {
 	totalItems: number
 	itemCount: number
-	itermsPerPage: number
+	itemsPerPage: number
 	totalPages: number
 	currentPage: number
 }
