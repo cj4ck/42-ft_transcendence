@@ -29,6 +29,10 @@ export class UserController {
 		limit = limit > 100 ? 100: limit;
 		return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/users'})
 	}
+	@Get('./find-by-username')
+	async findAllByUsername(@Query('userame') username: string) {
+		return this.userService.findAllByUsername(username)
+	}
 
 	@Post('login')
 	async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseI> {

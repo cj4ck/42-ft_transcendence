@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
 import { UserI } from '../../model/user.interface';
 
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { AuthService } from 'src/auth/service/auth.service';
 
@@ -57,9 +57,17 @@ export class UserService {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
+	async findAllByUsername(username: string): Promise<UserI[]> {
+		return this.userRepository.find({
+			where : {
+				username: Like(`%${username.toLowerCase()}%`)
+			}
+	})
+	}
+
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {
-		return this.userRepository.findOne({ email }, { select: ['id', 'email', 'username', 'password'] });
+		return this.userRepository.findOne({where: { email }, select: ['id', 'email', 'username', 'password']});
 	}
 
 	private async hashPassword(password: string): Promise<string> {
@@ -71,15 +79,15 @@ export class UserService {
 	}
 
 	private async findOne(id: number): Promise<UserI> {
-		return this.userRepository.findOne({ id });
+		return this.userRepository.findOne({ where: { id } });
 	}
 
 	public getOne(id: number): Promise<UserI> {
-		return this.userRepository.findOneByOrFail({ id });
+		return this.userRepository.findOneOrFail({ where : { id }});
 	}
 
 	private async mailExists(email: string): Promise<boolean> {
-		const user = await this.userRepository.findOne({ email });
+		const user = await this.userRepository.findOne({where : { email }});
 			if(user) {
 				return true
 			} else {
