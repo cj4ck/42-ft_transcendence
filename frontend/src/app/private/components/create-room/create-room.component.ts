@@ -52,7 +52,7 @@ export class CreateRoomComponent {
   }
 
   get users(): FormArray {
-    console.log('get_users')
+    // console.log('get_users')
     return this.form.get('users') as FormArray
   }
 }

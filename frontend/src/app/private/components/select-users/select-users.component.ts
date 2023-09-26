@@ -33,6 +33,7 @@ export class SelectUsersComponent implements OnInit {
   }
 
   addUserToForm() {
+    console.log('add user')
     this.addUser.emit(this.selectedUser)
     this.filteredUsers = []
     this.selectedUser = null
@@ -40,19 +41,22 @@ export class SelectUsersComponent implements OnInit {
   }
 
   removeUserFromForm(user: UserI) {
+    console.log('remove user')
+
     this.removeuser.emit(user)
   }
 
   setSelectedUser(user: UserI) {
+    console.log('selected user')
     this.selectedUser = user
   }
 
   displayFn(user: UserI) {
-    console.log(user.username)
+    // console.log(user.username)
     if(user) {
       return user.username
     } else {
-      return ""
+      return ''
     }
   }
 }

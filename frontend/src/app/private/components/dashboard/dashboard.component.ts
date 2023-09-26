@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 
   rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms()
   selectedRoom = null
+
   constructor(private chatService: ChatService) { }
 
   ngOnInit() {
