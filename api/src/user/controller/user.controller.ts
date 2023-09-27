@@ -8,7 +8,7 @@ import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(
 	private userService: UserService,
@@ -27,7 +27,7 @@ export class UserController {
 	@Query('limit') limit: number = 10
 	): Promise<Pagination<UserI>> {
 		limit = limit > 100 ? 100: limit;
-		return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/user'})
+		return this.userService.findAll({page, limit, route: 'http://localhost:3000/api/users'})
   }
 
   @Get('/find-by-username')

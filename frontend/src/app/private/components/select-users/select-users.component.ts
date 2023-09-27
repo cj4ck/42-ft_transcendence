@@ -52,6 +52,7 @@ export class SelectUsersComponent implements OnInit {
 	}
 
 	displayFn(user: UserI) {
+		console.log('displayFn')
 		if(user) {
 			console.log(user.username);
 			return user.username;

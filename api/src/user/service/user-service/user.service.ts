@@ -61,11 +61,10 @@ export class UserService {
 	async findAllByUsername(username: string): Promise<UserI[]> {
 		return this.userRepository.find({
 			where: {
-				username: Like(`%${username.toLocaleLowerCase}%`)
+				username: Like(`%${username.toLowerCase()}%`)
 			}
 		})
 	}
-	
 	
 	//also returns the password
 	private async findByEmail(email: string): Promise<UserI> {
