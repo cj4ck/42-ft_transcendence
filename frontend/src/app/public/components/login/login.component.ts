@@ -9,8 +9,8 @@ import { tap } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
-	ngOnInit(): void {}
+export class LoginComponent {
+	// ngOnInit(): void {}
 
 	form: FormGroup = new FormGroup({
 		email: new FormControl(null, [Validators.required, Validators.email]),
@@ -20,14 +20,17 @@ export class LoginComponent implements OnInit {
 	constructor(private authService: AuthService, private router: Router){}
 
 	login() {
+		console.log('loginnnnn action hehe')
+
 		if (this.form.valid) {
 			console.log('inside')
 			this.authService.login({
 				email: this.email.value,
 				password: this.password.value
 			}).pipe(
-				tap(() => this.router.navigate(['../../private/dashboard']))
+				tap(() => this.router.navigate(['../../private/components/dashboard']))
 			).subscribe()
+			console.log('inside???')
 		}
 	}
 

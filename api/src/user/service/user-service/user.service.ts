@@ -61,7 +61,7 @@ export class UserService {
 	async findAllByUsername(username: string): Promise<UserI[]> {
 		return this.userRepository.find({
 			where: {
-				username: Like(`%${username.toLocaleLowerCase()}%`)
+				username: Like(`%${username.toLocaleLowerCase}%`)
 			}
 		})
 	}
@@ -88,7 +88,7 @@ export class UserService {
 
 	//MIDDLEWARE
 	public getOne(id: number): Promise<UserI> {
-		return this.userRepository.findOneOrFail({ where: {id}});
+		return this.userRepository.findOneOrFail({ where:  {id}});
 	}
 
 	private async mailExists(email: string): Promise<boolean> {

@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ChatService } from '../../services/chat-service/chat.service';
-import { of } from 'rxjs';
+import { Observable, defaultIfEmpty, of } from 'rxjs';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
+import { RoomPaginateI } from 'src/app/interfaces/room.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,12 +12,15 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
-	rooms$ = this.chatService.getMyRooms();
+	rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
+	// .pipe(defaultIfEmpty({ items: [], meta: {} })) as Observable<RoomPaginateI>; //this ensures it's not undefined
+
 	selectedRoom = null;
 	
 	constructor(private chatService: ChatService) {}
 	
 	ngOnInit() {
+		this.chatService.emitPaginateRooms(10, 0);
 		// this.chatService.createRoom();
 		// this.chatService.getMyRooms().subscribe((data) => {
 		// 	console.log(data);
@@ -35,13 +39,4 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 	onPaginateRooms(pageEvent: PageEvent) {
 		this.chatService.emitPaginateRooms(pageEvent.pageSize, pageEvent.pageIndex);
 	}
-	
-	// TESTING
-	// title = "testing";
-
-	// islands = [
-	// 	{name: 'Socotra'},
-	// 	{name: 'Ibiza'},
-	// 	{name: 'Lanzarote'}
-	// ];
 }

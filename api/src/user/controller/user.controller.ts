@@ -6,6 +6,7 @@ import { UserI } from '../model/user.interface';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +20,7 @@ export class UserController {
 	return this.userService.create(userEntity);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
 	@Query('page') page: number = 1,

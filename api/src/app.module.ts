@@ -29,6 +29,7 @@ import { ChatModule } from './chat/chat.module';
 // that's what was before:
 // export class AppModule {}
 
+//MIDDLEWARE ADDITION
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 	  consumer
