@@ -7,14 +7,15 @@
 				<span *ngIf="(rooms$ | async)?.items?.length > 0; else no_rooms">
 					<mat-selection-list [multiple]="false" (selectionChange)="onSelectRoom($event)">
 						<mat-list-option *ngFor="let room of (rooms$ | async)?.items" [value]="room">
+							ummmm
 							Name: {{ room.name }} ID: {{ room.id }}
 							<mat-divider></mat-divider>
 						</mat-list-option>
 					</mat-selection-list>
 					<mat-paginator>
-						[length]="(rooms$ | async)?.meta?.totalItems" 
-						[pageIndex]="(rooms$ | async)?.meta?.currentPage" 
-						[pageSize]="(rooms$ | async)?.meta?.itemCount" 
+						length="(rooms$ | async)?.meta?.totalItems" 
+						pageIndex="(rooms$ | async)?.meta?.currentPage" 
+						pageSize="(rooms$ | async)?.meta?.itemCount" 
 						(page)="onPaginateRooms($event)"
 						[pageSizeOptions]="[10,25,50]"
 					</mat-paginator>

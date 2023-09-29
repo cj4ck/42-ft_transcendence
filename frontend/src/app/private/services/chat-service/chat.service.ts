@@ -21,11 +21,13 @@ export class ChatService {
   }
 
   getMyRooms(): Observable<RoomPaginateI> {
+	console.log(this.socket.fromEvent<RoomPaginateI>('rooms'));
 	return this.socket.fromEvent<RoomPaginateI>('rooms');
   }
 
   emitPaginateRooms(limit: number, page: number) {
 	this.socket.emit('paginateRooms', {limit, page});
+	console.log('paginate rooms emited');
   }
 
   createRoom(room: RoomI) {
@@ -33,5 +35,6 @@ export class ChatService {
 	this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
 		duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
 	});
+	console.log('chat-service', room.name);
   }
 }

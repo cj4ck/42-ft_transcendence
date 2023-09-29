@@ -19,13 +19,12 @@ export class RoomService {
 
   async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
     const newRoom = await this.addCreatorToRoom(room, creator);
+	console.log('room.service.ts: ', newRoom);
     return this.roomRepository.save(newRoom);
   }
 
-  async getRoomsForUser(
-    userId: number,
-    options: IPaginationOptions,
-  ): Promise<Pagination<RoomI>> {
+  async getRoomsForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
+	console.log('room.service.ts ughhh');
     const query = this.roomRepository
       .createQueryBuilder('room')
       .leftJoin('room.users', 'user')
@@ -33,6 +32,7 @@ export class RoomService {
 	  .leftJoinAndSelect('room.users', 'all_users')
 	  .orderBy('room.updated_at', 'DESC');
 
+	  console.log('in get rooms for users: ', userId);
     return paginate(query, options);
   }
 

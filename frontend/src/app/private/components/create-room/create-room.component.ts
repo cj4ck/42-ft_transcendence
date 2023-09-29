@@ -22,6 +22,7 @@ export class CreateRoomComponent {
   create() {
     if (this.form.valid) {
       this.chatService.createRoom(this.form.getRawValue());
+	  console.log('create-room.ts: ', this.form.getRawValue());
       this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
     }
   }

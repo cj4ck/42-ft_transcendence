@@ -27,17 +27,17 @@ import { ChatModule } from './chat/chat.module';
 })
 // MIDDLEWARE
 // that's what was before:
-// export class AppModule {}
+export class AppModule {}
 
 //MIDDLEWARE ADDITION
-export class AppModule implements NestModule {
-	configure(consumer: MiddlewareConsumer) {
-	  consumer
-		.apply(AuthMiddleware)
-		.exclude(
-			{path: '/api/users', method: RequestMethod.POST},
-			{path: '/api/users/login', method: RequestMethod.POST}
-		)
-		.forRoutes('')
-	}
-  }
+// export class AppModule implements NestModule {
+// 	configure(consumer: MiddlewareConsumer) {
+// 	  consumer
+// 		.apply(AuthMiddleware)
+// 		.exclude(
+// 			{path: '/api/users', method: RequestMethod.POST},
+// 			{path: '/api/users/login', method: RequestMethod.POST}
+// 		)
+// 		.forRoutes('')
+// 	}
+//   }

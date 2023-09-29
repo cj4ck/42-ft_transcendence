@@ -12,7 +12,7 @@ import { RoomPaginateI } from 'src/app/interfaces/room.interface';
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
 
-	rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms();
+	rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms()
 	// .pipe(defaultIfEmpty({ items: [], meta: {} })) as Observable<RoomPaginateI>; //this ensures it's not undefined
 
 	selectedRoom = null;
@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 	
 	ngOnInit() {
 		this.chatService.emitPaginateRooms(10, 0);
+		console.log(this.chatService.getMyRooms());
 		// this.chatService.createRoom();
 		// this.chatService.getMyRooms().subscribe((data) => {
 		// 	console.log(data);
