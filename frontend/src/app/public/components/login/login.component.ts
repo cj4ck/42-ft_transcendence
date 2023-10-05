@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators'
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  
+
   form: FormGroup = new FormGroup({
     email: new FormControl(null, [Validators.required, Validators.email]),
     password: new FormControl(null, [Validators.required])
@@ -25,7 +25,7 @@ export class LoginComponent {
         email: this.email.value,
         password: this.password.value
       }).pipe(
-        tap(() => this.router.navigate(['../../private/components/dashboard']))
+        tap(() => this.router.navigate(['../../private/components/navigation']))
       ).subscribe()
     }
   }

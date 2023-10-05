@@ -1,0 +1,18 @@
+<body>
+	<span class="title">PentaCode</span>
+
+	<nav class="menu">
+		<input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+		<label class="menu-open-button" for="menu-open">
+		 <span class="lines line-1"></span>
+		 <span class="lines line-2"></span>
+		 <span class="lines line-3"></span>
+	   </label>
+
+		<a [routerLink]="['../chat']" class="menu-item blue"><i class="bi bi-chat"></i> </a>
+		<a [routerLink]="['../game']" class="menu-item orange"> <i class="bi bi-controller"></i> </a>
+		<a [routerLink]="['../logout']" class="menu-item red"> <i class="bi bi-door-open"></i></a>
+		<a [routerLink]="['../players']" class="menu-item purple"> <i class="bi bi-people"></i> </a>
+		<a [routerLink]="['../aboutus']" class="menu-item green"> <i class="bi bi-pentagon"></i> </a>
+	</nav>
+</body>

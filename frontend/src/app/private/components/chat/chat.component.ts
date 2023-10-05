@@ -8,11 +8,11 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from 'src/app/model/user.interface';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  selector: 'app-chat',
+  templateUrl: './chat.component.html',
+  styleUrls: ['./chat.component.scss']
 })
-export class DashboardComponent implements OnInit, AfterViewInit{
+export class ChatComponent implements OnInit, AfterViewInit{
 
   rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms()
   selectedRoom = null

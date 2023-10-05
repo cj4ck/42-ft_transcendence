@@ -16,13 +16,13 @@ export class CreateRoomComponent {
     description: new FormControl(null),
     users: new FormArray([], [Validators.required])
   })
-  
+
   constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) { }
-  
+
   create() {
     if (this.form.valid) {
       this.chatService.createRoom(this.form.getRawValue())
-      this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute})
+      this.router.navigate(['../navigation'], {relativeTo: this.activatedRoute})
     }
   }
 

@@ -1,13 +1,33 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ChatComponent } from './components/chat/chat.component';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { AboutUsComponent } from './components/about-us/about-us.component';
+import { PlayersComponent } from './components/players/players.component';
+import { GameComponent } from './components/game/game.component';
 
 const routes: Routes = [
 
   {
-    path: 'dashboard',
-    component: DashboardComponent
+    path: 'chat',
+    component: ChatComponent
+  },
+  {
+    path: 'aboutus',
+    component: AboutUsComponent
+  },
+  {
+    path: 'navigation',
+    component: NavigationComponent
+  },
+  {
+    path: 'players',
+    component: PlayersComponent
+  },
+  {
+    path: 'game',
+    component: GameComponent
   },
   {
     path: 'create-room',
@@ -15,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboard',
+    redirectTo: 'navigation',
     pathMatch: 'full'
   }
 ];

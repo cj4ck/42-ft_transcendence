@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { PrivateRoutingModule } from './private-routing.module';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -18,14 +18,22 @@ import { MatIconModule } from '@angular/material/icon';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
+import { NavigationComponent } from './components/navigation/navigation.component';
+import { AboutUsComponent } from './components/about-us/about-us.component';
+import { PlayersComponent } from './components/players/players.component';
+import { GameComponent } from './components/game/game.component';
 
 @NgModule({
   declarations: [
-    DashboardComponent,
+    ChatComponent,
     CreateRoomComponent,
     SelectUsersComponent,
     ChatRoomComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
+    NavigationComponent,
+    AboutUsComponent,
+    PlayersComponent,
+    GameComponent
   ],
   imports: [
     CommonModule,
