@@ -251,7 +251,7 @@ body {
  }
 
  .orange {
-	background-color: #ec9a56;
+	background-color: #eb9854;
 	box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
 	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
  }
@@ -290,68 +290,42 @@ body {
  }
 
 
-/* span */
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,900&display=swap');
-
-.title {
-  font-weight: 900;
-  position: absolute;
-  left: 50%;
-  top: 10%;
-  transform: translate(-50%, -50%);
-  display: block;
-  color: #02551d;
-  font-size: 124px;
-  letter-spacing: 8px;
-  cursor: pointer;
+h1{
+	padding-top: 6%;
+	text-align: center;
+	font-family: 'Oswald', Helvetica, sans-serif;
+	font-size: 160px;
+	transform: skewY(-5deg);
+	letter-spacing: 4px;
+	word-spacing: -8px;
+	color: #59d85b;
+	text-shadow:
+	  -1px -1px 0 rgb(42, 150, 60),
+	  -2px -2px 0 rgb(42, 150, 60),
+	  -3px -3px 0 rgb(42, 150, 60),
+	  -4px -4px 0 rgb(42, 150, 60),
+	  -5px -5px 0 rgb(42, 150, 60),
+	  -6px -6px 0 rgb(42, 150, 60),
+	  -7px -7px 0 rgb(42, 150, 60),
+	  -8px -8px 0 rgb(42, 150, 60),
+	  -30px 20px 40px dimgrey
 }
 
-.title::before {
-  content: "PentaCode";
-  position: absolute;
-  color: transparent;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent 0,
-    transparent 2px,
-    #FE4365 2px,
-    #FE4365 4px
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  top: 0px;
-  left: 0;
-  z-index: -1;
-  transition: 1s;
+h2{
+	padding-top: 4%;
+	text-align: center;
+	font-family: 'Oswald', Helvetica, sans-serif;
+	font-size: 80px;
+	transform: skewY(-5deg);
+	letter-spacing: 4px;
+	word-spacing: -8px;
+	color: #f0ad77;
+	text-shadow:
+	  -1px -1px 0 #e9771a,
+	  -2px -2px 0 #e9771a,
+	  -3px -3px 0 #e9771a,
+	  -4px -4px 0 #e9771a,
+	  -5px -5px 0 #e9771a,
+	  -6px -6px 0 #e9771a,
+	  -30px 20px 40px dimgrey
 }
-
-.title::after {
-  content: "PentaCode";
-  position: absolute;
-  color: transparent;
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0,
-    transparent 2px,
-    #FE4365 2px,
-    #FE4365 4px
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  top: 0px;
-  left: 0px;
-  transition: 1s;
-}
-
-.title:hover:before {
-  top: 10px;
-  left: 10px;
-}
-
-.title:hover:after {
-  top: -10px;
-  left: -10px;
-}
-
-
