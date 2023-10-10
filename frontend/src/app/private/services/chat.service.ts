@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CustomSocket } from '../../sockets/custom-socket';
+import { CustomSocket } from '../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';

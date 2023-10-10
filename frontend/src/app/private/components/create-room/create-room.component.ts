@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserI } from 'src/app/model/user.interface';
-import { ChatService } from '../../services/chat-service/chat.service';
+import { ChatService } from '../../services/chat.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

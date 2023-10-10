@@ -1,6 +1,7 @@
 <div class="c">
-	<button style="--clr:#eb9854"><span>Play game</span><i></i></button>
+	<button class="play" style="--clr:#eb9854" (click)="joinQueqe();"><span>Play game</span><i></i></button>
 	<br>
-
 	<h2>Waiting players: <span class="number">{{playersWaiting}}</span></h2>
+
+	<button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i class="bi bi-sign-turn-left-fill"></i> Go back</button>
 </div>

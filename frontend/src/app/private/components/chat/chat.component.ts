@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ChatService } from '../../services/chat-service/chat.service';
+import { ChatService } from '../../services/chat.service';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable } from 'rxjs';

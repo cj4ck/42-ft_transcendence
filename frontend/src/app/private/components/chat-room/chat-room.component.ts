@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@
 import { Observable, map } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
-import { ChatService } from '../../services/chat-service/chat.service';
+import { ChatService } from '../../services/chat.service';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
