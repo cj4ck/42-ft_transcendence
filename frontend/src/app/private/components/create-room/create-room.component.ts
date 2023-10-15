@@ -18,7 +18,9 @@ export class CreateRoomComponent {
   })
   
   constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) { }
-  
+
+// when create room is clicked, a new room is created with the current user
+
   create() {
     if (this.form.valid) {
       this.chatService.createRoom(this.form.getRawValue())

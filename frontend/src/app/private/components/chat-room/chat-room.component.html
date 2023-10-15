@@ -17,11 +17,8 @@
 	</div>
 
 	<!-- Messages -->
-
-	<div style="background-color: lightgray; height: 400px; overflow-y: scroll; 
-	scrollbar-color: lightgrey darkgrey;
-	scrollbar-width: thin;">
-		<span *ngFor="let message of (messages$ | async)?.items">
+	<div #messages class="message">
+		<span *ngFor="let message of (messagesPaginate$ | async)?.items">
 			<app-chat-message [message]="message"></app-chat-message>
 		</span>
 	</div>

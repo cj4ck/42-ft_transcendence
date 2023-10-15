@@ -72,15 +72,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     console.log('creator:' + socket.data.user.id)
     console.log('room:' + room.users)
     const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
-
     for(const user of createdRoom.users) {
-      const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
-      const rooms = await this.roomService.getRoomsForUser(user.id, {page: 1, limit: 10})
-      // substract page -1 to match the ng material paginator
-      rooms.meta.currentPage = rooms.meta.currentPage - 1
-      for(const connection of connections) {
-        await this.server.to(connection.socketId).emit('rooms', rooms)
-      }
+        const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
+        const rooms = await this.roomService.getRoomsForUser(user.id, {page: 1, limit: 10})
+        // substract page -1 to match the ng material paginator
+        rooms.meta.currentPage = rooms.meta.currentPage - 1
+        for(const connection of connections) {
+          await this.server.to(connection.socketId).emit('rooms', rooms)
+        }
     }
   }
 
@@ -113,6 +112,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const room: RoomI = await this.roomService.getRoom(createdMessage.room.id)
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room)
     // TODO: send new message to all joined users of room (currently online)
+    for (const user of joinedUsers) {
+      await this.server.to(user.socketId).emit('messageAdded', createdMessage)
+    }
   }
 
   private handleIncomingPageRequest(page: PageI) {

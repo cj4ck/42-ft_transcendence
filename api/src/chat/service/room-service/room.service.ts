@@ -12,11 +12,20 @@ export class RoomService {
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>
-	) {}
-	
-	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
-		const newRoom = await this.addCreatorToRoom(room, creator)
-		return this.roomRepository.save(newRoom)
+		) {}
+		
+		async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
+			// check if creator is already in room, ie dont need to add
+			for (const user of room.users) {
+				console.log('user#:', user.id, user.username)
+				// creator in room 
+				if (creator.id === user.id){
+					return this.roomRepository.save(room)
+				}
+			}
+			console.log('will add creator to room [id]:', creator.id)
+			const newRoom = await this.addCreatorToRoom(room, creator)
+			return this.roomRepository.save(newRoom)
 	}
 
 	async getRoom(roomId: number): Promise<RoomI> {
@@ -27,7 +36,7 @@ export class RoomService {
 	}
 
 	async getRoomsForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
-		console.log('get rooms for user')
+		// console.log('get rooms for user')
 		const query = this.roomRepository
 		.createQueryBuilder('room')
 		.leftJoin('room.users', 'users')

@@ -13,6 +13,10 @@ export class ChatService {
 
   constructor(private socket: CustomSocket, private snackbar: MatSnackBar) { }
 
+  getAddedMessage(): Observable<MessageI> {
+    return this.socket.fromEvent<MessageI>('messageAdded')
+  }
+
   sendMessage(message: MessageI) {
     this.socket.emit('addMessage', message)
   }
@@ -38,6 +42,7 @@ export class ChatService {
   }
 
   createRoom(room: RoomI) {
+    // maybe here is problem, of double room creation
     this.socket.emit('createRoom', room)
     this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
       duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
