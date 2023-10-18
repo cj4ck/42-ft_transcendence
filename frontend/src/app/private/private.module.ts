@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { PrivateRoutingModule } from './private-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';

@@ -23,3 +23,9 @@
 <ng-template #no_users>
 	<mat-error>No Users added so far</mat-error>
 </ng-template>
+<div>
+	<h2>List of Users:</h2>
+	<ul>
+	  <li *ngFor="let user of users">{{ user.username }}</li>
+	</ul>
+  </div>

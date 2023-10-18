@@ -1,0 +1,12 @@
+<div class="container">
+	<div>
+		<div class="UserList">
+			<div>
+				<h2>List of Users:</h2>
+					<mat-list-option *ngFor="let room of (rooms$ | async)?.items" [value]="room">
+						Name: {{room.name}} Id: {{room.id}}
+						<mat-divider></mat-divider>
+					</mat-list-option>
+			</div>
+	</div>
+</div>
