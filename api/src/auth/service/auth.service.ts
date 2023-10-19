@@ -40,7 +40,12 @@ export class AuthService {
 		if (user) return user;
 		console.log('User not found. Creating...');
 		const newUser = this.userRepository.create({ email, username });
-		return this.userRepository.save(newUser);
+		console.log('User created: ');
+		console.log(newUser);
+		const savedUser = await this.userRepository.save(newUser);
+		console.log('User saved: ');
+		console.log(savedUser);
+		return savedUser;
 	}
 
 	async findUser(id: number) {

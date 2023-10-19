@@ -1,21 +1,24 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { FortyTwoAuthGuard } from '../guards/fortyTwo.guard';
+import { AuthService } from '../service/auth.service';
 
 @Controller('auth')
 export class AuthController {
 
+  constructor(private readonly authService: AuthService) {}
 
   @Get('42/login')
   @UseGuards(FortyTwoAuthGuard)
-  handleLogin() {
-    return { msg: '42 Authentication'}
-  }
+  handleLogin() {}
 
   @Get('42/redirect')
   @UseGuards(FortyTwoAuthGuard)
-  handleRedirect() {
-    return { msg: 'OK' };
+  async handleRedirect(@Req() req, @Res() res: Response) {
+    const user = req.user;
+    const jwtToken = await this.authService.generateJwt(user);
+    const frontendURL = process.env.FRONTEND_URL;
+    res.redirect(`${frontendURL}?token=${jwtToken}`);
   }
 
   @Get('status')
@@ -28,3 +31,4 @@ export class AuthController {
     }
   }
 }
+
