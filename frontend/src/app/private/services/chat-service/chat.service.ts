@@ -49,4 +49,8 @@ export class ChatService {
     });
   }
 
+//   setChatPassword(room: RoomI) {
+// 	// this.socket.emit('setChatPassword', room, )
+//   }
+
 }

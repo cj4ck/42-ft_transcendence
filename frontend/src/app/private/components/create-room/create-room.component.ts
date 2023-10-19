@@ -14,7 +14,8 @@ export class CreateRoomComponent {
   form: FormGroup = new FormGroup({
     name: new FormControl(null, [Validators.required]),
     description: new FormControl(null),
-    users: new FormArray([], [Validators.required])
+    users: new FormArray([], [Validators.required]),
+	type: new FormControl(null, [Validators.required])
   })
   
   constructor(private chatService: ChatService, private router: Router, private activatedRoute: ActivatedRoute) { }
@@ -24,6 +25,7 @@ export class CreateRoomComponent {
   create() {
     if (this.form.valid) {
       this.chatService.createRoom(this.form.getRawValue())
+	  console.log(this.form.getRawValue())
       this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute})
     }
   }
@@ -56,6 +58,10 @@ export class CreateRoomComponent {
   get users(): FormArray {
     // console.log('get_users')
     return this.form.get('users') as FormArray
+  }
+
+  get type(): FormControl {
+	return this.form.get('type') as FormControl
   }
 }
 

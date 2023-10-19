@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
     MatInputModule,
     MatChipsModule,
     MatAutocompleteModule,
-    MatIconModule
+    MatIconModule,
+	MatCheckboxModule, 
+	MatSelectModule
   ]
 })
 export class PrivateModule { }

@@ -3,7 +3,8 @@ import { Observable, combineLatest, map, startWith, tap } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
 
 @Component({
   selector: 'app-chat-room',
@@ -28,6 +29,39 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     // , 
     // tap(() => this.scrollToBottom())
   )
+
+  //adding password to chat
+//   showPasswordForm = false
+//   passwordForm: FormGroup = new FormGroup({
+// 	password: new FormControl(null, [Validators.required]),
+// 	passwordConfirm: new FormControl(null, [Validators.required])
+//   },
+//   {
+// 	validators: CustomValidators.passwordsMatching
+//   })
+
+//   setChatPassword() {
+// 	if (this.passwordForm.valid) {
+// 		// this.chatRoom.password = this.passwordForm.getRawValue()
+// 		// this.chatService.setChatPassword()
+// 		console.log('Password is set')
+		
+// 	}
+//   }
+
+//   get password(): FormControl {
+//     return this.passwordForm.get('password') as FormControl;
+//   }
+
+//   get passwordConfirm(): FormControl {
+//     return this.passwordForm.get('passwordConfirm') as FormControl;
+//   }
+
+//   togglePasswordForm() {
+// 	this.showPasswordForm = !this.showPasswordForm
+//   }
+
+  //end of password stuffs
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 

@@ -31,4 +31,6 @@ export class RoomEntity {
 	@UpdateDateColumn()
 	updated_at: Date
 
+	@Column({nullable: true})
+	type: string
 }
