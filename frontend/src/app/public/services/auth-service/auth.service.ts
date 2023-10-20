@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators'
@@ -12,7 +13,12 @@ import { UserI } from 'src/app/model/user.interface'
 })
 export class AuthService {
 
-  constructor(private http:HttpClient, private snackbar: MatSnackBar, private jwtService: JwtHelperService) { }
+  constructor(
+    private http:HttpClient,
+    private snackbar: MatSnackBar,
+    private jwtService: JwtHelperService,
+    private router: Router,
+  ) { }
 
   login(user: UserI): Observable<LoginResponseI> {
     return this.http.post<LoginResponseI>('api/users/login', user).pipe(
@@ -28,4 +34,8 @@ export class AuthService {
     return decodedToken.user
   }
 
+  logout() {
+    localStorage.removeItem("nestjs_chat_app");
+    this.router.navigate(['/public/login'])
+  }
 }

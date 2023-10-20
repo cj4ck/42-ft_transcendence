@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/operators'
 
 @Component({
@@ -9,6 +9,7 @@ import { tap } from 'rxjs/operators'
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent {
   
   form: FormGroup = new FormGroup({
@@ -16,7 +17,19 @@ export class LoginComponent {
     password: new FormControl(null, [Validators.required])
   });
 
-  constructor(private authService: AuthService, private router : Router) { }
+  constructor(
+    private authService: AuthService,
+    private router : Router,
+    private route: ActivatedRoute,
+  ) { }
+
+  ngOnInit() {
+    const jwtToken = this.route.snapshot.queryParamMap.get('token');
+    if (jwtToken) {
+      localStorage.setItem('nestjs_chat_app', jwtToken);
+      this.router.navigate(['../../private/components/dashboard']);
+    }
+  }
 
   login() {
     if (this.form.valid) {
@@ -29,6 +42,11 @@ export class LoginComponent {
       ).subscribe()
     }
   }
+
+  loginWithFortyTwo() {
+    window.location.href = 'http://127.0.0.1:3000/api/auth/42/login';
+  }
+  
 
   get email(): FormControl {
     return this.form.get('email') as FormControl;
