@@ -25,10 +25,14 @@ export class GameGateway implements OnGatewayDisconnect {
   @SubscribeMessage('PlayerJoinQueue')
   JoinQueue(socket: Socket){
     console.log("player " + socket.data.user.username + " join queue");
-    if (!this.gameService.queue.some((user) => user.id == socket.data.user.id))
+    if (!this.gameService.queue.some((player) => player.user.id == socket.data.user.id))
     {
-      this.gameService.queue.push(socket.data.user);
-      //this.gameService.lookForGamePair();
+      this.gameService.queue.push(
+        {
+          user: socket.data.user,
+          socketId: socket.id
+        });
+      this.gameService.lookForGamePair(this.server);
     }
     this.server.emit('PlayerInQueueChange', this.gameService.queue.length);
   }
