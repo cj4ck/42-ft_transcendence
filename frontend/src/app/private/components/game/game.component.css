@@ -35,7 +35,7 @@ h2 {
 	transition: 0.2s;
 }
 
-.play:hover {
+.play:hover:enabled {
 	letter-spacing: 0.2rem;
 	padding: 1.1rem 3.1rem;
 	background: var(--clr);
@@ -76,8 +76,35 @@ h2 {
 	transition: 0.2s;
 }
 
-.play:hover span{
+.play:disabled i::before {
+	border: 2px solid green;
+}
+.play:disabled i::after {
+	border: 2px solid green;
+}
+
+.play:disabled span {
+	color: green;
+}
+
+.play:hover:enabled span{
 	color: #eb9854;
+}
+
+.cancel-btn
+{
+	background-color: rgb(235, 148, 34);
+	padding: 7px;
+	border-radius: 5px;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: medium;
+	font-weight: 700;
+	border: rgb(235, 64, 34) 3px dashed;
+}
+
+.cancel-btn:hover
+{
+	background-color: rgb(235, 64, 34);
 }
 
 .goBack{
@@ -90,10 +117,14 @@ h2 {
 	background: linear-gradient(20deg, #eb9854, #f0a669);
 }
 
-.play:hover i::before {
+.play:hover:enabled i::before {
 	width: 15px;
 	left: 20%;
 	animation: move 3s infinite;
+}
+
+.play:disabled {
+	background-color: green;
 }
 
 .play i::after {
@@ -108,7 +139,7 @@ h2 {
 	transition: 0.2s;
 }
 
-.play:hover i::after {
+.play:hover:enabled i::after {
 	width: 15px;
 	left: 80%;
 	animation: move 3s infinite;

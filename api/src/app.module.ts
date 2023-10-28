@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
-import { GameGateway } from './game/game.gateway';
 import { GameModule } from './game/game.module';
 
 @Module({
@@ -25,6 +24,6 @@ import { GameModule } from './game/game.module';
     GameModule
   ],
   controllers: [AppController],
-  providers: [AppService, GameGateway],
+  providers: [AppService],
 })
 export class AppModule {}

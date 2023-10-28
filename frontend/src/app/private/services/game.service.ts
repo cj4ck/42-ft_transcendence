@@ -8,7 +8,11 @@ export class GameService {
 
   constructor(private socket: CustomSocket) { }
 
-  joinGame() {
-    this.socket.emit('PlayerJoinQueue');
+  joinGame(changeWaitingPlayers) {
+    this.socket.emit('PlayerJoinQueue', changeWaitingPlayers);
+  }
+
+  leaveGame(changeWaitingPlayers) {
+    this.socket.emit('PlayerLeaveQueue', changeWaitingPlayers);
   }
 }
