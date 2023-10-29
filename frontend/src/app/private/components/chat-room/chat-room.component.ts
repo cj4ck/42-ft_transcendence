@@ -9,7 +9,7 @@ import { ChatService } from '../../services/chat.service';
 @Component({
   selector: 'app-chat-room',
   templateUrl: './chat-room.component.html',
-  styleUrls: ['./chat-room.component.scss']
+  styleUrls: ['./chat-room.component.css']
 })
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 

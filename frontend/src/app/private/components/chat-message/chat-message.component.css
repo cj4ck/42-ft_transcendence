@@ -1,0 +1,32 @@
+.ownContainer {
+	justify-content: flex-end;
+}
+
+.ownMessage {
+	background-color: lightblue;
+}
+
+em {
+	color: gray;
+}
+
+.message:hover .author{
+	animation-delay: 2s;
+	display: block;
+}
+
+.author{
+	display: none;
+	transition: all 0.3s;
+}
+
+.message{
+	display: flex;
+}
+
+.m{
+	vertical-align: middle;
+	padding: 10px;
+	border-radius: 5px;
+	min-width: 100px;
+}

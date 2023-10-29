@@ -1,0 +1,59 @@
+.c {
+	width: 100%;
+	height: 100%;
+	background-color: #62C2E4;
+}
+
+.nochat{
+	font-size: 30px;
+	color: #a51f23;
+	padding: 20px;
+}
+
+.header{
+	background-color: #49306B;
+	color: #96E6B3;
+	text-align: center;
+	padding-bottom: 5px;
+}
+.title{
+	padding-top: 10px;
+	font-size: 25px;
+	font-weight: 600;
+}
+.text{
+	width: 80%;
+}
+
+.sendbutton{
+	background-color: #731DD8;
+	color: #96E6B3;
+	margin-left: 5px;
+	font-size: 20px;
+	padding: 10px 0px;
+	border-radius: 4px;
+	text-align: center;
+	vertical-align: middle;
+	width: 15%;
+}
+
+.sendbutton:disabled{
+	background-color: #b783f3;
+}
+
+.sendbutton:hover:enabled{
+	color: #4ee284;
+}
+
+.message{
+	min-height: 530px;
+}
+
+mat-list {
+	flex-grow: 1;
+	overflow: auto;
+}
+
+mat-list-item {
+	margin-bottom: 3px;
+}
