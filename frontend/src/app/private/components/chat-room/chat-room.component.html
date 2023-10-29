@@ -15,13 +15,36 @@
 			<span *ngFor="let user of chatRoom.users">{{user.username}},</span>
 		</span>
 	</div>
+	
+	<!-- <button mat-button (click)="togglePasswordForm()">Set password for chat</button> -->
+	
+	<!-- <div *ngIf="showPasswordForm">
+		<mat-card>			
+			<mat-card-content>
+				<form [formGroup]="passwordForm" (ngSubmit)="setChatPassword()">
+					<mat-form-field>
+						<input type="password" matInput placeholder="Password" formControlName="password">
+						<mat-error *ngIf ="password.touched && password.hasError('required')">Password is required</mat-error>
+					</mat-form-field>
+			
+					<mat-form-field>
+						<input type="password" matInput placeholder="Password Confirmation" formControlName="passwordConfirm">
+						<mat-error *ngIf ="passwordConfirm.touched && passwordForm.hasError('passwordsNotMatching')">Passwords not matching</mat-error>
+					</mat-form-field>
+
+					<mat-hint *ngIf="!passwordForm.valid"><small>Please set password correctly</small></mat-hint>
+					
+					<div class="button">
+						<button mat-button type="submit" [disabled]="!passwordForm.valid">Set password</button>
+					</div>
+				</form>
+			</mat-card-content>
+		</mat-card>
+	</div> -->
 
 	<!-- Messages -->
-
-	<div style="background-color: lightgray; height: 400px; overflow-y: scroll; 
-	scrollbar-color: lightgrey darkgrey;
-	scrollbar-width: thin;">
-		<span *ngFor="let message of (messages$ | async)?.items">
+	<div #messages class="message">
+		<span *ngFor="let message of (messagesPaginate$ | async)?.items">
 			<app-chat-message [message]="message"></app-chat-message>
 		</span>
 	</div>

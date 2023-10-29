@@ -48,6 +48,8 @@ export class SelectUsersComponent implements OnInit {
 
   setSelectedUser(user: UserI) {
     console.log('selected user')
+    // add here a check if the selected user is the current user id?
+
     this.selectedUser = user
   }
 
