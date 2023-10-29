@@ -6,6 +6,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { AboutUsComponent } from './components/about-us/about-us.component';
 import { PlayersComponent } from './components/players/players.component';
 import { GameComponent } from './components/game/game.component';
+import { GameroomComponent } from './components/game/gameroom/gameroom.component';
 
 const routes: Routes = [
 
@@ -27,7 +28,11 @@ const routes: Routes = [
   },
   {
     path: 'game',
-    component: GameComponent
+    component: GameComponent,
+  },
+  {
+    path: 'gameroom',
+    component: GameroomComponent
   },
   {
     path: 'create-room',

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { CustomSocket } from '../../sockets/custom-socket';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -10,11 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class GameComponent {
 
-  constructor(private gameService: GameService, private socket: CustomSocket, private snackbar: MatSnackBar) {
+  constructor(private gameService: GameService, private socket: CustomSocket, private snackbar: MatSnackBar, private router: Router) {
     socket.on("PlayerInQueueChange", (nbr) => this.changeWaitingPlayers(nbr))
-    socket.on("PlayerGetMatch", (new_game) => this.snackbar.open(`U get match`, 'Close', {
-      duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'
-    }))
+    socket.on("PlayerGetMatch", (new_game) => {
+      this.snackbar.open(`U get match`, 'Close', { duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'})
+      this.router.navigate(['private/gameroom/' + new_game])
+    })
   }
 
   playersWaiting: number = 0;
@@ -32,6 +34,5 @@ export class GameComponent {
 
   changeWaitingPlayers(nbr: number) {
     this.playersWaiting = nbr;
-    console.log("aaaaaa");
   }
 }

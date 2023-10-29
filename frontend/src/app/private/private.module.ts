@@ -22,6 +22,7 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { AboutUsComponent } from './components/about-us/about-us.component';
 import { PlayersComponent } from './components/players/players.component';
 import { GameComponent } from './components/game/game.component';
+import { GameroomComponent } from './components/game/gameroom/gameroom.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { GameComponent } from './components/game/game.component';
     NavigationComponent,
     AboutUsComponent,
     PlayersComponent,
-    GameComponent
+    GameComponent,
+    GameroomComponent
   ],
   imports: [
     CommonModule,

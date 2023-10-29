@@ -18,6 +18,7 @@ export class GameService {
 		{
 			this.queue.sort((p1, p2) => p1.user.score - p2.user.score);
 			var newGame: GameI = {
+
 				player1: this.queue.pop()!,
 				player2: this.queue.pop()!,
 			}
