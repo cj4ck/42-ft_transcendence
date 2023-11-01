@@ -16,9 +16,10 @@
 		</span>
 	</div>
 	
-	<!-- <button mat-button (click)="togglePasswordForm()">Set password for chat</button> -->
+	<button mat-button (click)="togglePasswordForm()">Set password for chat</button>
+	<button mat-button (click)="checkSetPassword()">check Password</button>
 	
-	<!-- <div *ngIf="showPasswordForm">
+	<div *ngIf="showPasswordForm">
 		<mat-card>			
 			<mat-card-content>
 				<form [formGroup]="passwordForm" (ngSubmit)="setChatPassword()">
@@ -40,7 +41,7 @@
 				</form>
 			</mat-card-content>
 		</mat-card>
-	</div> -->
+	</div>
 
 	<!-- Messages -->
 	<div #messages class="message">

@@ -5,6 +5,7 @@ import { RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
+import { ActiveDescendantKeyManager } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'app-chat-room',
@@ -31,36 +32,57 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   )
 
   //adding password to chat
-//   showPasswordForm = false
-//   passwordForm: FormGroup = new FormGroup({
-// 	password: new FormControl(null, [Validators.required]),
-// 	passwordConfirm: new FormControl(null, [Validators.required])
-//   },
-//   {
-// 	validators: CustomValidators.passwordsMatching
-//   })
+  showPasswordForm = false
+  passwordForm: FormGroup = new FormGroup({
+	password: new FormControl(null, [Validators.required]),
+	passwordConfirm: new FormControl(null, [Validators.required])
+  },
+  {
+	validators: CustomValidators.passwordsMatching
+  })
 
-//   setChatPassword() {
-// 	if (this.passwordForm.valid) {
-// 		// this.chatRoom.password = this.passwordForm.getRawValue()
-// 		// this.chatService.setChatPassword()
-// 		console.log('Password is set')
-		
-// 	}
-//   }
+  setChatPassword() {
+	if (this.passwordForm.valid) {
+		const newPassword: string = this.passwordForm.get('password').value
+		this.chatRoom.password = newPassword
+		this.chatService.setChatPasswordService(this.chatRoom)
+		console.log('Password is set')
+		this.togglePasswordForm()
+		this.chatService.passwordAdded().subscribe((room: RoomI) => {
+			const password = room.password;
+			console.log('Received password:', password);
+		})
+	}
+  }
 
-//   get password(): FormControl {
-//     return this.passwordForm.get('password') as FormControl;
-//   }
+  get password(): FormControl {
+    return this.passwordForm.get('password') as FormControl;
+  }
 
-//   get passwordConfirm(): FormControl {
-//     return this.passwordForm.get('passwordConfirm') as FormControl;
-//   }
+  get passwordConfirm(): FormControl {
+    return this.passwordForm.get('passwordConfirm') as FormControl;
+  }
 
-//   togglePasswordForm() {
-// 	this.showPasswordForm = !this.showPasswordForm
-//   }
+  togglePasswordForm() {
+	this.showPasswordForm = !this.showPasswordForm
+  }
 
+  //this will call the function that emits event to backend 
+  //and the function that catches return event from backend
+  //both fns defined in chat.service file
+async checkSetPassword() {
+	this.chatService.checkPasswordService(this.chatRoom) //to emit event
+	const activePasswordPromise = new Promise<string>((resolve) => {
+	  const subscription = this.chatService.getActiveChatPassword().subscribe((pswd: string) => {
+		subscription.unsubscribe(); // Unsubscribe to prevent memory leaks
+		resolve(pswd);
+	  });
+	});
+
+	const activePassword = await activePasswordPromise;
+
+	console.log('checked Password but outside: ', activePassword)
+  }
   //end of password stuffs
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])

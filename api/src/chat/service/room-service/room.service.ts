@@ -24,8 +24,8 @@ export class RoomService {
 			if (creator.id === user.id){
 				console.log('type: ', room.type)
 				console.log('creator: ', creator)
-				// room.owner = creator
-				// console.log('owner:', room.owner)
+				room.owner = creator
+				console.log('owner:', room.owner)
 				return this.roomRepository.save(room)
 			}
 		}
@@ -33,9 +33,9 @@ export class RoomService {
 		// room.type = room.isPrivate ? 'private' | 'public'
 		const newRoom = await this.addCreatorToRoom(room, creator)
 		console.log('type: ', room.type)
-		// console.log('creator: ', creator)
-		// room.owner = creator
-		// console.log('owner:', room.owner)
+		console.log('creator: ', creator)
+		room.owner = creator
+		console.log('owner:', room.owner)
 		return this.roomRepository.save(newRoom)
 		// this.printAllRooms();
 	}
@@ -61,5 +61,25 @@ export class RoomService {
 	async addCreatorToRoom(room: RoomI, creator: UserI): Promise<RoomI> {
 		room.users.push(creator)
 		return room
+	}
+
+	async setChatPassword(room: RoomI): Promise<RoomI> {
+		// Assuming you have a method to retrieve the room from the database
+		const existingRoom = await this.getRoom(room.id);
+		if (!existingRoom) {
+			console.log('room not found')
+		}
+		existingRoom.password = room.password;
+		// Save the updated room to the database
+		return this.roomRepository.save(existingRoom);
+	  }
+
+	async getChatPassword(room: RoomI): Promise<string> {
+		const existingRoom = await this.getRoom(room.id);
+		if (!existingRoom) {
+			console.log('room not found; password not set')
+		}
+		const activePassword = existingRoom.password
+		return activePassword
 	}
 }
