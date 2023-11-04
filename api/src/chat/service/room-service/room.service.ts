@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { AuthService } from 'src/auth/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
-import { UserService } from 'src/user/service/user-service/user.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class RoomService {
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
-		private readonly userService: UserService
+		private authService: AuthService
 		) {}
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
@@ -69,7 +69,10 @@ export class RoomService {
 		if (!existingRoom) {
 			console.log('room not found')
 		}
-		existingRoom.password = room.password;
+		const passwordHash: string = await this.hashPassword(room.password)
+		console.log(passwordHash, '-> password hash in set password')
+		existingRoom.password = passwordHash
+		existingRoom.type = 'protected'
 		// Save the updated room to the database
 		return this.roomRepository.save(existingRoom);
 	  }
@@ -81,5 +84,33 @@ export class RoomService {
 		}
 		const activePassword = existingRoom.password
 		return activePassword
+	}
+
+	private async hashPassword(password: string): Promise<string> {
+		return this.authService.hashPassword(password);
+	}
+	
+	//🥶
+	async loginChatroom(room: RoomI, password: string): Promise<string> {
+		try {
+			const foundRoom: RoomI = await this.getRoom(room.id)
+			if (foundRoom) {
+				const matches: boolean = await this.validatePassword(password, foundRoom.password)
+				if (matches) {
+					const payload: RoomI = await this.getRoom(room.id)
+					return this.authService.generateJwtRoom(payload)
+				} else {
+					throw new HttpException('Passwords do not match, room locked', HttpStatus.UNAUTHORIZED)
+				}
+			} else {
+				throw new HttpException('Room not found', HttpStatus.NOT_FOUND)
+			}
+		} catch {
+			throw new HttpException('Room not found!', HttpStatus.UNAUTHORIZED)
+		}
+	}
+
+	private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
+		return this.authService.comparePasswords(password, storedPasswordHash)
 	}
 }

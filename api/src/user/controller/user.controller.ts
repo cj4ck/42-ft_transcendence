@@ -1,18 +1,23 @@
 import { Body, Controller, Post, Get, Query, UseGuards } from '@nestjs/common';
-import { UserService } from '../service/user-service/user.service';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { UserI } from '../model/user.interface';
-import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
+import { RoomI } from 'src/chat/model/room/room.interface';
+import { LoginChatroomResponseI } from '../model/login-chatroom-response.interface';
+import { RoomService } from 'src/chat/service/room-service/room.service';
+import { LoginChatroomDto } from '../model/dto/login-chatroom.dto';
+import { UserService } from '../service/user-service/user.service';
+import { UserHelperService } from '../service/user-helper/user-helper.service';
 
 @Controller('users')
 export class UserController {
 
 	constructor(
 		private userService: UserService,
-		private userHelperService: UserHelperService
+		private userHelperService: UserHelperService, 
+		private roomService: RoomService
 	) { }
 
 	@Post()
@@ -47,4 +52,15 @@ export class UserController {
 		};
 	}
 
+	@Post('loginChatroom')
+	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<LoginChatroomResponseI> {
+		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto)
+		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto)
+		const jwt: string = await this.roomService.loginChatroom(roomEntity, enteredPassword)
+		return {
+			access_token: jwt,
+			token_type: 'JWT',
+			expires_in: 10000
+		};
+	}
 }
