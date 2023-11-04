@@ -15,16 +15,31 @@ export class JoinedRoomService {
 	) { }
 
 	async create(joinedRoom: JoinedRoomI): Promise<JoinedRoomI> {
+		console.log("create joined room id " + joinedRoom.id)
+		console.log("create joined room user " + joinedRoom.user.username)
 		return this.joinedRoomRepository.save(joinedRoom)
 	}
 
-	async findByUser(user: UserI): Promise<JoinedRoomI[]> {
-		return this.joinedRoomRepository.find( {where:{user}} )
-	}
+	// async findByUser(user: UserI): Promise<JoinedRoomI[]> {
+	// 	return this.joinedRoomRepository.find( {where:{user}} )
+	// }
 
 	async findByRoom(room: RoomI): Promise<JoinedRoomI[]> {
-		return this.joinedRoomRepository.find( {where:{room}} )
+		console.log('find by room id: ' + room.id)
+		return this.joinedRoomRepository.query(`
+		  SELECT * FROM joined_room_entity
+		  WHERE "roomId" = \$1
+		`, [room.id]);
 	}
+
+	// async findByRoom(room: RoomI): Promise<JoinedRoomI[]> {
+	// 	console.log('find by room id: ' + room.id)
+	// 	return this.joinedRoomRepository.find({ where: {room: room}})
+	// }
+
+	// async findByRoomId(id: number): Promise<JoinedRoomI[]> {
+	// 	return this.joinedRoomRepository.find({ where: { id }})
+	// }
 
 	async deleteBySocketId(socketId: string) {
 		return this.joinedRoomRepository.delete({socketId})

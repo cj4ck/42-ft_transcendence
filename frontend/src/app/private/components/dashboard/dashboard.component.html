@@ -24,19 +24,34 @@
 						[pageSize]="(rooms$ | async)?.meta?.itemsPerPage" (page)="onPaginateRooms($event)"
 						[pageSizeOptions]="[10,25,50]"
 					</mat-paginator>
-				</div>
-			</div>
 
+
+					
+					<!-- <mat-paginator>
+						[length]="(users$ | async)?.meta?.totalItems"
+						[pageIndex]="(users$ | async)?.meta?.currentPage"
+					</mat-paginator> -->
+				</div>
+			<!-- <mat-selection-list [multiple]="false">
+				<mat-list-option *ngFor="let user of (users$ | async)?.items" [value]="user">
+					User: {{user.username}} Id: {{user.id}}
+					<mat-divider></mat-divider>
+				</mat-list-option>
+			</mat-selection-list> -->
+			</div>
+			
 			<div class="chatroom">
 				<app-chat-room [chatRoom]="selectedRoom"></app-chat-room>
 			</div>
-
 		</div>
 	</mat-card>
+	
 </div>
 
+<app-users-listed></app-users-listed> 
 <ng-template #no_rooms>
 	<div>
 		<mat-error>No Chatrooms for yo so far, please create one or get invited!</mat-error>
 	</div>
 </ng-template>
+

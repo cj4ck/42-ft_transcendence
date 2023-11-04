@@ -65,6 +65,16 @@ export class UserService {
 	})
 	}
 
+	async findOneByUsername(username: string): Promise<UserI> {
+		console.log('findonebyusername ' + username)
+		return this.userRepository.findOne({ 
+			where: {
+				username: Like(`%${username.toLowerCase()}%`)
+			}
+		})
+	}
+
+
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {
 		return this.userRepository.findOne({where: { email }, select: ['id', 'email', 'username', 'password']});
@@ -78,7 +88,7 @@ export class UserService {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}
 
-	private async findOne(id: number): Promise<UserI> {
+	async findOne(id: number): Promise<UserI> {
 		return this.userRepository.findOne({ where: { id } });
 	}
 

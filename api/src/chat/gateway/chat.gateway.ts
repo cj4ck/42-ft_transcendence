@@ -69,8 +69,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('createRoom')
   async onCreateRoom(socket: Socket, room: RoomI) {
-    console.log('creator:' + socket.data.user.id)
-    console.log('room:' + room.users)
+    console.log('CreateRoom [creator_id]:' + socket.data.user.id)
+    console.log('CreateRoom [users]:' + room.users)
     const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
     for(const user of createdRoom.users) {
         const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
@@ -81,6 +81,34 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           await this.server.to(connection.socketId).emit('rooms', rooms)
         }
     }
+    return
+  }
+
+  @SubscribeMessage('createDmRoom')
+  async onCreateDmRoom(socket: Socket, username: string) {
+    const creator = socket.data.user
+    console.log('Creator ID:' + creator.id)
+    const guest: UserI = await this.userService.findOneByUsername(username)
+    console.log('Guest ID:' + guest.id)
+    const dmRooms = await this.roomService.getDmForUser(creator.id, {page: 1, limit: 10})
+    for (const dmRoom of dmRooms.items) {
+      for (const user of dmRoom.users) {
+        if (user.id === guest.id) {
+          console.log('rejecting - already exists');
+          return;
+        }
+      }
+    }
+    let privateRoom: RoomI
+    const chatMembers: UserI[] = [guest, creator];
+    privateRoom = {
+      name: `DM: ${guest.username}`,
+      description : `Private chat between ${creator.username} and ${guest.username}`,
+      type: 'dm',
+      users: chatMembers
+    }
+    console.log('Calling on create room')
+    await this.onCreateRoom(socket, privateRoom)
   }
 
   @SubscribeMessage('paginateRooms')
@@ -111,9 +139,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const createdMessage: MessageI = await this.messageService.create({...message, user: socket.data.user})
     const room: RoomI = await this.roomService.getRoom(createdMessage.room.id)
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room)
-    // TODO: send new message to all joined users of room (currently online)
     for (const user of joinedUsers) {
-      await this.server.to(user.socketId).emit('messageAdded', createdMessage)
+      console.log('emitting new msg ' + createdMessage.text)
+      this.server.to(user.socketId).emit('messageAdded', createdMessage)
     }
   }
 
@@ -123,5 +151,4 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     page.page = page.page + 1
     return page
   }
-
 }

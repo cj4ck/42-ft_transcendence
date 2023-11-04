@@ -14,9 +14,16 @@ import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
-  // @ViewChild('messages', {static: true}) private messagesScroller: ElementRef
+  @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 
-  messagesPaginate$: Observable<MessagePaginateI> = combineLatest([this.chatService.getMessages(), this.chatService.getAddedMessage().pipe(startWith(null))]).pipe(
+  messagesPaginate$: Observable<MessagePaginateI> = combineLatest([
+    this.chatService.getMessages(), 
+    this.chatService.getAddedMessage().pipe(startWith(null))
+  ]).pipe(
+    tap(([messagePaginate, message]) => {
+      console.log('Received messagePaginate:', messagePaginate);
+      console.log('Received message:', message)
+    }),
     map(([messagePaginate, message]) => {
       if (message && message.room.id === this.chatRoom.id) {
         messagePaginate.items.push(message)
@@ -25,9 +32,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       messagePaginate.items = items
       console.log('items',items)
       return messagePaginate
-    })
-    // , 
-    // tap(() => this.scrollToBottom())
+    }),
+    tap(() => this.scrollToBottom())
   )
 
   //adding password to chat
@@ -45,7 +51,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 // 		// this.chatRoom.password = this.passwordForm.getRawValue()
 // 		// this.chatService.setChatPassword()
 // 		console.log('Password is set')
-		
+
 // 	}
 //   }
 
@@ -75,7 +81,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // this.scrollToBottom()
+    this.scrollToBottom()
   }
 
   ngOnDestroy() {
@@ -83,12 +89,14 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   sendMessage() {
-    this.chatService.sendMessage({text: this.chatMessage.value, room: this.chatRoom})
-    this.chatMessage.reset()
+    if (this.chatMessage.value && this.chatMessage.valid) {
+      this.chatService.sendMessage({text: this.chatMessage.value, room: this.chatRoom})
+      this.chatMessage.reset()
+    }
   }
 
   scrollToBottom(): void {
-    // setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
+    setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
   }
 
 }

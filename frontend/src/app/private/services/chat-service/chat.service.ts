@@ -18,6 +18,7 @@ export class ChatService {
   }
 
   sendMessage(message: MessageI) {
+    console.log('message send emit')
     this.socket.emit('addMessage', message)
   }
 
@@ -49,8 +50,14 @@ export class ChatService {
     });
   }
 
+  createDmRoom(username: string) {
+    this.socket.emit('createDmRoom', username)
+    // this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
+    //   duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+    // });
+  }
+
 //   setChatPassword(room: RoomI) {
 // 	// this.socket.emit('setChatPassword', room, )
-//   }
-
+// }
 }

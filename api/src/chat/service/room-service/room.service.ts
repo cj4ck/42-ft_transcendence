@@ -17,27 +17,18 @@ export class RoomService {
 		) {}
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
-		// check if creator is already in room, ie dont need to add
 		for (const user of room.users) {
 			console.log('user#:', user.id, user.username)
-			// creator in room 
 			if (creator.id === user.id){
 				console.log('type: ', room.type)
 				console.log('creator: ', creator)
-				// room.owner = creator
-				// console.log('owner:', room.owner)
 				return this.roomRepository.save(room)
 			}
 		}
 		console.log('will add creator to room [id]:', creator.id)
-		// room.type = room.isPrivate ? 'private' | 'public'
 		const newRoom = await this.addCreatorToRoom(room, creator)
 		console.log('type: ', room.type)
-		// console.log('creator: ', creator)
-		// room.owner = creator
-		// console.log('owner:', room.owner)
 		return this.roomRepository.save(newRoom)
-		// this.printAllRooms();
 	}
 
 	async getRoom(roomId: number): Promise<RoomI> {
@@ -53,6 +44,16 @@ export class RoomService {
 		.createQueryBuilder('room')
 		.leftJoin('room.users', 'users')
 		.where('users.id = :userId OR room.type = :publicType', { userId, publicType: 'public' })
+		.leftJoinAndSelect('room.users', 'all_users')
+		.orderBy('room.updated_at', 'DESC');
+		return paginate(query, options)
+	}
+
+	async getDmForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
+		const query = this.roomRepository
+		.createQueryBuilder('room')
+		.leftJoin('room.users', 'users')
+		.where('users.id = :userId AND room.type = :dmType', { userId, dmType: 'dm' })
 		.leftJoinAndSelect('room.users', 'all_users')
 		.orderBy('room.updated_at', 'DESC');
 		return paginate(query, options)

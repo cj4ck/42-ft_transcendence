@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, throwError } from 'rxjs';
-import { UserI } from 'src/app/model/user.interface';
-import { catchError, tap } from 'rxjs/operators';
+import { UserI, UserPaginateI } from '../../../model/user.interface';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,10 @@ import { catchError, tap } from 'rxjs/operators';
 export class UserService {
 
   constructor(private http: HttpClient, private snackbar: MatSnackBar) { }
+
+  getAllUsers() {
+    return this.http.get<UserPaginateI>(`api/users/`)
+  }
 
   findByUsername(username: string): Observable<UserI[]> {
     return this.http.get<UserI[]>(`api/users/find-by-username?username=${username}`)
@@ -30,3 +34,7 @@ export class UserService {
     )
   }
 }
+function Pagination<T>(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+
