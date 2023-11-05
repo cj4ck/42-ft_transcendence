@@ -35,6 +35,9 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 
   onSelectRoom(event: MatSelectionListChange) {
     this.selectedRoom = event.source.selectedOptions.selected[0].value
+	if (this.selectedRoom.type == 'protected') {
+		// this.promptForPassword = true
+	}
   }
 
   onPaginateRooms(pageEvent: PageEvent) {

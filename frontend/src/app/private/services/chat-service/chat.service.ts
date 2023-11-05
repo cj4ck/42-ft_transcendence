@@ -3,7 +3,7 @@ import { CustomSocket } from '../../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 
 @Injectable({
@@ -43,7 +43,6 @@ export class ChatService {
   }
 
   createRoom(room: RoomI) {
-    // maybe here is problem, of double room creation
     this.socket.emit('createRoom', room)
     this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
       duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
@@ -60,4 +59,19 @@ export class ChatService {
 //   setChatPassword(room: RoomI) {
 // 	// this.socket.emit('setChatPassword', room, )
 // }
+  setChatPasswordService(room: RoomI) {
+	this.socket.emit('setPassword', room)
+  }
+
+  passwordAdded(): Observable<RoomI> {
+	return this.socket.fromEvent<RoomI>('chatPasswordAdded')
+  }
+
+  checkPasswordService(room: RoomI) {
+	this.socket.emit('checkPasswordReq', room)
+  }
+
+  getActiveChatPassword(): Observable<string> {
+	return this.socket.fromEvent<string>('checkPasswordRes')
+  }
 }

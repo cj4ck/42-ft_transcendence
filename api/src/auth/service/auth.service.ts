@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface'
 
 const bcrypt = require('bcrypt');
@@ -24,4 +25,9 @@ export class AuthService {
 	verifyJwt(jwt: string): Promise<any> {
 		return this.jwtService.verifyAsync(jwt);
 	}
+
+	async generateJwtRoom(room: RoomI): Promise<string> {
+		return this.jwtService.signAsync({room});
+	}
 }
+

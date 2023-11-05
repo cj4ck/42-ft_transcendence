@@ -8,5 +8,6 @@ export interface RoomI {
 	created_at?: Date
 	updated_at?: Date
 	type?: string
-	// owner?: UserI
+	owner?: UserI
+	password?: string
 }

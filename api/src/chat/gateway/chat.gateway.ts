@@ -145,6 +145,34 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     }
   }
 
+  @SubscribeMessage('setPassword')
+	async onSetPassword(socket: Socket, room: RoomI) {
+	try {
+		const updatedRoom = await this.roomService.setChatPassword(room);
+
+		// Broadcast the updated room to all connected clients if needed
+		this.server.emit('chatPasswordAdded', updatedRoom);
+
+		console.log('Password set successfully:', updatedRoom.password);
+	} catch (error) {
+		console.error('Error setting password:', error.message);
+		// Handle the error, emit an error event, or send an error message to the client
+		socket.emit('setError', { message: 'Failed to set password', error });
+	}
+	}
+
+	@SubscribeMessage('checkPasswordReq')
+	async onCheckPassword(socket: Socket, room: RoomI) {
+		try {
+			const activePassword = await this.roomService.getChatPassword(room)
+			console.log('password in <checkPasswordReq>: ', activePassword)
+			this.server.emit('checkPasswordRes', activePassword)
+		} catch (error) {
+			console.error('Error checking password', error.message)
+			socket.emit('checkError', {message: 'Failed to check password', error})
+		}
+	}
+
   private handleIncomingPageRequest(page: PageI) {
     page.limit = page.limit > 100 ? 100 : page.limit;
     // add page +1 to match angular material paginator

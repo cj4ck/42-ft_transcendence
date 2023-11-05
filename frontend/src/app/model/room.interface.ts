@@ -9,8 +9,8 @@ export interface RoomI {
 	created_at?: Date
 	updated_at?: Date
 	type?: string
-	// owner?: UserI
-	// password?: string
+	owner?: UserI
+	password?: string
 }
 
 export interface RoomPaginateI {
