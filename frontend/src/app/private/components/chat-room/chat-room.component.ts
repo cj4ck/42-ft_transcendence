@@ -18,6 +18,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 	
 	isRoomProtected: boolean = false
+	isRoomDM: boolean = false
 	
 	constructor(private chatService: ChatService, private authService: AuthService) { }
 
@@ -122,6 +123,7 @@ async checkSetPassword() {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
+	  this.isRoomDM = this.chatRoom.type === 'dm'
 	  this.isRoomProtected = this.chatRoom.type === 'protected'
     }
   }

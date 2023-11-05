@@ -35,8 +35,10 @@
 			</span>
 		</div>
 		
-		<button mat-button (click)="togglePasswordForm()">Set password for chat</button>
-		<button mat-button (click)="checkSetPassword()">check Password</button>
+		<div *ngIf="!isRoomDM">
+			<button mat-button (click)="togglePasswordForm()">Set password for chat</button>
+			<button mat-button (click)="checkSetPassword()">check Password</button>
+		</div>
 		
 		<div *ngIf="showPasswordForm">
 			<mat-card>			
