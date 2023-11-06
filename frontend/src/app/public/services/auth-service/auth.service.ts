@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators'
+import { generate, Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators'
 import { LoginResponseI } from 'src/app/model/login-response.interface';
 import { UserI } from 'src/app/model/user.interface'
 
@@ -37,5 +37,30 @@ export class AuthService {
   logout() {
     localStorage.removeItem("nestjs_chat_app");
     this.router.navigate(['/public/login'])
+  }
+
+  initialize2fa() {
+    return this.http.get('api/auth/2fa/generate');
+  }
+
+  verifySetup(code: string, secret: string): Observable<boolean> {
+    const url = 'api/auth/2fa/verify';
+    const body = { token: code, secret: secret };
+    return this.http.post<{ success: boolean }>(url, body).pipe(
+      tap((response) => {
+      }),
+      map((response) => response.success),
+      catchError((error) => {
+        console.error('Verification failed', error);
+        return of(false);
+      })
+    );
+  }
+  
+  verifyCode(code: string, secret: string) {
+    return this.http.post('api/auth/2fa/login-verify', {
+      token: code,
+      secret: secret,
+    });
   }
 }

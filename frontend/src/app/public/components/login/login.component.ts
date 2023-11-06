@@ -44,7 +44,7 @@ export class LoginComponent {
   }
 
   loginWithFortyTwo() {
-    window.location.href = 'http://127.0.0.1:3000/api/auth/42/login';
+    window.location.href = '/api/auth/42/login';
   }
   
 

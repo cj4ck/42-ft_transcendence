@@ -1,6 +1,6 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PrivateRoutingModule } from './private-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
+import { TwoFactorVerifyComponent } from './components/two-factor-verify/two-factor-verify.component';
+import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
 
 @NgModule({
   declarations: [
@@ -25,10 +27,13 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
     CreateRoomComponent,
     SelectUsersComponent,
     ChatRoomComponent,
-    ChatMessageComponent
+    ChatMessageComponent,
+    TwoFactorVerifyComponent,
+    TwoFactorSetupComponent,
   ],
   imports: [
     CommonModule,
+    FormsModule,
     PrivateRoutingModule,
     MatListModule,
     MatPaginatorModule,
