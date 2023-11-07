@@ -35,7 +35,7 @@
 			</span>
 		</div>
 		
-		<div *ngIf="!isRoomDM">
+		<div *ngIf="isRoomPrivate">
 			<button mat-button (click)="togglePasswordForm()">Set password for chat</button>
 			<button mat-button (click)="checkSetPassword()">check Password</button>
 		</div>

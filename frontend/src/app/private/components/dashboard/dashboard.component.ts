@@ -30,6 +30,9 @@ export class DashboardComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(): void {
+	this.rooms$.subscribe((rooms: RoomPaginateI) => {
+		console.log('Rooms for user:', rooms);
+	  });
     this.chatService.emitPaginateRooms(10, 0)
   }
 

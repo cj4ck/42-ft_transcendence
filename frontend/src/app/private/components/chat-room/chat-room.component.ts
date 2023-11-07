@@ -19,6 +19,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
+	isRoomPrivate: boolean = false
 	
 	constructor(private chatService: ChatService, private authService: AuthService) { }
 
@@ -27,8 +28,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     this.chatService.getAddedMessage().pipe(startWith(null))
   ]).pipe(
     tap(([messagePaginate, message]) => {
-      console.log('Received messagePaginate:', messagePaginate);
-      console.log('Received message:', message)
+    //   console.log('Received messagePaginate:', messagePaginate);
+    //   console.log('Received message:', message)
     }),
     map(([messagePaginate, message]) => {
       if (message && message.room.id === this.chatRoom.id) {
@@ -61,7 +62,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		this.togglePasswordForm()
 		this.chatService.passwordAdded().subscribe((room: RoomI) => {
 			const password = room.password;
-			console.log('Received password:', password, 'room type: ', room.type);
+			// console.log('Received password:', password, 'room type: ', room.type);
 		})
 	}
   }
@@ -125,6 +126,7 @@ async checkSetPassword() {
       this.chatService.joinRoom(this.chatRoom)
 	  this.isRoomDM = this.chatRoom.type === 'dm'
 	  this.isRoomProtected = this.chatRoom.type === 'protected'
+	  this.isRoomPrivate = this.chatRoom.type === 'private'
     }
   }
 

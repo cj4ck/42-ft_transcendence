@@ -44,15 +44,23 @@ export class RoomService {
 	}
 
 	async getRoomsForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
-		// console.log('get rooms for user')
 		const query = this.roomRepository
 		.createQueryBuilder('room')
-		.leftJoin('room.users', 'users')
-		.where('users.id = :userId OR room.type = :publicType', { userId, publicType: 'public' })
-		.leftJoinAndSelect('room.users', 'all_users')
-		.orderBy('room.updated_at', 'DESC');
-		return paginate(query, options)
-	}
+		  .leftJoin('room.users', 'users')
+		  .where('users.id = :userId OR room.type = :publicType', { userId, publicType: 'public' })
+		  .leftJoinAndSelect('room.users', 'all_users')
+		  .distinctOn(["room.updated_at"])
+		  .orderBy('room.updated_at', 'DESC')
+		  
+		//for debugging sql query x pagination
+		const querySQL = query.getQueryAndParameters();
+		console.log('Generated SQL query:', querySQL[0]);
+	  
+		// const result = await paginate(queryBuilder, options);
+		// console.log('Result:', result);
+	  
+		return paginate(query, options);
+	  }
 
 	async getDmForUser(userId: number, options: IPaginationOptions): Promise<Pagination<RoomI>> {
 		const query = this.roomRepository

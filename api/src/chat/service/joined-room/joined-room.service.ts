@@ -15,8 +15,8 @@ export class JoinedRoomService {
 	) { }
 
 	async create(joinedRoom: JoinedRoomI): Promise<JoinedRoomI> {
-		console.log("create joined room id " + joinedRoom.id)
-		console.log("create joined room user " + joinedRoom.user.username)
+		// console.log("create joined room id " + joinedRoom.id)
+		// console.log("create joined room user " + joinedRoom.user.username)
 		return this.joinedRoomRepository.save(joinedRoom)
 	}
 

@@ -18,7 +18,7 @@ export class AuthService {
 
   login(user: UserI): Observable<LoginResponseI> {
     return this.http.post<LoginResponseI>('api/users/login', user).pipe(
-      tap((res: LoginResponseI) => localStorage.setItem("nestjs_chat_app", res.access_token)),
+      tap((res: LoginResponseI) => localStorage.setItem("user token", res.access_token)),
       tap(() => this.snackbar.open('Login Successful', 'Close', {
         duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
       }))
