@@ -39,8 +39,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       messagePaginate.items = items
       console.log('items',items)
       return messagePaginate
-    }),
-    tap(() => this.scrollToBottom())
+    })
+    // tap(() => this.scrollToBottom())
   )
 
   //adding password to chat
@@ -146,7 +146,7 @@ async checkSetPassword() {
   }
 
   scrollToBottom(): void {
-    setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
+    // setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
   }
 
 }

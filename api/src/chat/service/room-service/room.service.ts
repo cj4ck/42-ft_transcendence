@@ -53,8 +53,8 @@ export class RoomService {
 		  .orderBy('room.updated_at', 'DESC')
 		  
 		//for debugging sql query x pagination
-		const querySQL = query.getQueryAndParameters();
-		console.log('Generated SQL query:', querySQL[0]);
+		// const querySQL = query.getQueryAndParameters();
+		// console.log('Generated SQL query:', querySQL[0]);
 	  
 		// const result = await paginate(queryBuilder, options);
 		// console.log('Result:', result);
@@ -78,13 +78,12 @@ export class RoomService {
 	}
 
 	async setChatPassword(room: RoomI): Promise<RoomI> {
-		// Assuming you have a method to retrieve the room from the database
 		const existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
 			console.log('room not found')
 		}
 		const passwordHash: string = await this.hashPassword(room.password)
-		console.log(passwordHash, '-> password hash in set password')
+		// console.log(passwordHash, '-> password hash in set password')
 		existingRoom.password = passwordHash
 		existingRoom.type = 'protected'
 		// Save the updated room to the database

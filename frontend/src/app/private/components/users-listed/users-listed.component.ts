@@ -31,13 +31,13 @@ export class UsersListedComponent implements OnInit {
     this.userService.getAllUsers().subscribe((data) => {
       this.filteredUsers = data.items
       this.numUsers = data.meta.totalItems
-      console.log(this.filteredUsers)
+    //   console.log(this.filteredUsers)
       for (let i = 0; i < this.numUsers; i++) {
         const user = this.filteredUsers[i].username
         if (user != this.currentUser.username) {
           this.usernames.push(user)
         }
-        console.log(user)
+        // console.log(user)
       }
     })
   }
