@@ -1,11 +1,12 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Observable, combineLatest, map, startWith, tap } from 'rxjs';
+import { Observable, combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
+import { UserI } from 'src/app/model/user.interface';
 
 @Component({
 	selector: 'app-chat-room',
@@ -15,6 +16,7 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
+  chatRoomUsers: UserI[]
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 	
 	isRoomProtected: boolean = false
@@ -37,7 +39,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       }
       const items = messagePaginate.items.sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       messagePaginate.items = items
-      console.log('items',items)
+    //   console.log('items',items)
       return messagePaginate
     })
     // tap(() => this.scrollToBottom())
@@ -98,6 +100,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		).subscribe()
 	}
   }
+  //old prob not useful
   //this will call the function that emits event to backend 
   //and the function that catches return event from backend
   //both fns defined in chat.service file
@@ -120,18 +123,26 @@ async checkSetPassword() {
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.chatService.leaveRoom(changes['chatRoom'].previousValue)
+  async ngOnChanges(changes: SimpleChanges) {
+    // this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
 	  this.isRoomDM = this.chatRoom.type === 'dm'
 	  this.isRoomProtected = this.chatRoom.type === 'protected'
 	  this.isRoomPrivate = this.chatRoom.type === 'private'
+	//   this.chatService.getChatRoomUsers(this.chatRoom.id).subscribe((users: UserI[]) => {
+	// 	this.chatRoomUsers = users
+	//   })
+	  this.chatRoomUsers = await firstValueFrom(this.chatService.getChatRoomUsers(this.chatRoom.id))
+		// console.log('USERS BIATCH but outsideee', this.chatRoomUsers)
     }
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom()
+	if (this.chatRoom) {
+		console.log('afterviewinit:', this.chatRoom.users)
+	}
+    // this.scrollToBottom()
   }
 
   ngOnDestroy() {

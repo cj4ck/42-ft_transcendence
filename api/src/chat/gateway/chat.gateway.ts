@@ -13,6 +13,7 @@ import { JoinedRoomService } from '../service/joined-room/joined-room.service';
 import { MessageService } from '../service/message/message.service';
 import { MessageI } from '../model/message/message.interface';
 import { JoinedRoomI } from '../model/joined-room/joined-room.interface';
+import { Observable } from 'rxjs';
 
 @WebSocketGateway({cors: { origin: ['https://hoppscotch.io', 'http://localhost:3000', 'http://localhost:4200'] } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
@@ -81,7 +82,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           await this.server.to(connection.socketId).emit('rooms', rooms)
         }
     }
-    return
   }
 
   @SubscribeMessage('createDmRoom')
@@ -131,6 +131,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('leaveRoom')
   async onLeaveRoom(socket: Socket) {
+	console.log()
     await this.joinedRoomService.deleteBySocketId(socket.id)
   }
 
@@ -170,6 +171,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		} catch (error) {
 			console.error('Error checking password', error.message)
 			socket.emit('checkError', {message: 'Failed to check password', error})
+		}
+	}
+
+	@SubscribeMessage('getChatroomRoomUsers')
+	async onGetChatroomUsers(socket: Socket, roomId: number) {
+		try {
+			const requestedRoom = await this.roomService.getRoom(roomId)
+			if (requestedRoom) {
+				this.server.emit('hereYouGo', requestedRoom.users)
+			}
+		} catch (error) {
+			console.error('Error getting room by Id', error.message)
 		}
 	}
 

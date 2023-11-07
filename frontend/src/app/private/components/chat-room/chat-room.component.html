@@ -25,13 +25,13 @@
 				<span style="display: flex; flex-direction: row; align-items: center;">
 					<mat-icon>event</mat-icon>
 					<p style="margin-left: 10px;">
-						{{chatRoom.updated_at | date}}
+						{{chatRoom.updated_at | date}}w
 					</p>
 				</span>
 			</span>
 			<span>
 				<h3 style="color: grey;">{{chatRoom.description}}</h3>
-				<span *ngFor="let user of chatRoom.users">{{user.username}},</span>
+				<span *ngFor="let user of chatRoomUsers"> 💃 {{user.username}} 🕺 </span>
 			</span>
 		</div>
 		

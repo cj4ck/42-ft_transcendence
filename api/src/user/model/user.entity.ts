@@ -2,12 +2,12 @@ import { ConnectedUserEntity } from "src/chat/model/connected-user/connected-use
 import { JoinedRoomEntity } from "src/chat/model/joined-room/joined-room.entity";
 import { MessageEntity } from "src/chat/model/message/message.entity";
 import { RoomEntity } from "src/chat/model/room/room.entity";
-import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class UserEntity {
 
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn({primaryKeyConstraintName: "userrr idddeyyee"})
 	id: number;
 
 	@Column({unique: true})
