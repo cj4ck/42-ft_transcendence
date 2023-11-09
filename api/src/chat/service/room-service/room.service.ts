@@ -52,8 +52,8 @@ export class RoomService {
 		  .leftJoin('room.users', 'users')
 		  .where('users.id = :userId OR room.type = :publicType', { userId, publicType: 'public' })
 		  .leftJoinAndSelect('room.users', 'all_users')
-		  .distinctOn(["room.updated_at"])
-		  .orderBy('room.updated_at', 'DESC')
+		  .distinctOn(["room.id"])
+		  .orderBy('room.id', 'DESC')
 		  
 		//for debugging sql query x pagination
 		// const querySQL = query.getQueryAndParameters();
