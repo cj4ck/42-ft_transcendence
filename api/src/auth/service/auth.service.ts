@@ -65,7 +65,6 @@ export class AuthService {
 			email: email,
 		};
 	}
-	
 
 	async generateQrCode(otpauthUrl: string): Promise<string> {
 		return qrcode.toDataURL(otpauthUrl);
@@ -76,7 +75,7 @@ export class AuthService {
 			secret: secret,
 			encoding: 'base32',
 			token: token,
-			window: 300,
+			window: 3,
 		})
 	}
 
@@ -93,5 +92,10 @@ export class AuthService {
 			console.error('Error fetching user by email:', error);
 			throw new Error('Could not fetch user data');
 		}
+	}
+
+	async isTwoFactorEnabled(email: string): Promise<boolean> {
+		const user = await this.findByEmail(email);
+		return user && user.isTwoFactorEnabled;
 	}
 }

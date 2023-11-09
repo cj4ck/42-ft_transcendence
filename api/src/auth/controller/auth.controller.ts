@@ -61,5 +61,12 @@ export class AuthController {
     }
     return { success: isVerified };
   }
+
+  @Get('2fa/enabled')
+  @UseGuards(JwtAuthGuard)
+  async isTwoFactorEnabled(@Req() req): Promise<{ isEnabled: boolean }> {
+    const isEnabled = await this.authService.isTwoFactorEnabled(req.user.email);
+    return { isEnabled };
+  }
 }
 

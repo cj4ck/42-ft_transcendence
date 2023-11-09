@@ -1,10 +1,17 @@
 <h2>Two Factor Authentication Setup</h2>
-<p>Scan the QR code below using Google Authenticator:</p>
-<img [src]="qrCodeUrl" alt="QR Code for 2FA">
-<p>Enter the 6-digit code displayed in the app:</p>
-<input [(ngModel)]="verificationCode" placeholder="6-digit code">
-<button (click)="verifySetup()">Verify</button>
+
+<div *ngIf="!isTwoFactorEnabled">
+  <p>Scan the QR code below using Google Authenticator:</p>
+  <img [src]="qrCodeUrl" alt="QR Code for 2FA">
+  <p>Enter the 6-digit code displayed in the app:</p>
+  <input [(ngModel)]="verificationCode" placeholder="6-digit code">
+  <button (click)="verifySetup()">Verify</button>
+</div>
+
+<div *ngIf="isTwoFactorEnabled">
+  <p>Two-factor authentication is already set up for your account.</p>
+</div>
+
 <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
 </div>
-  

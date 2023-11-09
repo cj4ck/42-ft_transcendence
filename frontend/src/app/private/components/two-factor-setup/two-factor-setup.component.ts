@@ -1,4 +1,3 @@
-import { HttpResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
@@ -13,6 +12,7 @@ export class TwoFactorSetupComponent {
   verificationCode: string;
   errorMessage: string;
   secret: string;
+  isTwoFactorEnabled: boolean;
 
   constructor(
     private authService: AuthService,
@@ -20,12 +20,21 @@ export class TwoFactorSetupComponent {
   ) {}
 
   ngOnInit() {
-    this.authService.initialize2fa().subscribe((data: TwoFactorInitializationResponse) => {
-      this.qrCodeUrl = data.qrCodeUrl;
-    });
+    this.authService.isTwoFactorEnabled().subscribe((response: { isEnabled: boolean }) => {
+      this.isTwoFactorEnabled = response.isEnabled;
+    })
+    if (!this.isTwoFactorEnabled){
+      this.authService.initialize2fa().subscribe((data: TwoFactorInitializationResponse) => {
+        this.qrCodeUrl = data.qrCodeUrl;
+      });
+    }
   }
 
   verifySetup() {
+    if (this.isTwoFactorEnabled) {
+      this.errorMessage = "Two Factor authentication is already set up.";
+      return;
+    }
     this.authService.verifySetup(this.verificationCode, this.secret).subscribe(success => {
       if (success) {
         this.router.navigate(['../dashboard']);

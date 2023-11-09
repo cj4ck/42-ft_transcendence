@@ -33,33 +33,81 @@ export class UserService {
 		}
 	}
 
-	async login(user: UserI): Promise<string> {
-		try {
-			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase())
-			if (foundUser) {
-				const matches: boolean = await this.validatePassword(user.password, foundUser.password)
-				if (matches) {
-					const payload: UserI = await this.findOne(foundUser.id)
-					return this.authService.generateJwt(payload)
-				} else {
-					throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
-				}
-			} else {
-				throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
-			}
+	// async login(user: UserI, twoFactorAuthCode?: string): Promise<{ jwt: string; isTwoFactorEnabled: boolean }> {
+	// 	try {
+	// 		const foundUser: UserI = await this.findByEmail(user.email.toLowerCase())
+	// 		if (foundUser) {
+	// 			const matches: boolean = await this.validatePassword(user.password, foundUser.password)
+	// 			if (matches) {
+	// 				const payload: UserI = await this.authService.findByEmail(foundUser.email)
+	// 				if (payload.isTwoFactorEnabled) {
+	// 					if (twoFactorAuthCode) {
+	// 						const is2faCodeValid = this.authService.verifyTwoFactorSecret(twoFactorAuthCode, payload.twoFactorSecret);
+	// 						if (!is2faCodeValid) {
+	// 							throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
+	// 						}
+	// 					} else {
+	// 						throw new HttpException('Two-factor authentication code is required', HttpStatus.BAD_REQUEST);
+	// 					}
+	// 				}
+	// 				const jwt = await this.authService.generateJwt(payload);
+  	// 				return { jwt, isTwoFactorEnabled: payload.isTwoFactorEnabled };
+	// 			} else {
+	// 				throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
+	// 			}
+	// 		} else {
+	// 			throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
+	// 		}
 
-		} catch {
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 		throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
+	// 	}
+	// }
+
+	async login(user: UserI): Promise<{ jwt?: string; isTwoFactorRequired?: boolean }> {
+		try {
+			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase());
+			if (!foundUser) {
+				throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+			}
+			const passwordIsValid: boolean = await this.validatePassword(user.password, foundUser.password);
+			if (!passwordIsValid) {
+				throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+			}
+			const payload: UserI = await this.authService.findByEmail(foundUser.email);
+			if (payload.isTwoFactorEnabled) {
+				return { isTwoFactorRequired: true };
+			}
+			const jwt = await this.authService.generateJwt(payload);
+				return { jwt };
+		} catch (error) {
+		console.error('Login error:', error);
+		throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	async verifyTwoFactorAuthentication(email: string, twoFactorAuthCode: string): Promise<{ jwt: string }> {
+		const user: UserI = await this.authService.findByEmail(email);
+		if (!user || !user.isTwoFactorEnabled) {
+			throw new HttpException('Invalid request', HttpStatus.BAD_REQUEST);
+		}
+		const is2faCodeValid = this.authService.verifyTwoFactorSecret(user.twoFactorSecret, twoFactorAuthCode);
+		if (!is2faCodeValid) {
+			throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
+		}
+		const jwt = await this.authService.generateJwt(user);
+		console.log(jwt);
+		return { jwt };
+	}
+	
 	async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
 	async findAllByUsername(username: string): Promise<UserI[]> {
 		return this.userRepository.findBy({
-				username: Like(`%${username.toLowerCase()}%`)
+			username: Like(`%${username.toLowerCase()}%`)
 		})
 	}
 
