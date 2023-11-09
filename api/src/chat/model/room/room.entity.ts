@@ -1,7 +1,8 @@
 import { UserEntity } from "src/user/model/user.entity";
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { JoinedRoomEntity } from "../joined-room/joined-room.entity";
 import { MessageEntity } from "../message/message.entity";
+import { UserI } from "src/user/model/user.interface";
 
 @Entity()
 export class RoomEntity {
@@ -33,6 +34,9 @@ export class RoomEntity {
 
 	@Column({nullable: true})
 	type: string
+
+	@Column({nullable: true})
+	owner_id: number
 
 	@Column({ nullable: true }) // Assuming the password can be nullable
 	password: string; // Store the password as a string

@@ -75,8 +75,13 @@ export class ChatService {
 	return this.socket.fromEvent<string>('checkPasswordRes')
   }
 
-  getChatRoomUsers(roomId: number): Observable<UserI[]> {
-	this.socket.emit('getChatroomRoomUsers', roomId)
+//   getChatRoomUsers(roomId: number): Observable<UserI[]> {
+// 	this.socket.emit('getChatroomRoomInfo', roomId)
+// 	return this.socket.fromEvent('hereYouGo')
+//   }
+
+  getChatRoomInfo(roomId: number): Observable<RoomI> {
+	this.socket.emit('getChatroomRoomInfo', roomId)
 	return this.socket.fromEvent('hereYouGo')
   }
 }

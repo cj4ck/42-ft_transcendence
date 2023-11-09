@@ -174,12 +174,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	}
 
-	@SubscribeMessage('getChatroomRoomUsers')
+	@SubscribeMessage('getChatroomRoomInfo')
 	async onGetChatroomUsers(socket: Socket, roomId: number) {
 		try {
 			const requestedRoom = await this.roomService.getRoom(roomId)
 			if (requestedRoom) {
-				this.server.emit('hereYouGo', requestedRoom.users)
+				console.log('in get infos: owner:', requestedRoom.owner_id)
+				console.log('in get infos: users:', requestedRoom.users)
+				this.server.emit('hereYouGo', requestedRoom)
 			}
 		} catch (error) {
 			console.error('Error getting room by Id', error.message)

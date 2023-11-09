@@ -17,6 +17,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
   chatRoomUsers: UserI[]
+  chatRoomFullInfo: RoomI
+  user: UserI = this.authService.getLoggedInUser()
+  isOwner: boolean = false
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 	
 	isRoomProtected: boolean = false
@@ -124,18 +127,19 @@ async checkSetPassword() {
 
 
   async ngOnChanges(changes: SimpleChanges) {
-    // this.chatService.leaveRoom(changes['chatRoom'].previousValue)
+    this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
 	  this.isRoomDM = this.chatRoom.type === 'dm'
 	  this.isRoomProtected = this.chatRoom.type === 'protected'
 	  this.isRoomPrivate = this.chatRoom.type === 'private'
-	//   this.chatService.getChatRoomUsers(this.chatRoom.id).subscribe((users: UserI[]) => {
-	// 	this.chatRoomUsers = users
-	//   })
-	  this.chatRoomUsers = await firstValueFrom(this.chatService.getChatRoomUsers(this.chatRoom.id))
-		// console.log('USERS BIATCH but outsideee', this.chatRoomUsers)
+	  this.chatRoomFullInfo = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
+	  this.chatRoomUsers = this.chatRoomFullInfo.users
+	  this.user.id === this.chatRoomFullInfo.owner_id ? this.isOwner = true : false
+		// console.log('owner ', this.chatRoomFullInfo.owner_id)
+		// console.log('users ', this.chatRoomFullInfo.users)
     }
+		console.log('outside?')
   }
 
   ngAfterViewInit() {
