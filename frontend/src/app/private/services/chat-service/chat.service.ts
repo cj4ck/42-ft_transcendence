@@ -56,6 +56,9 @@ export class ChatService {
     // });
   }
 
+  toggleUserBlock(user: UserI) {
+    this.socket.emit('toggleUserBlock', user)
+  }
 //   setChatPassword(room: RoomI) {
 // 	// this.socket.emit('setChatPassword', room, )
 // }
@@ -68,10 +71,17 @@ export class ChatService {
   }
 
   checkPasswordService(room: RoomI) {
-	this.socket.emit('checkPasswordReq', room)
+	  this.socket.emit('checkPasswordReq', room)
   }
 
   getActiveChatPassword(): Observable<string> {
-	return this.socket.fromEvent<string>('checkPasswordRes')
+	  return this.socket.fromEvent<string>('checkPasswordRes')
   }
+
+  getBlockedUsers(user_id: number): Observable<number[]> {
+    // console.log('get blocked users chat.service')
+    // this.socket.emit('getBlockedUsers', user_id)
+    return this.socket.fromEvent<number[]>('checkBlockedRes')
+  }
+
 }

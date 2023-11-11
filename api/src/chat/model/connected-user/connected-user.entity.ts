@@ -13,4 +13,7 @@ export class ConnectedUserEntity {
 	@ManyToOne(() => UserEntity, user => user.connections)
 	@JoinColumn()
 	user: UserEntity
+
+	@Column('int', { array: true, default: [] })
+	blocked: number[];
 }

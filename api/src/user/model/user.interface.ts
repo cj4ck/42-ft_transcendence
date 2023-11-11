@@ -5,6 +5,7 @@ export interface UserI {
 	username?:  string;
 	email: string;
 	password?: string;
+	blocked?: number[];
 }
 
 export interface UserPaginateI {

@@ -84,6 +84,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     return
   }
 
+  // need to update this to use id, bc usernames can be duplicated 
   @SubscribeMessage('createDmRoom')
   async onCreateDmRoom(socket: Socket, username: string) {
     const creator = socket.data.user
@@ -110,6 +111,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     console.log('Calling on create room')
     await this.onCreateRoom(socket, privateRoom)
   }
+
+  @SubscribeMessage('toggleUserBlock')
+  async toggleUserBlock(socket: Socket, updatedUser: UserI) {
+    console.log('toggle user block')
+    await this.userService.updateBlockedIds(updatedUser)
+    return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
+  }
+
 
   @SubscribeMessage('paginateRooms')
   async onPaginateRoom(socket: Socket, page: PageI) {
@@ -142,7 +151,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     const room: RoomI = await this.roomService.getRoom(createdMessage.room.id)
     const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(room)
     for (const user of joinedUsers) {
-      console.log('emitting new msg ' + createdMessage.text)
+      // console.log('emitting new msg ' + createdMessage.text)
       this.server.to(user.socketId).emit('messageAdded', createdMessage)
     }
   }
@@ -175,6 +184,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	}
 
+	@SubscribeMessage('getBlockedUsers')
+	async checkBlockedUsers(socket: Socket, user_id: number) {
+		try {
+			const blockedUsers = await this.userService.getBlockedUsers(user_id)
+			// console.log('return from observable: ', blockedUsers)
+			this.server.emit('checkBlockedRes', blockedUsers)
+		} catch (error) {
+			console.error('Error checking password', error.message)
+			socket.emit('checkError', {message: 'Failed to check password', error})
+		}
+	}
+
+
   private handleIncomingPageRequest(page: PageI) {
 	console.log("handle pagination before: page limit ", page.limit, "page page", page.page)
     page.limit = page.limit > 100 ? 100 : page.limit;
@@ -184,3 +206,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     return page
   }
 }
+
+

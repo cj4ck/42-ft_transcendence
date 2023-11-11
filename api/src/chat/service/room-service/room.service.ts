@@ -53,8 +53,8 @@ export class RoomService {
 		  .orderBy('room.updated_at', 'DESC')
 		  
 		//for debugging sql query x pagination
-		const querySQL = query.getQueryAndParameters();
-		console.log('Generated SQL query:', querySQL[0]);
+		// const querySQL = query.getQueryAndParameters();
+		// console.log('Generated SQL query:', querySQL[0]);
 	  
 		// const result = await paginate(queryBuilder, options);
 		// console.log('Result:', result);

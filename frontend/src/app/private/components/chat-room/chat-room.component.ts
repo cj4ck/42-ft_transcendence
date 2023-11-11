@@ -1,47 +1,73 @@
 import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Observable, combineLatest, map, startWith, tap } from 'rxjs';
-import { MessagePaginateI } from 'src/app/model/message.interface';
+import { Observable, combineLatest, combineLatestAll, concatMap, exhaustMap, firstValueFrom, forkJoin, map, mergeAll, mergeMap, startWith, switchMap, tap } from 'rxjs';
+import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
+import { UserI } from 'src/app/model/user.interface';
 
 @Component({
 	selector: 'app-chat-room',
 	templateUrl: './chat-room.component.html',
 	styleUrls: ['./chat-room.component.scss']
 })
+
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 	
+  
+	constructor(private chatService: ChatService, private authService: AuthService) { }
+  
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
 	isRoomPrivate: boolean = false
-	
-	constructor(private chatService: ChatService, private authService: AuthService) { }
+  user: UserI = this.authService.getLoggedInUser()
+  allMessagesPaginate : MessageI[] = []
+
 
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([
-    this.chatService.getMessages(), 
-    this.chatService.getAddedMessage().pipe(startWith(null))
+    this.chatService.getMessages(),
+    this.chatService.getAddedMessage().pipe(startWith(null)),
+    this.chatService.getBlockedUsers(this.user.id).pipe(startWith(this.user.blocked))
   ]).pipe(
-    tap(([messagePaginate, message]) => {
-    //   console.log('Received messagePaginate:', messagePaginate);
-    //   console.log('Received message:', message)
-    }),
-    map(([messagePaginate, message]) => {
-      if (message && message.room.id === this.chatRoom.id) {
-        messagePaginate.items.push(message)
+    map(([messagePaginate, message, blockedUsers]) => {
+      console.log('Blocked Users for id:', this.user.id, '| blocked:', blockedUsers, '| items:', messagePaginate.items)
+      if (message && message.room.id === this.chatRoom.id 
+        // && !blockedUsers.includes(message.user.id)
+        ) {
+          messagePaginate.items.push(message)
+        }
+        
+      this.allMessagesPaginate = messagePaginate.items
+      messagePaginate.items = messagePaginate.items.filter((item) => {
+      if (!blockedUsers.includes(item.user.id)) {
+        return (!blockedUsers.includes(item.user.id))
       }
+      else {
+        return this.allMessagesPaginate
+      }
+        
+      });
       const items = messagePaginate.items.sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
       messagePaginate.items = items
-      console.log('items',items)
       return messagePaginate
-    }),
-    tap(() => this.scrollToBottom())
+    })
+    ,tap(() => this.scrollToBottom())
   )
+
+  // async getBlockedUsers() {
+  //   const blockedUsersPromise = new Promise<number[]>((resolve) => {
+  //     const subscription = this.chatService.getBlockedUsers(this.user.id).subscribe((blcd: number[]) => {
+  //     subscription.unsubscribe()
+  //     resolve(blcd)
+  //     })
+  //   })
+  //   this.blockedUsers = await blockedUsersPromise
+  // }
 
   //adding password to chat
   showPasswordForm = false
@@ -119,6 +145,16 @@ async checkSetPassword() {
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
+  // isUserBlocked(userId: number): boolean {
+  //   return this.blockedUsers.includes(userId);
+  // }
+
+  // isUserBlocked(userId: number): boolean {
+  //   let bool: boolean = false
+  //   bool = this.blockedUsers$.includes(userId);
+  //   console.log('Is user:id: ', userId, 'Blocked?: ', bool)
+  //   return bool
+  // }
 
   ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)

@@ -19,6 +19,9 @@ export class UserEntity {
 	@Column({select: false})
 	password: string;
 
+	@Column('int', { array: true, default: [] })
+	blocked: number[];
+
 	@ManyToMany(() => RoomEntity, room => room.users)
 	rooms: RoomEntity[]
 
