@@ -111,6 +111,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
     await this.onCreateRoom(socket, privateRoom)
   }
 
+  @SubscribeMessage('toggleRoomAdmin')
+  async toggleRoomAdmin(socket: Socket, updatedRoom: RoomI) {
+    console.log('toggle room admin')
+    await this.roomService.updateAdminList(updatedRoom)
+    return this.server.to(socket.id).emit('checkAdminList', updatedRoom.admins)
+  }
+
   @SubscribeMessage('toggleUserBlock')
   async toggleUserBlock(socket: Socket, updatedUser: UserI) {
     console.log('toggle user block')

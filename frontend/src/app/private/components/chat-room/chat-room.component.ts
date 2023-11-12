@@ -18,6 +18,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
   chatRoomUsers: UserI[]
+  roomAdmins: number[] = []
+  userToggles: { [user_id: number]: boolean } = {};
   chatRoomFullInfo: RoomI
   user: UserI = this.authService.getLoggedInUser()
   isOwner: boolean = false
@@ -134,8 +136,36 @@ async checkSetPassword() {
 
   //end of password stuffs
 
+  async toggleRoomAdmin(user_id: number) {
+    console.log("clicked on user_id to make admin: " + user_id)
+    this.roomAdmins = this.chatRoomFullInfo.admins
+    let admin: boolean = false
+    for (let i = 0; i < this.roomAdmins.length; i++) {
+      if (this.roomAdmins[i] === user_id) {
+        admin = true;
+        // removing from blockedList
+        this.roomAdmins.splice(i, 1);
+        break;
+      }
+    }
+    this.userToggles[user_id] = admin
+    if (!admin) {
+      this.roomAdmins.push(user_id);
+    }
+    this.chatRoom.admins = this.roomAdmins
+    this.chatService.toggleRoomAdmin(this.chatRoom)
+  }
+
+
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
+  async ngOnInit(): Promise<RoomI> {
+	  this.chatRoomFullInfo = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
+    this.chatRoomFullInfo.users.forEach(user => {
+      this.userToggles[user.id] = this.chatRoomFullInfo.admins.includes(user.id)
+    })
+    return this.chatRoomFullInfo
+  }
 
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
@@ -154,9 +184,10 @@ async checkSetPassword() {
   }
 
   ngAfterViewInit() {
-	if (this.chatRoom) {
-		console.log('afterviewinit:', this.chatRoom.users)
+    if (this.chatRoom) {
+      console.log('afterviewinit:', this.chatRoom.users)
 	}
+  
     // this.scrollToBottom()
   }
 

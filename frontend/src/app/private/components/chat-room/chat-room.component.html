@@ -30,9 +30,17 @@
 				</span>
 			</span>
 			<span>
-				<h3 style="color: grey;">{{chatRoom.description}}</h3>
-				<span *ngFor="let user of chatRoomUsers"> 💃 {{user.username}} 🕺 </span>
-			</span>
+				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
+				<span *ngFor="let user of chatRoomUsers">
+				  <span
+					(click)="toggleRoomAdmin(user.id)"
+					[ngStyle]="{ 'cursor': 'pointer', 'color': userToggles[user.id] ? 'green' : 'red' }"
+				  >
+				  <span *ngIf="userToggles[user.id]">[ADMIN 🤠]</span>
+					💃 {{ user.username }} 🕺
+				  </span>
+				</span>
+			  </span>
 		</div>
 		
 		<div *ngIf="isRoomPrivate && isOwner">

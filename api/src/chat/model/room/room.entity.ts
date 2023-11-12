@@ -40,4 +40,7 @@ export class RoomEntity {
 
 	@Column({ nullable: true }) // Assuming the password can be nullable
 	password: string; // Store the password as a string
+
+	@Column('int', { array: true, default: [] })
+	admins: number[];
 }

@@ -59,6 +59,10 @@ export class ChatService {
   toggleUserBlock(user: UserI) {
     this.socket.emit('toggleUserBlock', user)
   }
+
+  toggleRoomAdmin(room: RoomI) {
+    this.socket.emit('toggleRoomAdmin', room)
+  }
 //   setChatPassword(room: RoomI) {
 // 	// this.socket.emit('setChatPassword', room, )
 // }
@@ -88,4 +92,10 @@ export class ChatService {
 	this.socket.emit('getChatroomRoomInfo', roomId)
 	return this.socket.fromEvent('hereYouGo')
   }
+
+  // getRoomAdmins(room_id: number): Observable<number[]> {
+  //   // console.log('get blocked users chat.service')
+  //   // this.socket.emit('getBlockedUsers', user_id)
+  //   return this.socket.fromEvent<number[]>('checkAdminList')
+  // }
 }
