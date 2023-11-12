@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit, AfterViewInit{
     ) { }
 
   ngOnInit() {
+    // this.rooms$ = this.chatService.getMyRooms()
     this.chatService.emitPaginateRooms(10, 0)
   }
 

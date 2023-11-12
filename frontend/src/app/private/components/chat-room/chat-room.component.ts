@@ -18,16 +18,15 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
-	
-  
+
 	constructor(private chatService: ChatService, private authService: AuthService) { }
-  
+
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
 	isRoomPrivate: boolean = false
   user: UserI = this.authService.getLoggedInUser()
-  allMessagesPaginate : MessageI[] = []
-
+  filteredMessagesPaginate : MessagePaginateI
+  lastCreatedMessage: number
 
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([
     this.chatService.getMessages(),
@@ -35,39 +34,28 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     this.chatService.getBlockedUsers(this.user.id).pipe(startWith(this.user.blocked))
   ]).pipe(
     map(([messagePaginate, message, blockedUsers]) => {
-      console.log('Blocked Users for id:', this.user.id, '| blocked:', blockedUsers, '| items:', messagePaginate.items)
-      if (message && message.room.id === this.chatRoom.id 
-        // && !blockedUsers.includes(message.user.id)
-        ) {
-          messagePaginate.items.push(message)
-        }
-        
-      this.allMessagesPaginate = messagePaginate.items
-      messagePaginate.items = messagePaginate.items.filter((item) => {
-      if (!blockedUsers.includes(item.user.id)) {
-        return (!blockedUsers.includes(item.user.id))
+      this.filteredMessagesPaginate = {items: [],meta: null};
+      this.lastCreatedMessage = this.lastCreatedMessage || null
+      if (message && 
+          message.room.id === this.chatRoom.id && 
+          this.lastCreatedMessage != new Date(message.created_at).getTime()
+      ) {
+        messagePaginate.items.push(message);
+        this.lastCreatedMessage = new Date(message.created_at).getTime()
       }
-      else {
-        return this.allMessagesPaginate
-      }
-        
+      const items = messagePaginate.items.sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      messagePaginate.items = items;
+      this.filteredMessagesPaginate.items = messagePaginate.items.filter((item) => {
+        return !blockedUsers.includes(item.user.id);
       });
-      const items = messagePaginate.items.sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-      messagePaginate.items = items
-      return messagePaginate
-    })
-    ,tap(() => this.scrollToBottom())
-  )
-
-  // async getBlockedUsers() {
-  //   const blockedUsersPromise = new Promise<number[]>((resolve) => {
-  //     const subscription = this.chatService.getBlockedUsers(this.user.id).subscribe((blcd: number[]) => {
-  //     subscription.unsubscribe()
-  //     resolve(blcd)
-  //     })
-  //   })
-  //   this.blockedUsers = await blockedUsersPromise
-  // }
+      // console.log('After filter on messagePaginate: ', this.filteredMessagesPaginate)
+      // console.log('Blocked Users for id:', this.user.id, '| blocked:', blockedUsers, '| items:', messagePaginate.items);
+      return this.filteredMessagesPaginate; // Return the modified messagePaginate
+    }),
+    tap(() => this.scrollToBottom())
+  );
 
   //adding password to chat
   showPasswordForm = false
@@ -88,7 +76,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		this.togglePasswordForm()
 		this.chatService.passwordAdded().subscribe((room: RoomI) => {
 			const password = room.password;
-			// console.log('Received password:', password, 'room type: ', room.type);
 		})
 	}
   }
@@ -144,17 +131,6 @@ async checkSetPassword() {
   //end of password stuffs
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])
-
-  // isUserBlocked(userId: number): boolean {
-  //   return this.blockedUsers.includes(userId);
-  // }
-
-  // isUserBlocked(userId: number): boolean {
-  //   let bool: boolean = false
-  //   bool = this.blockedUsers$.includes(userId);
-  //   console.log('Is user:id: ', userId, 'Blocked?: ', bool)
-  //   return bool
-  // }
 
   ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
