@@ -20,7 +20,6 @@ export class LoginComponent {
 
   login() {
     if (this.form.valid) {
-      console.log('inside')
       this.authService.login({
         email: this.email.value,
         password: this.password.value

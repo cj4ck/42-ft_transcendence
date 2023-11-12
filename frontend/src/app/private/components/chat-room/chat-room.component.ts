@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit } from '@angular/core';
 import { Observable, combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
@@ -16,8 +16,9 @@ import { UserI } from 'src/app/model/user.interface';
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
+  @Output() chatRoomUpdate = new EventEmitter(); //the idea is to send a notif. to parent comp. that room is updated (but still selected)
+  //and I hope that it triggers the refresh - like send 'chatRoom' value again to this comp.
   chatRoomUsers: UserI[]
-  chatRoomFullInfo: RoomI
   user: UserI = this.authService.getLoggedInUser()
   isOwner: boolean = false
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
@@ -26,7 +27,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	isRoomDM: boolean = false
 	isRoomPrivate: boolean = false
 	
-	constructor(private chatService: ChatService, private authService: AuthService) { }
+	constructor(private chatService: ChatService, 
+		private authService: AuthService) { }
 
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([
     this.chatService.getMessages(), 
@@ -47,10 +49,23 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     })
     // tap(() => this.scrollToBottom())
   )
+  //updating room after changes
+  //1st version w/o argument
+//   async updateCurrentChatroom() {
+// 	const newlyUpdatedRoom = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
+// 	console.log('room in updateCurrentChatroom:', newlyUpdatedRoom)
+// 	this.chatRoomUpdate.emit(newlyUpdatedRoom)
+//   }  
+
+//2nd version w argument
+  async updateCurrentChatroom(updatedRoom: RoomI) {
+	// console.log('room in updateCurrentChatroom TEST:', updatedRoom)
+	this.chatRoomUpdate.emit(updatedRoom)
+  }
 
   //adding password to chat
-  showPasswordForm = false
-  passwordForm: FormGroup = new FormGroup({
+  showSetPasswordForm = false
+  setPasswordForm: FormGroup = new FormGroup({
 	password: new FormControl(null, [Validators.required]),
 	passwordConfirm: new FormControl(null, [Validators.required])
   },
@@ -58,33 +73,35 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	validators: CustomValidators.passwordsMatching
   })
 
-  setChatPassword() {
-	if (this.passwordForm.valid) {
-		const newPassword: string = this.passwordForm.get('password').value
+  toggleSetPasswordForm() {
+	this.showSetPasswordForm = !this.showSetPasswordForm
+  }
+
+  async setChatPassword() {
+	if (this.setPasswordForm.valid) {
+		const newPassword: string = this.setPasswordForm.get('password').value
 		this.chatRoom.password = newPassword
-		this.chatService.setChatPasswordService(this.chatRoom)
-		console.log('Password is set')
-		this.togglePasswordForm()
-		this.chatService.passwordAdded().subscribe((room: RoomI) => {
-			const password = room.password;
-			// console.log('Received password:', password, 'room type: ', room.type);
-		})
+		this.chatService.setChatPassword(this.chatRoom)
+		// console.log('Password is set')
+		this.toggleSetPasswordForm()
+		this.chatService.returnUpdatedRoom().pipe(
+			map((room: RoomI) => {
+				// console.log('updated room here hehe', room)
+				this.updateCurrentChatroom(room)
+			})
+		).subscribe()
 	}
   }
 
   get password(): FormControl {
-    return this.passwordForm.get('password') as FormControl;
+    return this.setPasswordForm.get('password') as FormControl;
   }
 
   get passwordConfirm(): FormControl {
-    return this.passwordForm.get('passwordConfirm') as FormControl;
+    return this.setPasswordForm.get('passwordConfirm') as FormControl;
   }
 
-  togglePasswordForm() {
-	this.showPasswordForm = !this.showPasswordForm
-  }
-
-  //check password
+  //validating password
   passwordValidated: boolean = false
   passwordPrompt: FormGroup = new FormGroup({
 	passwordValidation: new FormControl(null, [Validators.required])
@@ -94,52 +111,87 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     return this.passwordPrompt.get('password') as FormControl;
   }
 
-  async checkPassword() {
+  async checkChatPassword() {
 	if (this.passwordPrompt.valid) {
 		const passwordEntered: string = this.passwordPrompt.get('passwordValidation').value
-		console.log('given password is:', passwordEntered)
-		this.authService.loginChatroom(this.chatRoom, passwordEntered).pipe(
+		// console.log('given password is:', passwordEntered)
+		const jwtReturn = this.authService.loginChatroom(this.chatRoom, passwordEntered).pipe(
 			tap(() => this.passwordValidated = true)
+		).subscribe()
+		// console.log('hello I am here ', this.passwordValidated)
+	}
+	// console.log('pswd val', this.passwordValidated)
+  }
+
+  //changing password
+  showChangePasswordForm = false
+  changePasswordForm: FormGroup = new FormGroup({
+	newPassword: new FormControl(null, [Validators.required]),
+	newPasswordConfirm: new FormControl(null, [Validators.required])
+  },
+  {
+	validators: CustomValidators.passwordsMatching
+  })
+
+  toggleChangePasswordForm() {
+	this.showChangePasswordForm = !this.showChangePasswordForm
+  }
+  changeChatPassword() {
+	if (this.changePasswordForm.valid) {
+		const newPassword: string = this.changePasswordForm.get('newPassword').value
+		this.chatRoom.password = newPassword
+		this.chatService.setChatPassword(this.chatRoom)
+		// console.log('Password is changed')
+		this.toggleChangePasswordForm()
+		this.chatService.returnUpdatedRoom().pipe(
+			map((room: RoomI) => {
+				// console.log('updated room here hehe', room)
+				this.updateCurrentChatroom(room)
+			})
 		).subscribe()
 	}
   }
-  //old prob not useful
-  //this will call the function that emits event to backend 
-  //and the function that catches return event from backend
-  //both fns defined in chat.service file
-async checkSetPassword() {
-	this.chatService.checkPasswordService(this.chatRoom) //to emit event
-	const activePasswordPromise = new Promise<string>((resolve) => {
-	  const subscription = this.chatService.getActiveChatPassword().subscribe((pswd: string) => {
-		subscription.unsubscribe(); // Unsubscribe to prevent memory leaks
-		resolve(pswd);
-	  });
-	});
 
-	const activePassword = await activePasswordPromise;
+  get newPassword(): FormControl {
+    return this.setPasswordForm.get('password') as FormControl;
+  }
 
-	console.log('checked Password but outside: ', activePassword)
+  get newPasswordConfirm(): FormControl {
+    return this.setPasswordForm.get('passwordConfirm') as FormControl;
+  }
+
+  //removing password
+  async removeChatPassword() {
+	await this.chatService.removeChatPassword(this.chatRoom.id)
+	this.chatService.returnUpdatedRoom().pipe(
+		map((room: RoomI) => {
+			// console.log('updated room here hehe', room)
+			this.updateCurrentChatroom(room)
+		})
+	).subscribe()
   }
 
   //end of password stuffs
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
-
+  //this function will trigger when @Input chatRoom changes in dashboard
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
-      this.chatService.joinRoom(this.chatRoom)
-	  this.isRoomDM = this.chatRoom.type === 'dm'
-	  this.isRoomProtected = this.chatRoom.type === 'protected'
-	  this.isRoomPrivate = this.chatRoom.type === 'private'
-	  this.chatRoomFullInfo = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
-	  this.chatRoomUsers = this.chatRoomFullInfo.users
-	  this.user.id === this.chatRoomFullInfo.owner_id ? this.isOwner = true : false
-		// console.log('owner ', this.chatRoomFullInfo.owner_id)
-		// console.log('users ', this.chatRoomFullInfo.users)
+		this.chatService.joinRoom(this.chatRoom)
+	//resetting some stuff
+		this.passwordValidated = false
+		this.passwordPrompt.reset()
+		this.setPasswordForm.reset()
+		this.changePasswordForm.reset()
+	//setting booleans & co. for pswd html logic
+		this.chatRoom = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
+	  	this.isRoomProtected = this.chatRoom.type === 'protected'
+	  	this.isRoomPrivate = this.chatRoom.type === 'private'
+	 	this.chatRoomUsers = this.chatRoom.users
+	 	this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
     }
-		console.log('outside?')
   }
 
   ngAfterViewInit() {
@@ -150,6 +202,7 @@ async checkSetPassword() {
   }
 
   ngOnDestroy() {
+	console.log('ondestroy')
     this.chatService.leaveRoom(this.chatRoom)
   }
 

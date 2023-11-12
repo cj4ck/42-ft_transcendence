@@ -18,7 +18,7 @@ export class ChatService {
   }
 
   sendMessage(message: MessageI) {
-    console.log('message send emit')
+    // console.log('message send emit')
     this.socket.emit('addMessage', message)
   }
 
@@ -56,32 +56,20 @@ export class ChatService {
     // });
   }
 
-//   setChatPassword(room: RoomI) {
-// 	// this.socket.emit('setChatPassword', room, )
-// }
-  setChatPasswordService(room: RoomI) {
-	this.socket.emit('setPassword', room)
+  setChatPassword(room: RoomI): Observable<RoomI> {
+	return this.socket.emit('setPassword', room)
   }
 
-  passwordAdded(): Observable<RoomI> {
-	return this.socket.fromEvent<RoomI>('chatPasswordAdded')
+  removeChatPassword(roomId: number) {
+	return this.socket.emit('removeChatPassword', roomId)
   }
-
-  checkPasswordService(room: RoomI) {
-	this.socket.emit('checkPasswordReq', room)
-  }
-
-  getActiveChatPassword(): Observable<string> {
-	return this.socket.fromEvent<string>('checkPasswordRes')
-  }
-
-//   getChatRoomUsers(roomId: number): Observable<UserI[]> {
-// 	this.socket.emit('getChatroomRoomInfo', roomId)
-// 	return this.socket.fromEvent('hereYouGo')
-//   }
 
   getChatRoomInfo(roomId: number): Observable<RoomI> {
-	this.socket.emit('getChatroomRoomInfo', roomId)
+	this.socket.emit('getChatRoomInfo', roomId)
 	return this.socket.fromEvent('hereYouGo')
+  }
+
+  returnUpdatedRoom(): Observable<RoomI> {
+	return this.socket.fromEvent('updatedRoom')
   }
 }

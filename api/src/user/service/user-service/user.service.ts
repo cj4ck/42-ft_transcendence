@@ -66,7 +66,7 @@ export class UserService {
 	}
 
 	async findOneByUsername(username: string): Promise<UserI> {
-		console.log('findonebyusername ' + username)
+		// console.log('findonebyusername ' + username)
 		return this.userRepository.findOne({ 
 			where: {
 				username: Like(`%${username.toLowerCase()}%`)

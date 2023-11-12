@@ -21,6 +21,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select';
 import { UsersListedComponent } from './components/users-listed/users-listed.component';
+import { ChatPasswordComponent } from './components/chat-password/chat-password.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { UsersListedComponent } from './components/users-listed/users-listed.com
     SelectUsersComponent,
     ChatRoomComponent,
     ChatMessageComponent,
-    UsersListedComponent
+    UsersListedComponent,
+	ChatPasswordComponent
   ],
   imports: [
     CommonModule,

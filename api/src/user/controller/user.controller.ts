@@ -37,7 +37,7 @@ export class UserController {
 
 	@Get('/find-by-username')
 	async findAllByUsername(@Query('username') username: string) {
-		console.log('FIND BY USERNAME - backend api call')
+		// console.log('FIND BY USERNAME - backend api call')
 		return this.userService.findAllByUsername(username)
 	}
 
@@ -52,15 +52,24 @@ export class UserController {
 		};
 	}
 
+	// @Post('loginChatroom')
+	// async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<LoginChatroomResponseI> {
+	// 	const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto)
+	// 	const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto)
+	// 	const jwt: string = await this.roomService.loginChatroom(roomEntity, enteredPassword)
+	// 	return {
+	// 		access_token: jwt,
+	// 		token_type: 'JWT',
+	// 		expires_in: 10000,
+	// 		logged_in: true
+	// 	};
+	// }
+
 	@Post('loginChatroom')
-	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<LoginChatroomResponseI> {
+	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<boolean> {
 		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto)
 		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto)
-		const jwt: string = await this.roomService.loginChatroom(roomEntity, enteredPassword)
-		return {
-			access_token: jwt,
-			token_type: 'JWT',
-			expires_in: 10000
-		};
+		const loggedIn: boolean = await this.roomService.loginChatroom(roomEntity, enteredPassword)
+		return loggedIn
 	}
 }
