@@ -81,7 +81,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
           await this.server.to(connection.socketId).emit('rooms', rooms)
         }
     }
-    return
   }
 
   // need to update this to use id, bc usernames can be duplicated 
@@ -122,9 +121,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('paginateRooms')
   async onPaginateRoom(socket: Socket, page: PageI) {
-    // const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page))
-    const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, {limit: 10, page: 1})
-	// console.log('onPaginateRoom: ', rooms)
+    const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page))
     // substract page -1 to match the angular material paginator
     rooms.meta.currentPage = rooms.meta.currentPage - 1
     return this.server.to(socket.id).emit('rooms', rooms)
@@ -142,6 +139,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('leaveRoom')
   async onLeaveRoom(socket: Socket) {
+	console.log()
     await this.joinedRoomService.deleteBySocketId(socket.id)
   }
 
@@ -197,12 +195,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	}
 
 
+	@SubscribeMessage('getChatroomRoomInfo')
+	async onGetChatroomUsers(socket: Socket, roomId: number) {
+		try {
+			const requestedRoom = await this.roomService.getRoom(roomId)
+			if (requestedRoom) {
+				console.log('in get infos: owner:', requestedRoom.owner_id)
+				console.log('in get infos: users:', requestedRoom.users)
+				this.server.emit('hereYouGo', requestedRoom)
+			}
+		} catch (error) {
+			console.error('Error getting room by Id', error.message)
+		}
+	}
+
   private handleIncomingPageRequest(page: PageI) {
-	console.log("handle pagination before: page limit ", page.limit, "page page", page.page)
     page.limit = page.limit > 100 ? 100 : page.limit;
     // add page +1 to match angular material paginator
     page.page = page.page + 1
-	console.log("handle pagination after: page limit ", page.limit, "page page", page.page)
     return page
   }
 }

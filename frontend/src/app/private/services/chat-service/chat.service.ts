@@ -3,7 +3,7 @@ import { CustomSocket } from '../../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 
 @Injectable({
@@ -84,4 +84,8 @@ export class ChatService {
     return this.socket.fromEvent<number[]>('checkBlockedRes')
   }
 
+  getChatRoomInfo(roomId: number): Observable<RoomI> {
+	this.socket.emit('getChatroomRoomInfo', roomId)
+	return this.socket.fromEvent('hereYouGo')
+  }
 }

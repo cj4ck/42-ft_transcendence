@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Observable, combineLatest, combineLatestAll, concatMap, exhaustMap, firstValueFrom, forkJoin, map, mergeAll, mergeMap, startWith, switchMap, tap } from 'rxjs';
-import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Observable, combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
+import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -17,6 +17,10 @@ import { UserI } from 'src/app/model/user.interface';
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
+  chatRoomUsers: UserI[]
+  chatRoomFullInfo: RoomI
+  user: UserI = this.authService.getLoggedInUser()
+  isOwner: boolean = false
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 
 	constructor(private chatService: ChatService, private authService: AuthService) { }
@@ -24,7 +28,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
 	isRoomPrivate: boolean = false
-  user: UserI = this.authService.getLoggedInUser()
   filteredMessagesPaginate : MessagePaginateI
   lastCreatedMessage: number
 
@@ -111,6 +114,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		).subscribe()
 	}
   }
+  //old prob not useful
   //this will call the function that emits event to backend 
   //and the function that catches return event from backend
   //both fns defined in chat.service file
@@ -132,18 +136,28 @@ async checkSetPassword() {
 
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
-  ngOnChanges(changes: SimpleChanges) {
+
+  async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
 	  this.isRoomDM = this.chatRoom.type === 'dm'
 	  this.isRoomProtected = this.chatRoom.type === 'protected'
 	  this.isRoomPrivate = this.chatRoom.type === 'private'
+	  this.chatRoomFullInfo = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
+	  this.chatRoomUsers = this.chatRoomFullInfo.users
+	  this.user.id === this.chatRoomFullInfo.owner_id ? this.isOwner = true : false
+		// console.log('owner ', this.chatRoomFullInfo.owner_id)
+		// console.log('users ', this.chatRoomFullInfo.users)
     }
+		console.log('outside?')
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom()
+	if (this.chatRoom) {
+		console.log('afterviewinit:', this.chatRoom.users)
+	}
+    // this.scrollToBottom()
   }
 
   ngOnDestroy() {
@@ -158,7 +172,7 @@ async checkSetPassword() {
   }
 
   scrollToBottom(): void {
-    setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
+    // setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
   }
 
 }

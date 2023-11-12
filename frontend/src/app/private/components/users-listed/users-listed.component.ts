@@ -32,7 +32,7 @@ export class UsersListedComponent implements OnInit {
     this.userService.getAllUsers().subscribe((data) => {
       this.filteredUsers = data.items
       this.numUsers = data.meta.totalItems
-      console.log(this.filteredUsers)
+    //   console.log(this.filteredUsers)
       for (let i = 0; i < this.numUsers; i++) {
         const user = this.filteredUsers[i]
         if (user.username != this.currentUser.username) {

@@ -5,6 +5,7 @@ import { AuthService } from 'src/auth/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/service/user-service/user.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -13,7 +14,8 @@ export class RoomService {
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
-		private authService: AuthService
+		private authService: AuthService,
+		private userService: UserService
 		) {}
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
@@ -22,8 +24,8 @@ export class RoomService {
 			if (creator.id === user.id){
 				console.log('type: ', room.type)
 				console.log('creator: ', creator)
-				room.owner = creator
-				console.log('owner:', room.owner)
+				room.owner_id = creator.id
+				console.log('owner:', room.owner_id)
 				return this.roomRepository.save(room)
 			}
 		}
@@ -31,8 +33,9 @@ export class RoomService {
 		const newRoom = await this.addCreatorToRoom(room, creator)
 		console.log('type: ', room.type)
 		console.log('creator: ', creator)
-		room.owner = creator
-		console.log('owner:', room.owner)
+		// newRoom.owner = creator
+		newRoom.owner_id = creator.id
+		console.log('owner:', newRoom.owner_id)
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -49,8 +52,8 @@ export class RoomService {
 		  .leftJoin('room.users', 'users')
 		  .where('users.id = :userId OR room.type = :publicType', { userId, publicType: 'public' })
 		  .leftJoinAndSelect('room.users', 'all_users')
-		  .distinctOn(["room.updated_at"])
-		  .orderBy('room.updated_at', 'DESC')
+		  .distinctOn(["room.id"])
+		  .orderBy('room.id', 'DESC')
 		  
 		//for debugging sql query x pagination
 		// const querySQL = query.getQueryAndParameters();
@@ -78,13 +81,12 @@ export class RoomService {
 	}
 
 	async setChatPassword(room: RoomI): Promise<RoomI> {
-		// Assuming you have a method to retrieve the room from the database
 		const existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
 			console.log('room not found')
 		}
 		const passwordHash: string = await this.hashPassword(room.password)
-		console.log(passwordHash, '-> password hash in set password')
+		// console.log(passwordHash, '-> password hash in set password')
 		existingRoom.password = passwordHash
 		existingRoom.type = 'protected'
 		// Save the updated room to the database

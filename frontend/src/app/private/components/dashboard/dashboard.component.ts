@@ -32,16 +32,13 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit(): void {
 	this.rooms$.subscribe((rooms: RoomPaginateI) => {
-		console.log('Rooms for user:', rooms);
+		// console.log('meta of room:', rooms.meta);
 	  });
     this.chatService.emitPaginateRooms(10, 0)
   }
 
   onSelectRoom(event: MatSelectionListChange) {
     this.selectedRoom = event.source.selectedOptions.selected[0].value
-	if (this.selectedRoom.type == 'protected') {
-		// this.promptForPassword = true
-	}
   }
 
   onPaginateRooms(pageEvent: PageEvent) {
