@@ -57,7 +57,7 @@ export class ChatService {
   }
 
   setChatPassword(room: RoomI): Observable<RoomI> {
-	return this.socket.emit('setPassword', room)
+	return this.socket.emit('setChatPassword', room)
   }
 
   removeChatPassword(roomId: number) {

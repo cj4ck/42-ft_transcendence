@@ -146,7 +146,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   }
 
   // chatroom passwords stuffs
-  @SubscribeMessage('setPassword')
+  @SubscribeMessage('setChatPassword')
 	async onSetPassword(socket: Socket, room: RoomI) {
 		try {
 			const updatedRoom = await this.roomService.setChatPassword(room);
