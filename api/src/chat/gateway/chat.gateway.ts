@@ -171,7 +171,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	}
 	
-		@SubscribeMessage('getChatroomRoomInfo')
+		@SubscribeMessage('getChatroomInfo')
 		async onGetChatroomUsers(socket: Socket, roomId: number) {
 			try {
 				const requestedRoom = await this.roomService.getRoom(roomId)

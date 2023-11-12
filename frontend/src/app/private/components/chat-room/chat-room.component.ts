@@ -178,6 +178,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //this function will trigger when @Input chatRoom changes in dashboard
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
+	console.log('hey what')
     if(this.chatRoom) {
 		this.chatService.joinRoom(this.chatRoom)
 	//resetting some stuff
@@ -190,6 +191,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 	  	this.isRoomProtected = this.chatRoom.type === 'protected'
 	  	this.isRoomPrivate = this.chatRoom.type === 'private'
 	 	this.chatRoomUsers = this.chatRoom.users
+		console.log('in ngon changes', this.chatRoom)
 	 	this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
     }
   }

@@ -65,7 +65,7 @@ export class ChatService {
   }
 
   getChatRoomInfo(roomId: number): Observable<RoomI> {
-	this.socket.emit('getChatRoomInfo', roomId)
+	this.socket.emit('getChatroomInfo', roomId)
 	return this.socket.fromEvent('hereYouGo')
   }
 

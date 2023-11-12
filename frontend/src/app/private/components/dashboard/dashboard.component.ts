@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit, AfterViewInit{
     ) { }
 
   async ngOnInit() {
-	this.rooms$ = await this.chatService.getMyRooms() //?? ask Karol about this await stuff
+	// this.rooms$ = await this.chatService.getMyRooms() //?? ask Karol about this await stuff
     this.chatService.emitPaginateRooms(10, 0)
   }
 
