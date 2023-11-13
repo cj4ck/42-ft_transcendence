@@ -3,7 +3,7 @@ import { CustomSocket } from '../../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 
 @Injectable({
@@ -56,6 +56,14 @@ export class ChatService {
     // });
   }
 
+  toggleUserBlock(user: UserI) {
+    this.socket.emit('toggleUserBlock', user)
+  }
+
+  toggleRoomAdmin(room: RoomI) {
+    this.socket.emit('toggleRoomAdmin', room)
+  }
+
   setChatPassword(room: RoomI): Observable<RoomI> {
 	return this.socket.emit('setChatPassword', room)
   }
@@ -64,12 +72,18 @@ export class ChatService {
 	return this.socket.emit('removeChatPassword', roomId)
   }
 
-  getChatRoomInfo(roomId: number): Observable<RoomI> {
-	this.socket.emit('getChatroomInfo', roomId)
-	return this.socket.fromEvent('hereYouGo')
+  getBlockedUsers(user_id: number): Observable<number[]> {
+    // console.log('get blocked users chat.service')
+    // this.socket.emit('getBlockedUsers', user_id)
+    return this.socket.fromEvent<number[]>('checkBlockedRes')
+  }
+
+  getChatroomInfo(roomId: number): Observable<RoomI> {
+	  this.socket.emit('getChatroomInfo', roomId)
+	  return this.socket.fromEvent('hereYouGo')
   }
 
   returnUpdatedRoom(): Observable<RoomI> {
-	return this.socket.fromEvent('updatedRoom')
+	  return this.socket.fromEvent('updatedRoom')
   }
 }

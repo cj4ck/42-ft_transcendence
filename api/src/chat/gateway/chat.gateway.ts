@@ -13,7 +13,6 @@ import { JoinedRoomService } from '../service/joined-room/joined-room.service';
 import { MessageService } from '../service/message/message.service';
 import { MessageI } from '../model/message/message.interface';
 import { JoinedRoomI } from '../model/joined-room/joined-room.interface';
-import { Observable } from 'rxjs';
 
 @WebSocketGateway({cors: { origin: ['https://hoppscotch.io', 'http://localhost:3000', 'http://localhost:4200'] } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, OnModuleInit {
@@ -68,22 +67,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	socket.disconnect();
   }
 
-  @SubscribeMessage('createRoom')
-		async onCreateRoom(socket: Socket, room: RoomI) {
-		// console.log('CreateRoom [creator_id]:' + socket.data.user.id)
-		// console.log('CreateRoom [users]:' + room.users)
-		const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
-		for(const user of createdRoom.users) {
-			const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
-			const rooms = await this.roomService.getRoomsForUser(user.id, {page: 1, limit: 10})
-			// substract page -1 to match the ng material paginator
-			rooms.meta.currentPage = rooms.meta.currentPage - 1
-			for(const connection of connections) {
-				await this.server.to(connection.socketId).emit('rooms', rooms)
-			}
+	@SubscribeMessage('createRoom')
+	async onCreateRoom(socket: Socket, room: RoomI) {
+	// console.log('CreateRoom [creator_id]:' + socket.data.user.id)
+	// console.log('CreateRoom [users]:' + room.users)
+	room.admins = [socket.data.user.id, ...room.admins];
+	const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
+	for(const user of createdRoom.users) {
+		const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
+		const rooms = await this.roomService.getRoomsForUser(user.id, {page: 1, limit: 10})
+		// substract page -1 to match the ng material paginator
+		rooms.meta.currentPage = rooms.meta.currentPage - 1
+		for(const connection of connections) {
+			await this.server.to(connection.socketId).emit('rooms', rooms)
 		}
+	}
   }
 
+  // need to update this to use id, bc usernames can be duplicated 
   @SubscribeMessage('createDmRoom')
 		async onCreateDmRoom(socket: Socket, username: string) {
 		const creator = socket.data.user
@@ -110,6 +111,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		// console.log('Calling on create room')
 		await this.onCreateRoom(socket, privateRoom)
   }
+
+  @SubscribeMessage('toggleRoomAdmin')
+  async toggleRoomAdmin(socket: Socket, updatedRoom: RoomI) {
+    console.log('toggle room admin')
+    await this.roomService.updateAdminList(updatedRoom)
+    return this.server.to(socket.id).emit('checkAdminList', updatedRoom.admins)
+  }
+
+  @SubscribeMessage('toggleUserBlock')
+  async toggleUserBlock(socket: Socket, updatedUser: UserI) {
+    console.log('toggle user block')
+    await this.userService.updateBlockedIds(updatedUser)
+    return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
+  }
+
 
   @SubscribeMessage('paginateRooms')
 		async onPaginateRoom(socket: Socket, page: PageI) {
@@ -157,6 +173,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	}
 
+	@SubscribeMessage('getBlockedUsers')
+	async checkBlockedUsers(socket: Socket, user_id: number) {
+		try {
+			const blockedUsers = await this.userService.getBlockedUsers(user_id)
+			// console.log('return from observable: ', blockedUsers)
+			this.server.emit('checkBlockedRes', blockedUsers)
+		} catch (error) {
+			console.error('Error checking password', error.message)
+			socket.emit('checkError', {message: 'Failed to check password', error})
+		}
+	}
+
 	@SubscribeMessage('removeChatPassword')
 	async onRemoveChatPassword(socket: Socket, roomId: number) {
 		try {
@@ -171,20 +199,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		}
 	}
 	
-		@SubscribeMessage('getChatroomInfo')
-		async onGetChatroomUsers(socket: Socket, roomId: number) {
-			try {
-				const requestedRoom = await this.roomService.getRoom(roomId)
-				if (requestedRoom) {
-					// console.log('in get infos: owner:', requestedRoom.owner_id)
-					// console.log('in get infos: users:', requestedRoom.users)
-					this.server.to(socket.id).emit('hereYouGo', requestedRoom)
-				}
-			} catch (error) {
-				console.error('Error getting room by Id', error.message)
-				socket.emit('setError', { message: 'Failed to get chatroom', error });
+	@SubscribeMessage('getChatroomInfo')
+	async onGetChatroomUsers(socket: Socket, roomId: number) {
+		try {
+			const requestedRoom = await this.roomService.getRoom(roomId)
+			if (requestedRoom) {
+				// console.log('in get infos: owner:', requestedRoom.owner_id)
+				// console.log('in get infos: users:', requestedRoom.users)
+				this.server.to(socket.id).emit('hereYouGo', requestedRoom)
 			}
+		} catch (error) {
+			console.error('Error getting room by Id', error.message)
+			socket.emit('setError', { message: 'Failed to get chatroom', error });
 		}
+	}
 
   private handleIncomingPageRequest(page: PageI) {
 	page.limit = page.limit > 100 ? 100 : page.limit;
@@ -193,3 +221,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	return page
   }
 }
+
+

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Observable, combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
 import { RoomI } from 'src/app/model/room.interface';
@@ -13,54 +13,62 @@ import { UserI } from 'src/app/model/user.interface';
 	templateUrl: './chat-room.component.html',
 	styleUrls: ['./chat-room.component.scss']
 })
+
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @Input() chatRoom: RoomI
   @Output() chatRoomUpdate = new EventEmitter(); //the idea is to send a notif. to parent comp. that room is updated (but still selected)
   //and I hope that it triggers the refresh - like send 'chatRoom' value again to this comp.
   chatRoomUsers: UserI[]
+  roomAdmins: number[] = []
+  userAdminToggles: { [user_id: number]: boolean } = {};
+  userMuteToggles: { [user_id: number]: Date } = {};
   user: UserI = this.authService.getLoggedInUser()
   isOwner: boolean = false
+
+
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
-	
+
+	constructor(private chatService: ChatService, private authService: AuthService, private cdr: ChangeDetectorRef) { }
+
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
 	isRoomPrivate: boolean = false
-	
-	constructor(private chatService: ChatService, 
-		private authService: AuthService) { }
+  filteredMessagesPaginate : MessagePaginateI
+  lastCreatedMessage: number
 
   messagesPaginate$: Observable<MessagePaginateI> = combineLatest([
-    this.chatService.getMessages(), 
-    this.chatService.getAddedMessage().pipe(startWith(null))
+    this.chatService.getMessages(),
+    this.chatService.getAddedMessage().pipe(startWith(null)),
+    this.chatService.getBlockedUsers(this.user.id).pipe(startWith(this.user.blocked))
   ]).pipe(
-    tap(([messagePaginate, message]) => {
-    //   console.log('Received messagePaginate:', messagePaginate);
-    //   console.log('Received message:', message)
-    }),
-    map(([messagePaginate, message]) => {
-      if (message && message.room.id === this.chatRoom.id) {
-        messagePaginate.items.push(message)
+    map(([messagePaginate, message, blockedUsers]) => {
+      this.filteredMessagesPaginate = {items: [],meta: null};
+      this.lastCreatedMessage = this.lastCreatedMessage || null
+      if (message && 
+          message.room.id === this.chatRoom.id && 
+          this.lastCreatedMessage != new Date(message.created_at).getTime()
+      ) {
+        messagePaginate.items.push(message);
+        this.lastCreatedMessage = new Date(message.created_at).getTime()
       }
-      const items = messagePaginate.items.sort((a,b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-      messagePaginate.items = items
-    //   console.log('items',items)
-      return messagePaginate
-    })
-    // tap(() => this.scrollToBottom())
-  )
-  //updating room after changes
-  //1st version w/o argument
-//   async updateCurrentChatroom() {
-// 	const newlyUpdatedRoom = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
-// 	console.log('room in updateCurrentChatroom:', newlyUpdatedRoom)
-// 	this.chatRoomUpdate.emit(newlyUpdatedRoom)
-//   }  
+      const items = messagePaginate.items.sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+      messagePaginate.items = items;
+      this.filteredMessagesPaginate.items = messagePaginate.items.filter((item) => {
+        return !blockedUsers.includes(item.user.id);
+      });
+      // console.log('After filter on messagePaginate: ', this.filteredMessagesPaginate)
+      // console.log('Blocked Users for id:', this.user.id, '| blocked:', blockedUsers, '| items:', messagePaginate.items);
+      return this.filteredMessagesPaginate; // Return the modified messagePaginate
+    }),
+    tap(() => this.scrollToBottom())
+  );
 
-//2nd version w argument
   async updateCurrentChatroom(updatedRoom: RoomI) {
-	// console.log('room in updateCurrentChatroom TEST:', updatedRoom)
-	this.chatRoomUpdate.emit(updatedRoom)
+    // console.log('room in updateCurrentChatroom TEST:', updatedRoom)
+    this.chatRoomUpdate.emit(updatedRoom)
   }
 
   //adding password to chat
@@ -173,6 +181,33 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   //end of password stuffs
 
+  async toggleRoomAdmin(user_id: number) {
+    if (this.chatRoom.owner_id === this.user.id) {
+      console.log("clicked on user_id to make admin: " + user_id)
+      this.roomAdmins = this.chatRoom.admins
+      console.log('before', this.userAdminToggles[user_id])
+  
+      let admin: boolean = false
+      for (let i = 0; i < this.roomAdmins.length; i++) {
+        if (this.roomAdmins[i] === user_id) {
+          admin = true;
+          this.roomAdmins.splice(i, 1);
+          break;
+        }
+      }
+      this.userAdminToggles[user_id] = !admin
+      this.cdr.detectChanges();
+      console.log('after', this.userAdminToggles[user_id])
+      if (!admin) {
+        this.roomAdmins.push(user_id);
+      }
+      this.chatRoom.admins = this.roomAdmins
+      this.chatService.toggleRoomAdmin(this.chatRoom)
+    } else {
+      console.log('Only channel owners can make users admin')
+    }
+  }
+
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
   //this function will trigger when @Input chatRoom changes in dashboard
@@ -180,26 +215,31 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
 	console.log('hey what')
     if(this.chatRoom) {
-		this.chatService.joinRoom(this.chatRoom)
-	//resetting some stuff
-		this.passwordValidated = false
-		this.passwordPrompt.reset()
-		this.setPasswordForm.reset()
-		this.changePasswordForm.reset()
-	//setting booleans & co. for pswd html logic
-		this.chatRoom = await firstValueFrom(this.chatService.getChatRoomInfo(this.chatRoom.id))
-	  	this.isRoomProtected = this.chatRoom.type === 'protected'
-	  	this.isRoomPrivate = this.chatRoom.type === 'private'
-	 	this.chatRoomUsers = this.chatRoom.users
-		console.log('in ngon changes', this.chatRoom)
-	 	this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
+      this.chatService.joinRoom(this.chatRoom)
+      //resetting some stuff
+      this.passwordValidated = false
+      this.passwordPrompt.reset()
+      this.setPasswordForm.reset()
+      this.changePasswordForm.reset()
+      //setting booleans & co. for pswd html logic
+      this.chatRoom = await firstValueFrom(this.chatService.getChatroomInfo(this.chatRoom.id))
+      this.isRoomProtected = this.chatRoom.type === 'protected'
+      this.isRoomPrivate = this.chatRoom.type === 'private'
+      this.chatRoomUsers = this.chatRoom.users
+      this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
+
+      this.chatRoom.users.forEach(user => {
+        console.log('chatroom user id:', user.id)
+        this.userAdminToggles[user.id] = this.chatRoom.admins.includes(user.id)
+      })
     }
   }
 
   ngAfterViewInit() {
-	if (this.chatRoom) {
-		console.log('afterviewinit:', this.chatRoom.users)
+    if (this.chatRoom) {
+      console.log('afterviewinit:', this.chatRoom.users)
 	}
+  
     // this.scrollToBottom()
   }
 

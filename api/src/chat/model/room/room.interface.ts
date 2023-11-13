@@ -10,4 +10,5 @@ export interface RoomI {
 	type?: string
 	owner_id?: number
 	password?: string
+	admins?: number[]
 }

@@ -5,7 +5,6 @@ import { AuthService } from 'src/auth/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
-import { UserService } from 'src/user/service/user-service/user.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -15,7 +14,6 @@ export class RoomService {
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
 		private authService: AuthService,
-		private userService: UserService
 		) {}
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
@@ -106,6 +104,18 @@ export class RoomService {
 
 	private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
+	}
+
+	async updateAdminList(room: RoomI): Promise<RoomI> {
+		console.log('update room admins')
+		// Assuming you have a method to retrieve the room from the database
+		const existingRoom = await this.getRoom(room.id);
+		if (!existingRoom) {
+			console.log('Room not found')
+		}
+		existingRoom.admins = room.admins
+		// Save the updated room to the database
+		return this.roomRepository.save(existingRoom);
 	}
 
 	async loginChatroom(room: RoomI, password: string): Promise<boolean> {

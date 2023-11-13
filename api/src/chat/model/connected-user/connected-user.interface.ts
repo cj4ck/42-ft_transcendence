@@ -5,4 +5,5 @@ export interface ConnectedUserI {
 	id?: number
 	socketId: string
 	user: UserI
+	blocked?: number[]
 }

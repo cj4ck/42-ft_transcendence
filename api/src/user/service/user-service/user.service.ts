@@ -6,6 +6,7 @@ import { UserI } from '../../model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { AuthService } from 'src/auth/service/auth.service';
+import { Observable } from 'rxjs';
 
 
 @Injectable()
@@ -74,6 +75,37 @@ export class UserService {
 		})
 	}
 
+	async updateBlockedIds(user: UserI): Promise<UserI> {
+		console.log('update Blocked Ids')
+		// Assuming you have a method to retrieve the room from the database
+		const existingUser = await this.getOne(user.id);
+		if (!existingUser) {
+			console.log('user not found')
+		}
+		existingUser.blocked = user.blocked
+		// Save the updated room to the database
+		return this.userRepository.save(existingUser);
+	}
+
+	async getBlockedUsers(user_id: number): Promise<number[]> {
+		// console.log('get blocked users ' + user_id)
+		const foundUser = await this.userRepository.findOne({ where: { id: user_id } })
+		return foundUser.blocked
+		// .then(user => {
+		//   if (user) {
+		// 	console.log('User found, returning ' + user.blocked);
+		// 	return(user.blocked);
+		//   } else {
+		// 	console.log('User not found');
+		// 	return []
+		//   }
+		// })
+		// .catch(error => {
+		// 	console.log(error) 
+		// 	return []
+		// });
+		// return []
+	}
 
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {

@@ -24,7 +24,8 @@ export class UsersListedComponent implements OnInit {
 
   filteredUsers: UserI[]
   numUsers: number = 0
-  usernames: string[] = []
+  users: UserI[] = []
+  usersBlocked: number[] = []
   currentUser: UserI = this.authService.getLoggedInUser()
 
   ngOnInit(): void {
@@ -33,17 +34,42 @@ export class UsersListedComponent implements OnInit {
       this.numUsers = data.meta.totalItems
     //   console.log(this.filteredUsers)
       for (let i = 0; i < this.numUsers; i++) {
-        const user = this.filteredUsers[i].username
-        if (user != this.currentUser.username) {
-          this.usernames.push(user)
+        const user = this.filteredUsers[i]
+        if (user.username != this.currentUser.username) {
+          this.users.push(user)
         }
-        // console.log(user)
       }
     })
+    this.usersBlocked = this.currentUser.blocked
   }
 
   createPrivateChat(username: string) {
     console.log('Clicked on username: ' + username)
     this.chatService.createDmRoom(username);
   }
+
+  toggleUserBlock(user_id: number) {
+    console.log("clicked on id to block: " + user_id)
+    this.usersBlocked = this.currentUser.blocked
+    let blocked: boolean = false
+    for (let i = 0; i < this.usersBlocked.length; i++) {
+      if (this.usersBlocked[i] === user_id) {
+        blocked = true;
+        // removing from blockedList
+        this.usersBlocked.splice(i, 1);
+        break;
+      }
+    }
+    // if not blocked, add to block list
+    if (!blocked) {
+      this.usersBlocked.push(user_id);
+    }
+    this.currentUser.blocked = this.usersBlocked
+    this.chatService.toggleUserBlock(this.currentUser)
+  }
+
+  // if true: blocked - label = Unblock, if false: unblocked - label = Block
+  // isUserBlocked(userId: number): boolean {
+  //   return this.usersBlocked.includes(userId);
+  // }
 }

@@ -27,13 +27,21 @@
 				<span style="display: flex; flex-direction: row; align-items: center;">
 					<mat-icon>event</mat-icon>
 					<p style="margin-left: 10px;">
-						{{chatRoom.updated_at | date}}w
+						{{chatRoom.updated_at | date}}
 					</p>
 				</span>
 			</span>
 			<span>
-				<h3 style="color: grey;">{{chatRoom.description}}</h3>
-				<span *ngFor="let user of chatRoomUsers"> 💃 {{user.username}} 🕺 </span>
+				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
+				<span *ngFor="let user of chatRoomUsers">
+				  <span
+					(click)="toggleRoomAdmin(user.id)"
+					[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
+					>
+					<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
+					💃 {{ user.username }} 🕺
+				</span>
+				</span>
 			</span>
 		</div>
 		
