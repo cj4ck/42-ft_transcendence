@@ -25,13 +25,13 @@ export class CreateRoomComponent {
   create() {
     if (this.form.valid) {
       this.chatService.createRoom(this.form.getRawValue())
-	    console.log(this.form.getRawValue())
+	    // console.log(this.form.getRawValue())
       this.router.navigate(['../dashboard'], {relativeTo: this.activatedRoute})
     }
   }
 
   initUser(user: UserI) {
-    console.log('init_user')
+    // console.log('init_user')
     return new FormControl({
       id: user.id,
       username: user.username,

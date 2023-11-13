@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
-import { RoomPaginateI } from 'src/app/model/room.interface';
+import { Observable, firstValueFrom, from } from 'rxjs';
+import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from '../../../model/user.interface';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,7 @@ import { UserI } from '../../../model/user.interface';
 })
 export class DashboardComponent implements OnInit, AfterViewInit{
 
-  rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms()
+  rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms() //?? ask Karol about this
   // users$: Observable<UserPaginateI> = this.userService.getUsers()
   selectedRoom = null
   user: UserI = this.authService.getLoggedInUser()
@@ -25,8 +26,8 @@ export class DashboardComponent implements OnInit, AfterViewInit{
     // private userService: UserService
     ) { }
 
-  ngOnInit() {
-    // this.rooms$ = this.chatService.getMyRooms()
+  async ngOnInit() {
+	this.rooms$ = await this.chatService.getMyRooms() //?? ask Karol about this await stuff
     this.chatService.emitPaginateRooms(10, 0)
   }
 
@@ -43,5 +44,11 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 
   onPaginateRooms(pageEvent: PageEvent) {
     this.chatService.emitPaginateRooms(pageEvent.pageSize, pageEvent.pageIndex)
+  }
+
+  async updateRoom(event: Event) {
+	const updatedRoom = event as unknown as RoomI
+	this.selectedRoom = updatedRoom
+	// console.log('selected room is updated, room:', this.selectedRoom)
   }
 }

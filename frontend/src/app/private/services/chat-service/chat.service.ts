@@ -18,7 +18,7 @@ export class ChatService {
   }
 
   sendMessage(message: MessageI) {
-    console.log('message send emit')
+    // console.log('message send emit')
     this.socket.emit('addMessage', message)
   }
 
@@ -63,24 +63,23 @@ export class ChatService {
   toggleRoomAdmin(room: RoomI) {
     this.socket.emit('toggleRoomAdmin', room)
   }
-//   setChatPassword(room: RoomI) {
-// 	// this.socket.emit('setChatPassword', room, )
-// }
-  setChatPasswordService(room: RoomI) {
-	this.socket.emit('setPassword', room)
+
+  setChatPassword(room: RoomI): Observable<RoomI> {
+	return this.socket.emit('setChatPassword', room)
   }
 
-  passwordAdded(): Observable<RoomI> {
-	return this.socket.fromEvent<RoomI>('chatPasswordAdded')
+  removeChatPassword(roomId: number) {
+	return this.socket.emit('removeChatPassword', roomId)
   }
 
-  checkPasswordService(room: RoomI) {
-	  this.socket.emit('checkPasswordReq', room)
-  }
+  //useless
+  // checkPasswordService(room: RoomI) {
+	//   this.socket.emit('checkPasswordReq', room)
+  // }
 
-  getActiveChatPassword(): Observable<string> {
-	  return this.socket.fromEvent<string>('checkPasswordRes')
-  }
+  // getActiveChatPassword(): Observable<string> {
+	//   return this.socket.fromEvent<string>('checkPasswordRes')
+  // }
 
   getBlockedUsers(user_id: number): Observable<number[]> {
     // console.log('get blocked users chat.service')
@@ -88,9 +87,9 @@ export class ChatService {
     return this.socket.fromEvent<number[]>('checkBlockedRes')
   }
 
-  getChatRoomInfo(roomId: number): Observable<RoomI> {
-	this.socket.emit('getChatroomRoomInfo', roomId)
-	return this.socket.fromEvent('hereYouGo')
+  getChatroomInfo(roomId: number): Observable<RoomI> {
+	  this.socket.emit('getChatroomInfo', roomId)
+	  return this.socket.fromEvent('hereYouGo')
   }
 
   // getRoomAdmins(room_id: number): Observable<number[]> {
@@ -98,4 +97,8 @@ export class ChatService {
   //   // this.socket.emit('getBlockedUsers', user_id)
   //   return this.socket.fromEvent<number[]>('checkAdminList')
   // }
+
+  returnUpdatedRoom(): Observable<RoomI> {
+	  return this.socket.fromEvent('updatedRoom')
+  }
 }

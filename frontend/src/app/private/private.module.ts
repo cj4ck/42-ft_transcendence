@@ -29,7 +29,7 @@ import { UsersListedComponent } from './components/users-listed/users-listed.com
     SelectUsersComponent,
     ChatRoomComponent,
     ChatMessageComponent,
-    UsersListedComponent
+    UsersListedComponent,
   ],
   imports: [
     CommonModule,

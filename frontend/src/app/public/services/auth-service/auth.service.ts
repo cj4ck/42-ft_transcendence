@@ -30,10 +30,20 @@ export class AuthService {
     return decodedToken.user
   }
 
-  loginChatroom(room: RoomI, password: string): Observable<LoginChatroomResponseI> {
+//   loginChatroom(room: RoomI, password: string): Observable<LoginChatroomResponseI> {
+// 	const requestBody = { room, password }
+// 	return this.http.post<LoginChatroomResponseI>('api/users/loginChatroom', requestBody).pipe(
+// 		// tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
+// 		tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
+// 			duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+// 		  }))
+// 	)
+//   }
+
+  loginChatroom(room: RoomI, password: string): Observable<boolean> {
 	const requestBody = { room, password }
-	return this.http.post<LoginChatroomResponseI>('api/users/loginChatroom', requestBody).pipe(
-		tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
+	return this.http.post<boolean>('api/users/loginChatroom', requestBody).pipe(
+		// tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
 		tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
 			duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
 		  }))

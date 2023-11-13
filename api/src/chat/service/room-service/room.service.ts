@@ -18,22 +18,22 @@ export class RoomService {
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
 		for (const user of room.users) {
-			console.log('user#:', user.id, user.username)
+			// console.log('user#:', user.id, user.username)
 			if (creator.id === user.id){
-				console.log('type: ', room.type)
-				console.log('creator: ', creator)
+				// console.log('type: ', room.type)
+				// console.log('creator: ', creator)
 				room.owner_id = creator.id
-				console.log('owner:', room.owner_id)
+				// console.log('owner:', room.owner_id)
 				return this.roomRepository.save(room)
 			}
 		}
-		console.log('will add creator to room [id]:', creator.id)
+		// console.log('will add creator to room [id]:', creator.id)
 		const newRoom = await this.addCreatorToRoom(room, creator)
-		console.log('type: ', room.type)
-		console.log('creator: ', creator)
+		// console.log('type: ', room.type)
+		// console.log('creator: ', creator)
 		// newRoom.owner = creator
 		newRoom.owner_id = creator.id
-		console.log('owner:', newRoom.owner_id)
+		// console.log('owner:', newRoom.owner_id)
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -82,13 +82,15 @@ export class RoomService {
 		const existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
 			console.log('room not found')
+		} else {
+			// console.log("new password", room.password)
+			const passwordHash: string = await this.hashPassword(room.password)
+			// console.log(passwordHash, '-> password hash in set password')
+			existingRoom.password = passwordHash
+			existingRoom.type = 'protected'
+			// Save the updated room to the database
+			return this.roomRepository.save(existingRoom);
 		}
-		const passwordHash: string = await this.hashPassword(room.password)
-		// console.log(passwordHash, '-> password hash in set password')
-		existingRoom.password = passwordHash
-		existingRoom.type = 'protected'
-		// Save the updated room to the database
-		return this.roomRepository.save(existingRoom);
 	  }
 
 	async getChatPassword(room: RoomI): Promise<string> {
@@ -116,15 +118,13 @@ export class RoomService {
 		return this.roomRepository.save(existingRoom);
 	}
 
-	//🥶
-	async loginChatroom(room: RoomI, password: string): Promise<string> {
+	async loginChatroom(room: RoomI, password: string): Promise<boolean> {
 		try {
 			const foundRoom: RoomI = await this.getRoom(room.id)
 			if (foundRoom) {
 				const matches: boolean = await this.validatePassword(password, foundRoom.password)
 				if (matches) {
-					const payload: RoomI = await this.getRoom(room.id)
-					return this.authService.generateJwtRoom(payload)
+					return true					
 				} else {
 					throw new HttpException('Passwords do not match, room locked', HttpStatus.UNAUTHORIZED)
 				}
@@ -139,4 +139,15 @@ export class RoomService {
 	private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
 		return this.authService.comparePasswords(password, storedPasswordHash)
 	}
+
+	async removeChatPassword(roomId: number): Promise<RoomI> {
+		const existingRoom = await this.getRoom(roomId);
+		if (!existingRoom) {
+			console.log('room not found')
+		} else {
+			existingRoom.password = null
+			existingRoom.type = 'private'
+			return this.roomRepository.save(existingRoom);
+		}
+	  }
 }

@@ -42,8 +42,12 @@
 			</div>
 			
 			<div class="chatroom">
-				<app-chat-room [chatRoom]="selectedRoom"></app-chat-room>
+				<!-- <app-chat-room [chatRoom]="selectedRoom"></app-chat-room> -->
+				<app-chat-room [chatRoom]="selectedRoom" (chatRoomUpdate)="updateRoom($event)"></app-chat-room>
 			</div>
+			<!-- <div>
+				<app-chat-room "></app-chat-room>
+			</div> -->
 		</div>
 	</mat-card>
 	

@@ -25,7 +25,7 @@ export class JoinedRoomService {
 	// }
 
 	async findByRoom(room: RoomI): Promise<JoinedRoomI[]> {
-		console.log('find by room id: ' + room.id)
+		// console.log('find by room id: ' + room.id)
 		return this.joinedRoomRepository.query(`
 		  SELECT * FROM joined_room_entity
 		  WHERE "roomId" = \$1
