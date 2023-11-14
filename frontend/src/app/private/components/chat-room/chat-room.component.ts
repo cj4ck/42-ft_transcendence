@@ -7,6 +7,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from 'src/app/model/user.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-chat-room',
@@ -29,7 +30,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 
-	constructor(private chatService: ChatService, private authService: AuthService, private cdr: ChangeDetectorRef) { }
+	constructor(private chatService: ChatService, 
+		private authService: AuthService,
+		private snackbar: MatSnackBar) { }
 
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
@@ -181,11 +184,24 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   //end of password stuffs
 
+  leaveChat() {
+	this.chatService.leaveChat(this.user.id, this.chatRoom.id)
+	this.chatService.returnUpdatedRoom().pipe(
+		map((room: RoomI) => {
+			console.log('updated room here hehe', room)
+			this.updateCurrentChatroom(null)
+		})
+	).subscribe()
+	this.snackbar.open(`${this.user.username} left the room '${this.chatRoom.name}' succesfully`, 'Close', {
+		duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+	})
+  }
+
   async toggleRoomAdmin(user_id: number) {
     if (this.chatRoom.owner_id === this.user.id) {
-      console.log("clicked on user_id to make admin: " + user_id)
+    //   console.log("clicked on user_id to make admin: " + user_id)
       this.roomAdmins = this.chatRoom.admins
-      console.log('before', this.userAdminToggles[user_id])
+    //   console.log('before', this.userAdminToggles[user_id])
   
       let admin: boolean = false
       for (let i = 0; i < this.roomAdmins.length; i++) {
@@ -196,8 +212,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
         }
       }
       this.userAdminToggles[user_id] = !admin
-      this.cdr.detectChanges();
-      console.log('after', this.userAdminToggles[user_id])
+    //   this.cdr.detectChanges();
+    //   console.log('after', this.userAdminToggles[user_id])
       if (!admin) {
         this.roomAdmins.push(user_id);
       }
@@ -213,7 +229,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //this function will trigger when @Input chatRoom changes in dashboard
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
-	console.log('hey what')
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
       //resetting some stuff
@@ -229,7 +244,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
 
       this.chatRoom.users.forEach(user => {
-        console.log('chatroom user id:', user.id)
         this.userAdminToggles[user.id] = this.chatRoom.admins.includes(user.id)
       })
     }

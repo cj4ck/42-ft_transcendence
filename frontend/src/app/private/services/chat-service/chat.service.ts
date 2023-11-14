@@ -3,7 +3,7 @@ import { CustomSocket } from '../../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 
 @Injectable({
@@ -85,5 +85,9 @@ export class ChatService {
 
   returnUpdatedRoom(): Observable<RoomI> {
 	  return this.socket.fromEvent('updatedRoom')
+  }
+
+  leaveChat(userId: number, roomId: number) {
+	return this.socket.emit('leaveChat', userId, roomId)
   }
 }

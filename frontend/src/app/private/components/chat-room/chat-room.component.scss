@@ -27,3 +27,9 @@ h3 {
 	max-height: 380px;
 	overflow-y: auto;
 }
+
+.optionButton {
+	display: flex;
+	justify-content: flex-end;
+	margin: 16px;
+} 

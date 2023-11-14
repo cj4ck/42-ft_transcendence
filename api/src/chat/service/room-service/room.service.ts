@@ -5,6 +5,7 @@ import { AuthService } from 'src/auth/service/auth.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface';
+import { UserService } from 'src/user/service/user-service/user.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class RoomService {
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
 		private authService: AuthService,
+		private userService: UserService
 		) {}
 	
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
@@ -97,9 +99,10 @@ export class RoomService {
 		const existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
 			console.log('room not found; password not set')
+		} else {
+			const activePassword = existingRoom.password
+			return activePassword
 		}
-		const activePassword = existingRoom.password
-		return activePassword
 	}
 
 	private async hashPassword(password: string): Promise<string> {
@@ -107,7 +110,7 @@ export class RoomService {
 	}
 
 	async updateAdminList(room: RoomI): Promise<RoomI> {
-		console.log('update room admins')
+		// console.log('update room admins')
 		// Assuming you have a method to retrieve the room from the database
 		const existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
@@ -148,6 +151,23 @@ export class RoomService {
 			existingRoom.password = null
 			existingRoom.type = 'private'
 			return this.roomRepository.save(existingRoom);
+		}
+	  }
+
+	  async leaveChat(userId: number, roomId: number): Promise<RoomI> {
+		console.log('leavechat', userId, roomId)
+		const existingRoom = await this.getRoom(roomId)
+		// const userToLeave = await this.userService.getOne(userId)
+
+		if (!existingRoom) {
+			console.log('room not found')
+		} else {
+			existingRoom.users = existingRoom.users.filter(user => user.id !== userId)
+			if (userId === existingRoom.owner_id) {
+				existingRoom.owner_id = null
+			}
+			console.log('leaveChat upd userI[]', existingRoom.users)
+			return this.roomRepository.save(existingRoom)
 		}
 	  }
 }

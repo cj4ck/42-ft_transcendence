@@ -71,7 +71,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	async onCreateRoom(socket: Socket, room: RoomI) {
 	// console.log('CreateRoom [creator_id]:' + socket.data.user.id)
 	// console.log('CreateRoom [users]:' + room.users)
-	room.admins = [socket.data.user.id, ...room.admins];
+	room.admins = [];
+	room.admins.push(socket.data.user.id)
 	const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
 	for(const user of createdRoom.users) {
 		const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
@@ -114,7 +115,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   @SubscribeMessage('toggleRoomAdmin')
   async toggleRoomAdmin(socket: Socket, updatedRoom: RoomI) {
-    console.log('toggle room admin')
+    // console.log('toggle room admin')
     await this.roomService.updateAdminList(updatedRoom)
     return this.server.to(socket.id).emit('checkAdminList', updatedRoom.admins)
   }
@@ -207,6 +208,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 				// console.log('in get infos: owner:', requestedRoom.owner_id)
 				// console.log('in get infos: users:', requestedRoom.users)
 				this.server.to(socket.id).emit('hereYouGo', requestedRoom)
+			}
+		} catch (error) {
+			console.error('Error getting room by Id', error.message)
+			socket.emit('setError', { message: 'Failed to get chatroom', error });
+		}
+	}
+
+	@SubscribeMessage('leaveChat')
+	async onLeaveChat(socket: Socket, ids: number[]) {
+		const userId = ids[0]
+		const roomId = ids[1]
+		try {
+			const updatedRoom = await this.roomService.leaveChat(userId, roomId)
+			if (updatedRoom) {
+				this.server.to(socket.id).emit('updatedRoom', updatedRoom)
 			}
 		} catch (error) {
 			console.error('Error getting room by Id', error.message)

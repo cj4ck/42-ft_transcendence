@@ -1,17 +1,19 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from '../../services/chat-service/chat.service';
-import { MatSelectionListChange } from '@angular/material/list';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { Observable, firstValueFrom, from } from 'rxjs';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from '../../../model/user.interface';
 import { EventEmitter } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, AfterViewInit{
 
@@ -19,15 +21,17 @@ export class DashboardComponent implements OnInit, AfterViewInit{
   // users$: Observable<UserPaginateI> = this.userService.getUsers()
   selectedRoom = null
   user: UserI = this.authService.getLoggedInUser()
+  @ViewChild(MatSelectionList) selectionList: MatSelectionList
 
   constructor(
     private chatService: ChatService, 
     private authService: AuthService,
+	// private cdr: ChangeDetectorRef
     // private userService: UserService
     ) { }
 
   async ngOnInit() {
-	// this.rooms$ = await this.chatService.getMyRooms() //?? ask Karol about this await stuff
+	this.rooms$ = this.chatService.getMyRooms() //?? ask Karol about this await stuff
     this.chatService.emitPaginateRooms(10, 0)
   }
 
@@ -49,6 +53,17 @@ export class DashboardComponent implements OnInit, AfterViewInit{
   async updateRoom(event: Event) {
 	const updatedRoom = event as unknown as RoomI
 	this.selectedRoom = updatedRoom
+	console.log()
+	if (updatedRoom === null) {
+		this.selectionList.deselectAll()
+		this.reloadCurrentPage()
+		// this.rooms$ = this.chatService.getMyRooms()
+	}
 	// console.log('selected room is updated, room:', this.selectedRoom)
   }
+
+  reloadCurrentPage() {
+	window.location.reload()
+  }
+
 }

@@ -34,20 +34,23 @@
 			<span>
 				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
 				<span *ngFor="let user of chatRoomUsers">
-				  <span
+					<span
 					(click)="toggleRoomAdmin(user.id)"
 					[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
 					>
 					<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
 					💃 {{ user.username }} 🕺
 				</span>
-				</span>
 			</span>
+		</span>
+		<div class="optionButton">
+			<button mat-button color="warn"(click)="leaveChat()">Leave this chatroom</button>
 		</div>
-		
-<!-- button for setting password that will trigger below section to appear -->
-		<div *ngIf="isRoomPrivate && isOwner">
-			<button mat-button (click)="toggleSetPasswordForm()">Set password for chat</button>
+	</div>
+	
+		<!-- button for setting password that will trigger below section to appear -->
+		<div *ngIf="isRoomPrivate && isOwner" class="optionButton">
+			<button mat-raised-button (click)="toggleSetPasswordForm()">Set password for chat</button>
 		</div>
 		
 		<div *ngIf="showSetPasswordForm">
@@ -75,7 +78,7 @@
 		</div>
 		
 <!-- button for changing password -->
-		<div *ngIf="isRoomProtected && isOwner">
+		<div *ngIf="isRoomProtected && isOwner" class="optionButton">
 			<button mat-button (click)="toggleChangePasswordForm()">Change chat password</button>
 			<button mat-button (click)="removeChatPassword()">Remove chat password</button>
 		</div>
