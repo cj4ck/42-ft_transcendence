@@ -14,7 +14,7 @@ export class LoginComponent {
   form: FormGroup = new FormGroup({
     email: new FormControl(null, [Validators.required, Validators.email]),
     password: new FormControl(null, [Validators.required]),
-    twoFactorAuthCode: new FormControl(null),
+    twoFactorAuthCode: new FormControl(null, [Validators.pattern(/^\d{6}$/)]),
   });
 
   constructor(
@@ -67,6 +67,7 @@ export class LoginComponent {
         },
         error => {
           console.error('2FA verification error:', error);
+          this.errorMessage = 'Invalid 2FA code';
         }
       );
     }

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
 
@@ -20,17 +19,8 @@ export class TwoFactorVerifyComponent {
     private route: ActivatedRoute,
   ) {}
 
-  ngOnInit() {
-    this.authService.isTwoFactorEnabled().subscribe((response: { isEnabled: boolean }) => {
-      this.isTwoFactorEnabled = response.isEnabled;
-      if (!this.isTwoFactorEnabled) {
-        this.router.navigate(['/private/2fa-setup']);
-      }
-    })
-  }
-
   verify2fa() {
-    if (this.verificationCode) {
+    if (this.isCodeValid()) {
       this.authService.verify42TwoFactorToken(
         this.verificationCode,
       ).subscribe(
@@ -43,5 +33,9 @@ export class TwoFactorVerifyComponent {
         }
       );
     }
+  }
+
+  isCodeValid(): boolean {
+    return /^\d{6}$/.test(this.verificationCode);
   }
 }

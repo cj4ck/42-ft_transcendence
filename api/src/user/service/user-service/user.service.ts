@@ -65,7 +65,6 @@ export class UserService {
 			throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
 		}
 		const jwt = await this.authService.generateJwt(user);
-		console.log(jwt);
 		return { jwt };
 	}
 	
