@@ -1,0 +1,27 @@
+  .container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
+  .container mat-card-title {
+    text-align: center;
+    width: 100%;
+  }
+
+  .container mat-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }

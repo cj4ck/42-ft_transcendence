@@ -37,14 +37,20 @@ export class TwoFactorSetupComponent {
       this.errorMessage = "Two Factor authentication is already set up.";
       return;
     }
-    this.authService.verifySetup(this.verificationCode, this.secret).subscribe(success => {
-      if (success) {
-        this.router.navigate(['private/dashboard']);
-        this.snackbar.open('2FA enabled successfully', 'Close')
-      } else {
-        this.errorMessage = "Verification failed. Please try again.";
-      }
-    })
+    if (this.isCodeValid()) {
+      this.authService.verifySetup(this.verificationCode, this.secret).subscribe(success => {
+        if (success) {
+          this.router.navigate(['private/dashboard']);
+          this.snackbar.open('2FA enabled successfully', 'Close')
+        } else {
+          this.errorMessage = "Verification failed. Please try again.";
+        }
+      })
+    }
+  }
+
+  isCodeValid(): boolean {
+    return /^\d{6}$/.test(this.verificationCode);
   }
 }
 
