@@ -26,6 +26,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   userMuteToggles: { [user_id: number]: Date } = {};
   user: UserI = this.authService.getLoggedInUser()
   isOwner: boolean = false
+  chatroomObs$: Observable<RoomI>
 
 
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef

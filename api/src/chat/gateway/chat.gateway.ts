@@ -131,6 +131,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
   @SubscribeMessage('paginateRooms')
 		async onPaginateRoom(socket: Socket, page: PageI) {
 		const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page))
+		console.log('onPaginate:', socket.data.user.id)
 		// substract page -1 to match the angular material paginator
 		rooms.meta.currentPage = rooms.meta.currentPage - 1
 		return this.server.to(socket.id).emit('rooms', rooms)
@@ -223,6 +224,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			const updatedRoom = await this.roomService.leaveChat(userId, roomId)
 			if (updatedRoom) {
 				this.server.to(socket.id).emit('updatedRoom', updatedRoom)
+				const rooms = await this.roomService.getRoomsForUser(userId, {page: 1, limit: 10});
+				rooms.meta.currentPage = rooms.meta.currentPage -1
+				return this.server.to(socket.id).emit('rooms', rooms)
+
 			}
 		} catch (error) {
 			console.error('Error getting room by Id', error.message)

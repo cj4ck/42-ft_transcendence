@@ -72,4 +72,10 @@ export class UserController {
 		const loggedIn: boolean = await this.roomService.loginChatroom(roomEntity, enteredPassword)
 		return loggedIn
 	}
+
+	@Post('change-username')
+	async changeUsername(@Body() user: UserI): Promise<UserI> {
+		const updatedUser: UserI = await this.userService.changeUsername(user)
+		return updatedUser
+	}
 }

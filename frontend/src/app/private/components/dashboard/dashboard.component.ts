@@ -1,14 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
-import { Observable, firstValueFrom, from } from 'rxjs';
+import { Observable, } from 'rxjs';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from '../../../model/user.interface';
-import { EventEmitter } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +15,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DashboardComponent implements OnInit, AfterViewInit{
 
   rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms() //?? ask Karol about this
-  // users$: Observable<UserPaginateI> = this.userService.getUsers()
   selectedRoom = null
   user: UserI = this.authService.getLoggedInUser()
   @ViewChild(MatSelectionList) selectionList: MatSelectionList
@@ -37,7 +33,7 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit(): void {
 	this.rooms$.subscribe((rooms: RoomPaginateI) => {
-		// console.log('meta of room:', rooms.meta);
+		// console.log('rooms:', rooms);
 	  });
     this.chatService.emitPaginateRooms(10, 0)
   }
@@ -56,7 +52,7 @@ export class DashboardComponent implements OnInit, AfterViewInit{
 	console.log()
 	if (updatedRoom === null) {
 		this.selectionList.deselectAll()
-		this.reloadCurrentPage()
+		// this.reloadCurrentPage()
 		// this.rooms$ = this.chatService.getMyRooms()
 	}
 	// console.log('selected room is updated, room:', this.selectedRoom)

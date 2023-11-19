@@ -6,7 +6,7 @@
                 <form [formGroup]="passwordPrompt" (ngSubmit)="checkChatPassword()">
                     <mat-form-field>
                         <input type="password" matInput placeholder="Enter password for chatroom" formControlName="passwordValidation">
-                        <mat-error *ngIf ="password.touched && password.hasError('required')">Password is required</mat-error>
+                        <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
                     </mat-form-field>
 
                     <mat-hint *ngIf="!passwordPrompt.valid"><small>Please enter chatroom password</small></mat-hint>
@@ -44,13 +44,13 @@
 			</span>
 		</span>
 		<div class="optionButton">
-			<button mat-button color="warn"(click)="leaveChat()">Leave this chatroom</button>
+			<button mat-raised-button color="warn"(click)="leaveChat()" style="margin: 5px">Leave this chatroom</button>
 		</div>
 	</div>
 	
 		<!-- button for setting password that will trigger below section to appear -->
 		<div *ngIf="isRoomPrivate && isOwner" class="optionButton">
-			<button mat-raised-button (click)="toggleSetPasswordForm()">Set password for chat</button>
+			<button mat-raised-button (click)="toggleSetPasswordForm()" style="margin: 5px">Set password for chat</button>
 		</div>
 		
 		<div *ngIf="showSetPasswordForm">
@@ -79,8 +79,8 @@
 		
 <!-- button for changing password -->
 		<div *ngIf="isRoomProtected && isOwner" class="optionButton">
-			<button mat-button (click)="toggleChangePasswordForm()">Change chat password</button>
-			<button mat-button (click)="removeChatPassword()">Remove chat password</button>
+			<button mat-raised-button (click)="toggleChangePasswordForm()" style="margin: 5px">Change chat password</button><br>
+			<button mat-raised-button (click)="removeChatPassword()" style="margin: 5px">Remove chat password</button>
 		</div>
 		
 		<div *ngIf="showChangePasswordForm">

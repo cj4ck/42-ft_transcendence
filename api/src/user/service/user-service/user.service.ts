@@ -136,4 +136,10 @@ export class UserService {
 				return false 
 			}
 	}
+
+	async changeUsername(user: UserI): Promise<UserI> {
+		const existingUser = await this.getOne(user.id)
+		existingUser.username = user.username
+		return this.userRepository.save(existingUser);
+	}
  }

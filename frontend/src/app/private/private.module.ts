@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PrivateRoutingModule } from './private-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
-
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -18,9 +16,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { SelectUsersComponent } from './components/select-users/select-users.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { ChatMessageComponent } from './components/chat-message/chat-message.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatSelectModule} from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 import { UsersListedComponent } from './components/users-listed/users-listed.component';
+import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +29,7 @@ import { UsersListedComponent } from './components/users-listed/users-listed.com
     ChatRoomComponent,
     ChatMessageComponent,
     UsersListedComponent,
+    UserDashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -44,8 +44,8 @@ import { UsersListedComponent } from './components/users-listed/users-listed.com
     MatChipsModule,
     MatAutocompleteModule,
     MatIconModule,
-	MatCheckboxModule, 
-	MatSelectModule
-  ]
+    MatCheckboxModule,
+    MatSelectModule,
+  ],
 })
-export class PrivateModule { }
+export class PrivateModule {}
