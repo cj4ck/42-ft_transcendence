@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 
 export class LoginComponent {
-  
+
   form: FormGroup = new FormGroup({
     email: new FormControl(null, [Validators.required, Validators.email]),
     password: new FormControl(null, [Validators.required]),
@@ -45,7 +45,7 @@ export class LoginComponent {
             this.twoFactorRequired = true;
           } else {
             localStorage.setItem('nestjs_chat_app', response.access_token);
-            this.router.navigate(['private/dashboard']);
+            this.router.navigate(['private/dashbo']);
           }
         },
         error => {
@@ -63,7 +63,7 @@ export class LoginComponent {
       ).subscribe(
         response => {
           localStorage.setItem('nestjs_chat_app', response.access_token);
-          this.router.navigate(['private/dashboard']);
+          this.router.navigate(['private/navigation']);
         },
         error => {
           console.error('2FA verification error:', error);

@@ -1,47 +1,69 @@
+<div class="c">
 
-<div *ngIf="chatRoom; else no_chatroom_selected">
-	<div style="height: 125px;">
-		<span style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-			<h2>{{chatRoom.name}}</h2>
-			<span style="display: flex; flex-direction: row; align-items: center;">
-				<mat-icon>event</mat-icon>
-				<p style="margin-left: 10px;">
-					{{chatRoom.updated_at | date}}
-				</p>
-			</span>
-		</span>
-		<span>
-			<h3 style="color: grey;">{{chatRoom.description}}</h3>
-			<span *ngFor="let user of chatRoom.users">{{user.username}},</span>
-		</span>
+	<div *ngIf="chatRoom; else no_chatroom_selected">
+
+		<div class="header">
+			<h2 class="title">{{chatRoom.name}}</h2>
+			<div class="heder-info">
+				Last update: {{chatRoom.updated_at | date}}<br>
+				<span *ngFor="let user of chatRoom.users">{{user.username}},</span>
+				<p>Description: {{chatRoom.description}}</p>
+			</div>
+		</div>
+
+		<!-- <button mat-button (click)="togglePasswordForm()">Set password for chat</button> -->
+
+		<!-- <div *ngIf="showPasswordForm">
+			<mat-card>
+				<mat-card-content>
+					<form [formGroup]="passwordForm" (ngSubmit)="setChatPassword()">
+						<mat-form-field>
+							<input type="password" matInput placeholder="Password" formControlName="password">
+							<mat-error *ngIf ="password.touched && password.hasError('required')">Password is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field>
+							<input type="password" matInput placeholder="Password Confirmation" formControlName="passwordConfirm">
+							<mat-error *ngIf ="passwordConfirm.touched && passwordForm.hasError('passwordsNotMatching')">Passwords not matching</mat-error>
+						</mat-form-field>
+
+						<mat-hint *ngIf="!passwordForm.valid"><small>Please set password correctly</small></mat-hint>
+
+						<div class="button">
+							<button mat-button type="submit" [disabled]="!passwordForm.valid">Set password</button>
+						</div>
+					</form>
+				</mat-card-content>
+			</mat-card>
+		</div> -->
+
+		<!-- Messages -->
+		<mat-list #messages class="message">
+			<mat-list-item *ngFor="let message of (messagesPaginate$ | async)?.items">
+				<app-chat-message [message]="message"></app-chat-message>
+			</mat-list-item>
+		</mat-list>
+
+		<!-- Add Message -->
+		<div>
+			<mat-form-field  class="text">
+				<input matInput [formControl]="chatMessage" type="text">
+			</mat-form-field>
+
+			<button [disabled]="!chatMessage.valid" (click)="sendMessage()" class="sendbutton">
+					<mat-icon>send</mat-icon>
+					Send
+			</button>
+
+		</div>
+
 	</div>
 
-	<!-- Messages -->
 
-	<div style="background-color: lightgray; height: 400px; overflow-y: scroll; 
-	scrollbar-color: lightgrey darkgrey;
-	scrollbar-width: thin;">
-		<span *ngFor="let message of (messages$ | async)?.items">
-			<app-chat-message [message]="message"></app-chat-message>
-		</span>
-	</div>
-
-	<!-- Add Message -->
-	<div style="position: absolute; bottom: 0; display: flex; flex-direction: row; align-items: center;">
-		<mat-form-field style="width: 350px;">
-			<input matInput [formControl]="chatMessage" type="text">
-		</mat-form-field>
-		<button mat-button [disabled]="!chatMessage.valid" (click)="sendMessage()">
-			<span style="display: flex; flex-direction: row; align-items: center;">
-				<mat-icon style="margin-left: 20px;">send</mat-icon>
-				<p style="margin-left: 10px;">Send</p>
-			</span>
-		</button>
-	</div>
-
+	<ng-template #no_chatroom_selected>
+		<div class="nochat">
+			No Chatroom Selected
+			<i class="bi bi-chat-left-text"></i>
+		</div>
+	</ng-template>
 </div>
-
-
-<ng-template #no_chatroom_selected>
-	<mat-error>No Chatroom Selected</mat-error>
-</ng-template>

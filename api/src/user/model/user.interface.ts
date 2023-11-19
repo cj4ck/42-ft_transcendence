@@ -5,6 +5,7 @@ export interface UserI {
 	username?:  string;
 	email: string;
 	password?: string;
+	score?: number;
 	twoFactorSecret?: string;
 	isTwoFactorEnabled?: boolean;
 	temp2faSecret?: string;

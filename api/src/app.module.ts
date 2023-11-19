@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
 import { PassportModule } from '@nestjs/passport';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PassportModule } from '@nestjs/passport';
     AuthModule,
     ChatModule,
     PassportModule.register({ session: true }),
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -19,6 +19,9 @@ export class UserEntity {
 	@Column({ select: false, nullable: true })
 	password: string;
 
+	@Column()
+	score: number = 0;
+
 	@Column({ nullable: true })
 	twoFactorSecret: string;
 

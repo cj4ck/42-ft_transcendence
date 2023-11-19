@@ -1,7 +1,7 @@
 <div class="container">
 	<div>
-		<div class="dashboard">
-			<a [routerLink]="['..', 'dashboard']">Go to Dashboard</a>
+		<div class="chat">
+			<a [routerLink]="['..', 'chat']">Go to Chat</a>
 		</div>
 
 		<div>
@@ -19,11 +19,20 @@
 						<input type="text" matInput placeholder="Description" formControlName="description">
 					</mat-form-field>
 
-					<app-select-users [users]="users.value" (addUser)="addUser(initUser($event))" 
+					<mat-form-field>
+						<mat-label>Select an option</mat-label>
+						<mat-select matInput formControlName="type">
+						  <mat-option>None</mat-option>
+						  <mat-option value="public">Public</mat-option>
+						  <mat-option value="private">Private</mat-option>
+						</mat-select>
+					</mat-form-field>
+
+					<app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"
 						(removeuser)="removeUser($event.id)"></app-select-users>
-					
+
 					<mat-hint *ngIf="!form.valid"><small>Please fill out all required information</small></mat-hint>
-					
+
                     <div class="button">
                         <button mat-button type="submit" [disabled]="!form.valid">Create Chatroom</button>
                     </div>

@@ -1,0 +1,97 @@
+.c{
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	gap: 1;
+	justify-content: center;
+	min-height: 100vh;
+	background: #c69bca;
+}
+
+.title{
+	font-size: 30px;
+	font-weight: 700;
+	color: #731DD8;
+}
+
+.card{
+	background-color: #4464AD;
+	text-align: center;
+	width: 70%;
+}
+
+.roomname{
+	font-size: 23px;
+	color: #62C2E4;
+}
+
+.paginator{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background-color: #5072c2;
+	min-width: 300px;
+	align-items: center;
+}
+
+.room{
+	padding-bottom: 80px;
+}
+
+.chatroom{
+	float: left;
+}
+
+#wrapper {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	height: 100%;
+
+}
+#first {
+	max-width: 300px;
+	flex: 1;
+}
+#second {
+	flex: 1;
+	width: 100%;
+}
+
+mat-list-option{
+	background-color: #5072c2;
+}
+
+@media (max-width: 500px) {
+	#first, #second {
+	  flex: 1 0 100%;
+	  max-width: 100%;
+	}
+  }
+
+.newroom{
+	background-color: #49306B;
+	border: none;
+	padding: 15px;
+	font-size: 20px;
+	font-weight: 500;
+	margin-top: 5px;
+	border-radius: 10px;
+	color: #96E6B3;
+}
+
+
+.goBack{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	padding: 4px;
+	font-weight: 500;
+	color: white;
+	background: linear-gradient(20deg, #731DD8, #370c68);
+	border: none;
+}
+.goBack:hover{
+	background: linear-gradient(20deg, #731DD8, #be97eb);
+}
