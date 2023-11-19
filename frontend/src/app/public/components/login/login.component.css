@@ -23,3 +23,9 @@
 	display: flex;
 	justify-content: flex-end;
 }
+
+.container mat-card .error-message {
+	display: flex;
+	color: red;
+	justify-content: center;
+}

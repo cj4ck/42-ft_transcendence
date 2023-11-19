@@ -33,38 +33,6 @@ export class UserService {
 		}
 	}
 
-	// async login(user: UserI, twoFactorAuthCode?: string): Promise<{ jwt: string; isTwoFactorEnabled: boolean }> {
-	// 	try {
-	// 		const foundUser: UserI = await this.findByEmail(user.email.toLowerCase())
-	// 		if (foundUser) {
-	// 			const matches: boolean = await this.validatePassword(user.password, foundUser.password)
-	// 			if (matches) {
-	// 				const payload: UserI = await this.authService.findByEmail(foundUser.email)
-	// 				if (payload.isTwoFactorEnabled) {
-	// 					if (twoFactorAuthCode) {
-	// 						const is2faCodeValid = this.authService.verifyTwoFactorSecret(twoFactorAuthCode, payload.twoFactorSecret);
-	// 						if (!is2faCodeValid) {
-	// 							throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
-	// 						}
-	// 					} else {
-	// 						throw new HttpException('Two-factor authentication code is required', HttpStatus.BAD_REQUEST);
-	// 					}
-	// 				}
-	// 				const jwt = await this.authService.generateJwt(payload);
-  	// 				return { jwt, isTwoFactorEnabled: payload.isTwoFactorEnabled };
-	// 			} else {
-	// 				throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
-	// 			}
-	// 		} else {
-	// 			throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
-	// 		}
-
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 		throw new HttpException(error.message || 'An error occurred', HttpStatus.INTERNAL_SERVER_ERROR);
-	// 	}
-	// }
-
 	async login(user: UserI): Promise<{ jwt?: string; isTwoFactorRequired?: boolean }> {
 		try {
 			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase());

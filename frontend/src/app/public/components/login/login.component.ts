@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserI } from 'src/app/model/user.interface';
 
 @Component({
   selector: 'app-login',
@@ -25,12 +24,13 @@ export class LoginComponent {
   ) { }
 
   twoFactorRequired: boolean = false;
+  errorMessage: string;
 
   ngOnInit() {
     const jwtToken = this.route.snapshot.queryParamMap.get('token');
     if (jwtToken) {
       localStorage.setItem('nestjs_chat_app', jwtToken);
-      this.router.navigate(['../../private/components/dashboard']);
+      this.router.navigate(['private/dashboard']);
     }
   }
 
@@ -41,22 +41,21 @@ export class LoginComponent {
         password: this.password.value
       }).subscribe(
         response => {
-          console.log(response.status);
           if (response.status === '2FA_required') {
             this.twoFactorRequired = true;
           } else {
-            localStorage.setItem('nestjs_chat_app', response.access_token); // assuming your response includes a token
-            this.router.navigate(['../../private/components/dashboard']);
+            localStorage.setItem('nestjs_chat_app', response.access_token);
+            this.router.navigate(['private/dashboard']);
           }
         },
         error => {
           console.error('Login error:', error);
+          this.errorMessage = "Incorrect email or password";
         }
       );
     }
   }
   
-  // New method to verify 2FA token
   verifyTwoFactorCode() {
     if (this.twoFactorAuthCode.valid) {
       this.authService.verifyTwoFactorToken(
@@ -64,11 +63,10 @@ export class LoginComponent {
       ).subscribe(
         response => {
           localStorage.setItem('nestjs_chat_app', response.access_token);
-          this.router.navigate(['../../private/components/dashboard']);
+          this.router.navigate(['private/dashboard']);
         },
         error => {
           console.error('2FA verification error:', error);
-          // Handle the error, possibly resetting the 2FA input for retry
         }
       );
     }

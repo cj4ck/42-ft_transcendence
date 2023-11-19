@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 
@@ -16,18 +17,19 @@ export class TwoFactorSetupComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router,  
+    private router: Router, 
+    private snackbar: MatSnackBar,
   ) {}
 
   ngOnInit() {
     this.authService.isTwoFactorEnabled().subscribe((response: { isEnabled: boolean }) => {
       this.isTwoFactorEnabled = response.isEnabled;
+      if (!this.isTwoFactorEnabled){
+        this.authService.initialize2fa().subscribe((data: TwoFactorInitializationResponse) => {
+          this.qrCodeUrl = data.qrCodeUrl;
+        });
+      }
     })
-    if (!this.isTwoFactorEnabled){
-      this.authService.initialize2fa().subscribe((data: TwoFactorInitializationResponse) => {
-        this.qrCodeUrl = data.qrCodeUrl;
-      });
-    }
   }
 
   verifySetup() {
@@ -37,7 +39,8 @@ export class TwoFactorSetupComponent {
     }
     this.authService.verifySetup(this.verificationCode, this.secret).subscribe(success => {
       if (success) {
-        this.router.navigate(['../dashboard']);
+        this.router.navigate(['private/dashboard']);
+        this.snackbar.open('2FA enabled successfully', 'Close')
       } else {
         this.errorMessage = "Verification failed. Please try again.";
       }

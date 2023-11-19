@@ -31,7 +31,7 @@ export class AuthService {
 
   getLoggedInUser() {
     const decodedToken = this.jwtService.decodeToken()
-    return decodedToken.user
+    return <UserI>decodedToken.user;
   }
 
   logout() {
@@ -60,6 +60,11 @@ export class AuthService {
   verifyTwoFactorToken(twoFactorAuthCode: string, email: string): Observable<LoginResponseI> {
     const body = { twoFactorAuthCode, email };
     return this.http.post<LoginResponseI>('/api/users/2fa/verify-status', body);
+  }
+
+  verify42TwoFactorToken(token: string): Observable<LoginResponseI> {
+    const body = { token };
+    return this.http.post<LoginResponseI>('/api/auth/42/2fa/verify', body);
   }
   
   isTwoFactorEnabled() {

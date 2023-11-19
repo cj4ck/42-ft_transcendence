@@ -1,0 +1,11 @@
+<h2>Two Factor Verification</h2>
+
+<div>
+  <p>Enter the 6-digit code displayed in the app:</p>
+  <input [(ngModel)]="verificationCode" placeholder="6-digit code">
+  <button (click)="verify2fa()">Verify</button>
+</div>
+
+<div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+</div>
