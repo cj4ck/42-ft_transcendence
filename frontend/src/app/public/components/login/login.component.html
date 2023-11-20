@@ -17,14 +17,14 @@
                     <form [formGroup]="form" (ngSubmit)="twoFactorRequired ? verifyTwoFactorCode() : login()">
                         
                         <!-- Email Field -->
-                        <mat-form-field>
+                        <mat-form-field *ngIf="!twoFactorRequired">
                             <input type="email" matInput placeholder="Email" formControlName="email">
                             <mat-error *ngIf="email.touched && email.hasError('required')">Email is required</mat-error>
                             <mat-error *ngIf="email.touched && email.hasError('email')">Email must be valid</mat-error>
                         </mat-form-field>
 
                         <!-- Password Field -->
-                        <mat-form-field>
+                        <mat-form-field *ngIf="!twoFactorRequired">
                             <input type="password" matInput placeholder="Password" formControlName="password">
                             <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
                         </mat-form-field>
