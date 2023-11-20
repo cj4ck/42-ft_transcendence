@@ -187,12 +187,12 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   leaveChat() {
 	this.chatService.leaveChat(this.user.id, this.chatRoom.id)
-	this.chatService.returnUpdatedRoom().pipe(
-		map((room: RoomI) => {
-			console.log('updated room here hehe', room)
-			this.updateCurrentChatroom(null)
-		})
-	).subscribe()
+	// this.chatService.returnUpdatedRoom().pipe(
+	// 	map((room: RoomI) => {
+	// 		console.log('updated room here hehe', room)
+	// 		this.updateCurrentChatroom(null)
+	// 	})
+	// ).subscribe()
 	this.snackbar.open(`${this.user.username} left the room '${this.chatRoom.name}' succesfully`, 'Close', {
 		duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
 	})

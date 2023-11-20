@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
-import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 const routes: Routes = [
   {
@@ -15,8 +15,8 @@ const routes: Routes = [
     component: CreateRoomComponent,
   },
   {
-    path: 'user-dashboard',
-    component: UserDashboardComponent,
+    path: 'user-settings',
+    component: UserSettingsComponent,
   },
   {
     path: '**',

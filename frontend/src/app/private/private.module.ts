@@ -19,7 +19,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { UsersListedComponent } from './components/users-listed/users-listed.component';
-import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +29,7 @@ import { UserDashboardComponent } from './components/user-dashboard/user-dashboa
     ChatRoomComponent,
     ChatMessageComponent,
     UsersListedComponent,
-    UserDashboardComponent,
+    UserSettingsComponent,
   ],
   imports: [
     CommonModule,

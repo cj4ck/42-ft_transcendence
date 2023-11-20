@@ -223,7 +223,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 		try {
 			const updatedRoom = await this.roomService.leaveChat(userId, roomId)
 			if (updatedRoom) {
-				this.server.to(socket.id).emit('updatedRoom', updatedRoom)
+				// this.server.to(socket.id).emit('updatedRoom', updatedRoom)
 				const rooms = await this.roomService.getRoomsForUser(userId, {page: 1, limit: 10});
 				rooms.meta.currentPage = rooms.meta.currentPage -1
 				return this.server.to(socket.id).emit('rooms', rooms)
