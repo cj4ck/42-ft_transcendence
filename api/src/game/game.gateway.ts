@@ -51,6 +51,37 @@ export class GameGateway implements OnGatewayDisconnect {
 
   }
 
+  @SubscribeMessage('PlayerUp')
+  PlayerUP(socket: Socket){
+    if (this.gameService.games.some((game) => game.player1.user.id == socket.data.user.id))
+    {
+      var game = this.gameService.games.find((game) => game.player1.user.id == socket.data.user.id)
+      if (game.p1Pos > 0)
+        game.p1Pos -= 10;
+    }
+    if (this.gameService.games.some((game) => game.player2.user.id == socket.data.user.id))
+    {
+      var game = this.gameService.games.find((game) => game.player2.user.id == socket.data.user.id)
+      if (game.p2Pos > 0)
+        game.p2Pos -= 10;
+    }
+  }
+
+  @SubscribeMessage('PlayerDown')
+  PlayerDown(socket: Socket){
+    if (this.gameService.games.some((game) => game.player1.user.id == socket.data.user.id))
+    {
+      var game = this.gameService.games.find((game) => game.player1.user.id == socket.data.user.id)
+      if (game.p1Pos < 300)
+      game.p1Pos += 10;
+    }
+    if (this.gameService.games.some((game) => game.player2.user.id == socket.data.user.id))
+    {
+      var game = this.gameService.games.find((game) => game.player2.user.id == socket.data.user.id)
+      if (game.p2Pos < 300)
+        game.p2Pos += 10;
+    }
+  }
 
 
 }

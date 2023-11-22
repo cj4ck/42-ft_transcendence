@@ -31,7 +31,7 @@ const routes: Routes = [
     component: GameComponent,
   },
   {
-    path: 'gameroom',
+    path: 'gameroom/:id',
     component: GameroomComponent
   },
   {

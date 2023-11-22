@@ -14,8 +14,9 @@ export class GameComponent {
   constructor(private gameService: GameService, private socket: CustomSocket, private snackbar: MatSnackBar, private router: Router) {
     socket.on("PlayerInQueueChange", (nbr) => this.changeWaitingPlayers(nbr))
     socket.on("PlayerGetMatch", (new_game) => {
+      console.log(new_game);
       this.snackbar.open(`U get match`, 'Close', { duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'})
-      this.router.navigate(['private/gameroom/' + new_game])
+      this.router.navigate(['private/gameroom/' + new_game.id])
     })
   }
 

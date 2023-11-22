@@ -65,6 +65,13 @@ export class UserService {
 	})
 	}
 
+	async findById(id: number): Promise<UserI> {
+		return this.userRepository.findOne({
+			where : {
+				id
+			}
+		})
+	}
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {
 		return this.userRepository.findOne({where: { email }, select: ['id', 'email', 'username', 'password']});
@@ -73,7 +80,7 @@ export class UserService {
 	private async hashPassword(password: string): Promise<string> {
 		return this.authService.hashPassword(password);
 	}
-	
+
 	private async validatePassword(password: string, storedPasswordHash: string): Promise<any> {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}
@@ -91,7 +98,7 @@ export class UserService {
 			if(user) {
 				return true
 			} else {
-				return false 
+				return false
 			}
 	}
  }

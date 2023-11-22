@@ -10,7 +10,7 @@ export class GameEntity {
 	@Column()
 	p1Id?: number;
 	@Column()
-	p2ID?: number;
+	p2Id?: number;
 
 	@Column()
 	p1Score?: number;

@@ -1,1 +1,14 @@
-<p>gameroom works!</p>
+<p>gameroom works your room id: {{id}}</p>
+
+{{player1?.username}} {{gameData.p1Score}}vs {{gameData.p2Score}}<br>
+
+<div class="container" >
+	<canvas #myCanvas id="canvas" width="400" height="400"></canvas>
+</div>
+
+<p>
+	p1: {{gameData.p1Pos}}
+	p2: {{gameData.p2Pos}}
+	bX: {{gameData.ballX}}
+	bY: {{gameData.ballY}}
+</p>

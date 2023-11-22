@@ -16,6 +16,10 @@ export class UserService {
     return this.http.get<UserI[]>(`api/users/find-by-username?username=${username}`)
   }
 
+  findByID(id: number): Observable<UserI> {
+    return this.http.get<UserI>(`api/users/find-by-id?id=${id}`)
+  }
+
   create(user: UserI): Observable<UserI> {
     return this.http.post<UserI>('api/users', user).pipe(
       tap((createdUser: UserI) => this.snackbar.open(`User ${createdUser.username} created succesfully`, 'Close', {

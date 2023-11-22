@@ -3,6 +3,12 @@ import { PlayerI } from "./player.interface";
 
 export interface GameI {
 	id?: number;
+	p1Score?: number;
+	p2Score?: number;
+	p1Id?: number;
+	p2Id?: number;
+
+
 	player1?: PlayerI;
 	player2?: PlayerI;
 	p1Pos?: number;
@@ -11,6 +17,4 @@ export interface GameI {
 	ballY?: number;
 	ballMoveX?: number;
 	ballMoveY?: number;
-	p1Score?: number;
-	p2Score?: number;
 }
