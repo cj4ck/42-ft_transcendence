@@ -14,11 +14,14 @@ export class RoomService {
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
 		private authService: AuthService,
-		) {}
-	
+	) {}
+
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
+		room.mutedUsers = []
 		for (const user of room.users) {
-			// console.log('user#:', user.id, user.username)
+			// console.log('user#: adding empty to mutedUsers in room', user.id, user.username)
+			// let muteObject: MutedUserI = {id: user.id, muteExpiry: null}
+			// room.mutedUsers.push(muteObject)
 			if (creator.id === user.id){
 				// console.log('type: ', room.type)
 				// console.log('creator: ', creator)
@@ -106,14 +109,14 @@ export class RoomService {
 		return this.authService.hashPassword(password);
 	}
 
-	async updateAdminList(room: RoomI): Promise<RoomI> {
-		console.log('update room admins')
+	async updateRoom(room: RoomI): Promise<RoomI> {
+		console.log('update room')
 		// Assuming you have a method to retrieve the room from the database
-		const existingRoom = await this.getRoom(room.id);
+		let existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
 			console.log('Room not found')
 		}
-		existingRoom.admins = room.admins
+		existingRoom = room
 		// Save the updated room to the database
 		return this.roomRepository.save(existingRoom);
 	}

@@ -60,8 +60,8 @@ export class ChatService {
     this.socket.emit('toggleUserBlock', user)
   }
 
-  toggleRoomAdmin(room: RoomI) {
-    this.socket.emit('toggleRoomAdmin', room)
+  updateRoom(room: RoomI) {
+    this.socket.emit('updateRoom', room)
   }
 
   setChatPassword(room: RoomI): Observable<RoomI> {
@@ -91,12 +91,6 @@ export class ChatService {
 	  this.socket.emit('getChatroomInfo', roomId)
 	  return this.socket.fromEvent('hereYouGo')
   }
-
-  // getRoomAdmins(room_id: number): Observable<number[]> {
-  //   // console.log('get blocked users chat.service')
-  //   // this.socket.emit('getBlockedUsers', user_id)
-  //   return this.socket.fromEvent<number[]>('checkAdminList')
-  // }
 
   returnUpdatedRoom(): Observable<RoomI> {
 	  return this.socket.fromEvent('updatedRoom')

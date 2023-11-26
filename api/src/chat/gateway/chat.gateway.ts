@@ -71,7 +71,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	async onCreateRoom(socket: Socket, room: RoomI) {
 	// console.log('CreateRoom [creator_id]:' + socket.data.user.id)
 	// console.log('CreateRoom [users]:' + room.users)
-	room.admins = [socket.data.user.id, ...room.admins];
+	// set properties as needed, e.g.:
+	// mutedUser.roomEntity = newRoom;
+
+	room.admins = [];
+	room.admins.push(socket.data.user.id)
 	const createdRoom: RoomI = await this.roomService.createRoom(room, socket.data.user)
 	for(const user of createdRoom.users) {
 		const connections: ConnectedUserI[] = await this.connectedUserService.findByUser(user)
@@ -86,45 +90,63 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 
   // need to update this to use id, bc usernames can be duplicated 
   @SubscribeMessage('createDmRoom')
-		async onCreateDmRoom(socket: Socket, username: string) {
-		const creator = socket.data.user
-		// console.log('Creator ID:' + creator.id)
-		const guest: UserI = await this.userService.findOneByUsername(username)
-		// console.log('Guest ID:' + guest.id)
-		const dmRooms = await this.roomService.getDmForUser(creator.id, {page: 1, limit: 10})
-		for (const dmRoom of dmRooms.items) {
-			for (const user of dmRoom.users) {
-			if (user.id === guest.id) {
-				// console.log('rejecting - already exists');
-				return;
-			}
-			}
+	async onCreateDmRoom(socket: Socket, username: string) {
+	const creator = socket.data.user
+	// console.log('Creator ID:' + creator.id)
+	const guest: UserI = await this.userService.findOneByUsername(username)
+	// console.log('Guest ID:' + guest.id)
+	const dmRooms = await this.roomService.getDmForUser(creator.id, {page: 1, limit: 10})
+	for (const dmRoom of dmRooms.items) {
+		for (const user of dmRoom.users) {
+		if (user.id === guest.id) {
+			// console.log('rejecting - already exists');
+			return;
 		}
-		let privateRoom: RoomI
-		const chatMembers: UserI[] = [guest, creator];
-		privateRoom = {
-			name: `DM: ${guest.username}`,
-			description : `Private chat between ${creator.username} and ${guest.username}`,
-			type: 'dm',
-			users: chatMembers
 		}
-		// console.log('Calling on create room')
-		await this.onCreateRoom(socket, privateRoom)
+	}
+	let privateRoom: RoomI
+	const chatMembers: UserI[] = [guest, creator];
+	privateRoom = {
+		name: `DM: ${guest.username}`,
+		description : `Private chat between ${creator.username} and ${guest.username}`,
+		type: 'dm',
+		users: chatMembers
+	}
+	// console.log('Calling on create room')
+	await this.onCreateRoom(socket, privateRoom)
   }
 
-  @SubscribeMessage('toggleRoomAdmin')
-  async toggleRoomAdmin(socket: Socket, updatedRoom: RoomI) {
-    console.log('toggle room admin')
-    await this.roomService.updateAdminList(updatedRoom)
-    return this.server.to(socket.id).emit('checkAdminList', updatedRoom.admins)
+  @SubscribeMessage('updateRoom')
+  async updateRoom(socket: Socket, updatedRoom: RoomI)
+  {
+	const roomToEmit = await this.roomService.updateRoom(updatedRoom)
+	const joinedUsers: JoinedRoomI[] = await this.joinedRoomService.findByRoom(roomToEmit)
+	for (const user of joinedUsers) {
+		this.server.to(user.socketId).emit('updatedRoom', roomToEmit)
+	}
   }
 
-  @SubscribeMessage('toggleUserBlock')
-  async toggleUserBlock(socket: Socket, updatedUser: UserI) {
-    console.log('toggle user block')
-    await this.userService.updateBlockedIds(updatedUser)
-    return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
-  }
+//   @SubscribeMessage('toggleRoomAdmin')
+//   async toggleRoomAdmin(socket: Socket, updatedRoom: RoomI) {
+//     // console.log('toggle room admin')
+//     const latestRoom = await this.roomService.updateAdminList(updatedRoom)
+// 	await this.server.to(socket.id).emit('updatedRoom', latestRoom)
+//     return this.server.to(socket.id).emit('checkAdminList', updatedRoom.admins)
+//   }
+
+//   @SubscribeMessage('updateMutedUsers')
+//   async updateMutedUsers(socket: Socket, updatedRoom: RoomI) {
+//     // console.log('updateMutedUsers')
+//     await this.roomService.updateMutedUsers(updatedRoom)
+//     return this.server.to(socket.id).emit('mutedUserUpdate', updatedRoom.mutedUsers)
+//   }
+
+//   @SubscribeMessage('toggleUserBlock')
+//   async toggleUserBlock(socket: Socket, updatedUser: UserI) {
+//     // console.log('toggle user block')
+//     await this.userService.updateBlockedIds(updatedUser)
+//     return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
+//   }
 
 
   @SubscribeMessage('paginateRooms')

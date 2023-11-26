@@ -33,15 +33,37 @@
 			</span>
 			<span>
 				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
-				<span *ngFor="let user of chatRoomUsers">
+				<div *ngFor="let user of chatRoomUsers">
 				  <span
 					(click)="toggleRoomAdmin(user.id)"
 					[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
 					>
 					<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
 					💃 {{ user.username }} 🕺
-				</span>
-				</span>
+					</span>
+
+					<span
+						(click)="toggleUserMute(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span *ngIf="userMuteToggles[user.id]">🔇</span>
+						<span *ngIf="!userMuteToggles[user.id]">🗣️</span>
+					</span>
+
+					<span
+						(click)="kickUser(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span>🥾</span>
+					</span>
+
+					<span
+						(click)="kickUser(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span>🚫</span>
+					</span>
+				</div>
 			</span>
 		</div>
 		
@@ -116,7 +138,7 @@
 			<mat-form-field style="width: 350px;">
 				<input matInput [formControl]="chatMessage" type="text" (keyup.enter)="sendMessage()">
 			</mat-form-field>
-			<button mat-button [disabled]="!chatMessage.valid || !chatMessage.value" (click)="sendMessage()">
+			<button mat-button [disabled]="!chatMessage.valid || !chatMessage.value || userMuteToggles[user.id]" (click)="sendMessage()">
 				<span style="display: flex; flex-direction: row; align-items: center;">
 					<mat-icon style="margin-left: 20px;">send</mat-icon>
 					<p style="margin-left: 10px;">Send</p>

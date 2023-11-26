@@ -2,7 +2,7 @@ import { UserEntity } from "src/user/model/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { JoinedRoomEntity } from "../joined-room/joined-room.entity";
 import { MessageEntity } from "../message/message.entity";
-import { UserI } from "src/user/model/user.interface";
+import { MutedUserI } from "./room.interface";
 
 @Entity()
 export class RoomEntity {
@@ -43,4 +43,7 @@ export class RoomEntity {
 
 	@Column('int', { array: true, default: [] })
 	admins: number[];
+
+	@Column({ type: 'json', nullable: true })
+	mutedUsers?: MutedUserI[];
 }
