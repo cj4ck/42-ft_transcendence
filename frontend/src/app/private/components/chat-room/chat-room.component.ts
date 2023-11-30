@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ElementRef, AfterViewInit, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Observable, combineLatest, firstValueFrom, map, startWith, tap } from 'rxjs';
 import { MessagePaginateI } from 'src/app/model/message.interface';
-import { RoomI } from 'src/app/model/room.interface';
+import { MutedUserI, RoomI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat-service/chat.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CustomValidators } from 'src/app/public/_helpers/custom-validators';
@@ -22,18 +22,19 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //and I hope that it triggers the refresh - like send 'chatRoom' value again to this comp.
   chatRoomUsers: UserI[]
   roomAdmins: number[] = []
+  mutedUsers: MutedUserI[] = []
   userAdminToggles: { [user_id: number]: boolean } = {};
-  userMuteToggles: { [user_id: number]: Date } = {};
+  userMuteToggles: { [user_id: number]: boolean } = {};
   user: UserI = this.authService.getLoggedInUser()
   isOwner: boolean = false
   chatroomObs$: Observable<RoomI>
-
 
   @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
 
 	constructor(private chatService: ChatService, 
 		private authService: AuthService,
-		private snackbar: MatSnackBar) { }
+		private snackbar: MatSnackBar,
+		private cdr: ChangeDetectorRef) { }
 
 	isRoomProtected: boolean = false
 	isRoomDM: boolean = false
@@ -213,18 +214,83 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
         }
       }
       this.userAdminToggles[user_id] = !admin
-    //   this.cdr.detectChanges();
-    //   console.log('after', this.userAdminToggles[user_id])
+      // console.log('after', this.userAdminToggles[user_id])
       if (!admin) {
         this.roomAdmins.push(user_id);
       }
       this.chatRoom.admins = this.roomAdmins
-      this.chatService.toggleRoomAdmin(this.chatRoom)
+      this.chatService.updateRoom(this.chatRoom)
+      // this.chatService.returnUpdatedRoom().pipe(
+      //   map((room: RoomI) => {
+      //     // console.log('updated room here hehe', room)
+      //     this.updateCurrentChatroom(room)
+      //   })
+      // ).subscribe()
     } else {
       console.log('Only channel owners can make users admin')
     }
   }
 
+  async toggleUserMute(user_id: number) {
+    if (this.chatRoom.admins.includes(this.user.id)) {
+      console.log("clicked on user_id to mute: " + user_id)
+      
+      
+      let mutedUserSet: boolean = false
+      let currentTime = new Date();
+      let muteExpiry: Date = new Date(currentTime.getTime() + 60*1000); //x seconds from now
+      this.mutedUsers = this.chatRoom.mutedUsers
+      
+      console.log('before', this.mutedUsers)
+      if (this.mutedUsers) {
+        this.mutedUsers.forEach(muted => {
+          if (muted.id === user_id) {
+            if (muted.muteExpiry > currentTime) {
+              console.log("User already has an active mute");
+            } else {
+              muted.muteExpiry = muteExpiry
+              console.log('User has been muted until: ' + muteExpiry);
+              // let muteObject: MutedUserI = {id: user_id, muteExpiry: muteExpiry}
+              // this.userMuteToggles[user_id] = true
+            }
+            mutedUserSet = true
+            return;
+          }
+        })
+      }
+      console.log('after', this.mutedUsers)
+      if (!mutedUserSet) {
+        console.log('would have to add to list here')
+        let muteObject: MutedUserI = {id: user_id, muteExpiry: muteExpiry}
+        this.chatRoom.mutedUsers.push(muteObject);
+      }
+      // this.chatRoom.mutedUsers = this.mutedUsers
+      this.chatService.updateRoom(this.chatRoom)
+    } else {
+      console.log('Only admins can mute users')
+    }
+  }
+
+  async kickUser(user_id: number) {
+    if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
+      let newUserList = []
+      newUserList = this.chatRoomUsers.filter(item => item.id !== user_id)
+      console.log('NewUserList:', newUserList)
+      this.chatRoom.users = newUserList
+      this.chatService.updateRoom(this.chatRoom)
+      // this.chatService.returnUpdatedRoom().pipe(
+      //   map((room: RoomI) => {
+      //     // console.log('updated room here hehe', room)
+      //     this.updateCurrentChatroom(room)
+      //   })
+      // ).subscribe()
+    }
+    else {
+      console.log('Only admins can kick users, cannot kick channel owner')
+    }
+  }
+  
+  
   chatMessage: FormControl = new FormControl(null, [Validators.required])
 
   //this function will trigger when @Input chatRoom changes in dashboard
@@ -243,19 +309,53 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       this.isRoomPrivate = this.chatRoom.type === 'private'
       this.chatRoomUsers = this.chatRoom.users
       this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
-
-      this.chatRoom.users.forEach(user => {
-        this.userAdminToggles[user.id] = this.chatRoom.admins.includes(user.id)
-      })
+      // console.log('admin pls ', this.chatRoom.admins)
+      // this.chatRoom.users.forEach(user => {
+      //   console.log('chatroom user id:', user.id)
+      //   this.userAdminToggles[user.id] = this.chatRoom.admins.includes(user.id)
+      // })
+      // //   let currentTime = new Date();
+      // //   this.userMuteToggles[user.id] = this.chatRoom.mutedUsers.some(mutedUser => {
+      // //     if (user.id === mutedUser.id) {
+      // //       return mutedUser.muteExpiry > currentTime;
+      // //     }
+      // //     return false;
+      // //   });
+      // // });
     }
+  }
+
+  ngOnInit() {
+      setInterval(() => {
+        if (this.chatRoom && this.chatRoom.id !== null) {
+        this.chatService.getChatroomInfo(this.chatRoom.id).pipe(
+          map((room: RoomI) => {
+            this.chatRoom = room;
+
+            this.chatRoom.users.forEach(user => {
+              this.userAdminToggles[user.id] = this.chatRoom.admins.includes(user.id);
+              let currentTime = new Date();
+              this.userMuteToggles[user.id] = this.chatRoom.mutedUsers.some(mutedUser => {
+                if (user.id === mutedUser.id) {
+                  return mutedUser.muteExpiry > currentTime;
+                }
+                return false;
+              });
+            });
+
+          })
+        ).subscribe();
+        this.cdr.markForCheck();
+        }
+      }, 1000);
   }
 
   ngAfterViewInit() {
     if (this.chatRoom) {
       console.log('afterviewinit:', this.chatRoom.users)
+      this.scrollToBottom()
 	}
   
-    // this.scrollToBottom()
   }
 
   ngOnDestroy() {
@@ -264,14 +364,14 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   sendMessage() {
-    if (this.chatMessage.value && this.chatMessage.valid) {
+    if (this.chatMessage.value && this.chatMessage.valid && !this.userMuteToggles[this.user.id]) {
       this.chatService.sendMessage({text: this.chatMessage.value, room: this.chatRoom})
       this.chatMessage.reset()
     }
   }
 
   scrollToBottom(): void {
-    // setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
+    setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
   }
 
 }

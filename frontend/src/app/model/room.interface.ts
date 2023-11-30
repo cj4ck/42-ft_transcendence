@@ -12,9 +12,15 @@ export interface RoomI {
 	owner_id?: number
 	password?: string
 	admins?: number[]
+	mutedUsers?: MutedUserI[]
 }
 
 export interface RoomPaginateI {
 	items: RoomI[]
 	meta: Meta
 }
+
+export interface MutedUserI {
+	id: number;
+	muteExpiry: Date;
+  }

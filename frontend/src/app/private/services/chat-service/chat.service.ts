@@ -60,8 +60,8 @@ export class ChatService {
     this.socket.emit('toggleUserBlock', user)
   }
 
-  toggleRoomAdmin(room: RoomI) {
-    this.socket.emit('toggleRoomAdmin', room)
+  updateRoom(room: RoomI) {
+    this.socket.emit('updateRoom', room)
   }
 
   setChatPassword(room: RoomI): Observable<RoomI> {
