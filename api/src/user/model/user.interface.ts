@@ -1,3 +1,5 @@
+import { StrictMatchKeysAndValues } from "typeorm";
+
 export interface UserI {
 	id?: number;
 	username?:  string;
@@ -6,4 +8,7 @@ export interface UserI {
 	score?: number;
 	wins?: number;
 	lost?: number;
+	twoFactorSecret?: string;
+	isTwoFactorEnabled?: boolean;
+	temp2faSecret?: string;
 }

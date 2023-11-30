@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(
     session({
       secret: process.env.COOKIE_SECRET,
-      saveUninitialized: false,
+      saveUninitialized: true,
       resave: false,
       cookie: {
         maxAge: 60000,
@@ -20,7 +20,12 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:4200', 'http://127.0.0.1:4200'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
   await app.listen(3000);
 }
 bootstrap();

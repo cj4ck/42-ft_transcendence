@@ -1,6 +1,6 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PrivateRoutingModule } from './private-routing.module';
 import { ChatComponent } from './components/chat/chat.component';
 
@@ -23,8 +23,9 @@ import { AboutUsComponent } from './components/about-us/about-us.component';
 import { PlayersComponent } from './components/players/players.component';
 import { GameComponent } from './components/game/game.component';
 import { GameroomComponent } from './components/game/gameroom/gameroom.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatSelectModule} from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
 
 @NgModule({
 	declarations: [
@@ -37,23 +38,25 @@ import {MatSelectModule} from '@angular/material/select';
 		AboutUsComponent,
 		PlayersComponent,
 		GameComponent,
-		GameroomComponent
+		GameroomComponent,
+		TwoFactorSetupComponent,
 	],
-	imports: [
-		CommonModule,
-		PrivateRoutingModule,
-		MatListModule,
-		MatPaginatorModule,
-		MatCardModule,
-		MatButtonModule,
-		ReactiveFormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatChipsModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatCheckboxModule,
-		MatSelectModule
-	]
+  imports: [
+    CommonModule,
+    FormsModule,
+    PrivateRoutingModule,
+    MatListModule,
+    MatPaginatorModule,
+    MatCardModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatIconModule,
+	MatCheckboxModule,
+	MatSelectModule
+  ]
 })
 export class PrivateModule { }

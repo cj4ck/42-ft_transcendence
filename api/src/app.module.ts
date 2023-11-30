@@ -9,6 +9,8 @@ import { ChatModule } from './chat/chat.module';
 import { GameModule } from './game/game.module';
 import { PassportModule } from '@nestjs/passport';
 
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -25,8 +27,8 @@ import { PassportModule } from '@nestjs/passport';
     UserModule,
     AuthModule,
     ChatModule,
-    GameModule,
     PassportModule.register({ session: true }),
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],

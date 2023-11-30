@@ -7,6 +7,7 @@ import { AboutUsComponent } from './components/about-us/about-us.component';
 import { PlayersComponent } from './components/players/players.component';
 import { GameComponent } from './components/game/game.component';
 import { GameroomComponent } from './components/game/gameroom/gameroom.component';
+import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
 
 const routes: Routes = [
 
@@ -37,6 +38,10 @@ const routes: Routes = [
   {
     path: 'create-room',
     component: CreateRoomComponent
+  },
+  {
+    path: '2fa-setup',
+    component: TwoFactorSetupComponent
   },
   {
     path: '**',

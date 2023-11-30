@@ -10,13 +10,13 @@ export class UserEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({unique: true})
+	@Column({ unique: true })
 	username: string;
 
-	@Column({unique: true})
+	@Column({ unique: true })
 	email: string;
 
-	@Column({select: false, nullable: true})
+	@Column({ select: false, nullable: true })
 	password: string;
 
 	@Column()
@@ -27,6 +27,15 @@ export class UserEntity {
 
 	@Column()
 	lost: number = 0;
+
+	@Column({ nullable: true })
+	twoFactorSecret: string;
+
+	@Column({ default: false })
+	isTwoFactorEnabled: boolean;
+
+	@Column({ nullable: true })
+	temp2faSecret?: string;
 
 	@ManyToMany(() => RoomEntity, room => room.users)
 	rooms: RoomEntity[]

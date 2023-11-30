@@ -43,13 +43,30 @@ export class UserController {
 
 	@Post('login')
 	async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseI> {
-		const userEntity: UserI = this.userHelperService.loginUserDtoToEntity(loginUserDto)
-		const jwt: string = await this.userService.login(userEntity)
-		return {
-			access_token: jwt,
-			token_type: 'JWT',
-			expires_in: 10000
-		};
+	  const user: UserI = this.userHelperService.loginUserDtoToEntity(loginUserDto);
+	  const loginResult = await this.userService.login(user);
+	  if (loginResult.isTwoFactorRequired) {
+		return { status: '2FA_required' };
+	  }
+	  return {
+		access_token: loginResult.jwt,
+		token_type: 'JWT',
+		expires_in: 10000,
+		status: true,
+	  };
 	}
 
+	@Post('/2fa/verify-status')
+	async verifyTwoFactorAuth(
+	  @Body('email') email: string,
+	  @Body('twoFactorAuthCode') twoFactorAuthCode: string,
+	): Promise<LoginResponseI> {
+	  const result = await this.userService.verifyTwoFactorAuthentication(email, twoFactorAuthCode);
+	  return {
+		access_token: result.jwt,
+		token_type: 'JWT',
+		expires_in: 10000,
+		status: true,
+	  };
+	}
 }

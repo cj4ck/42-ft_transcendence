@@ -15,7 +15,8 @@ export class AuthGuard implements CanActivate {
       route: ActivatedRouteSnapshot,
       state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-        if (this.jwtService.isTokenExpired()) {
+        const token : string = localStorage.getItem('nestjs_chat_app') || null;
+        if (!token || token == 'undefined' || this.jwtService.isTokenExpired(token)) {
           this.router.navigate(['']);
           return false;
         } else {

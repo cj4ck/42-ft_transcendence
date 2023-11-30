@@ -33,36 +33,49 @@ export class UserService {
 		}
 	}
 
-	async login(user: UserI): Promise<string> {
+	async login(user: UserI): Promise<{ jwt?: string; isTwoFactorRequired?: boolean }> {
 		try {
-			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase())
-			if (foundUser) {
-				const matches: boolean = await this.validatePassword(user.password, foundUser.password)
-				if (matches) {
-					const payload: UserI = await this.findOne(foundUser.id)
-					return this.authService.generateJwt(payload)
-				} else {
-					throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
-				}
-			} else {
-				throw new HttpException('Login was not succesful, wrong credentials', HttpStatus.UNAUTHORIZED);
+			const foundUser: UserI = await this.findByEmail(user.email.toLowerCase());
+			if (!foundUser) {
+				throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
 			}
-
-		} catch {
-			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+			const passwordIsValid: boolean = await this.validatePassword(user.password, foundUser.password);
+			if (!passwordIsValid) {
+				throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+			}
+			const payload: UserI = await this.authService.findByEmail(foundUser.email);
+			if (payload.isTwoFactorEnabled) {
+				return { isTwoFactorRequired: true };
+			}
+			const jwt = await this.authService.generateJwt(payload);
+				return { jwt };
+		} catch (error) {
+		console.error('Login error:', error);
+		throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	async verifyTwoFactorAuthentication(email: string, twoFactorAuthCode: string): Promise<{ jwt: string }> {
+		const user: UserI = await this.authService.findByEmail(email);
+		if (!user || !user.isTwoFactorEnabled) {
+			throw new HttpException('Invalid request', HttpStatus.BAD_REQUEST);
+		}
+		const is2faCodeValid = this.authService.verifyTwoFactorSecret(user.twoFactorSecret, twoFactorAuthCode);
+		if (!is2faCodeValid) {
+			throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
+		}
+		const jwt = await this.authService.generateJwt(user);
+		return { jwt };
+	}
+	
 	async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
 	async findAllByUsername(username: string): Promise<UserI[]> {
-		return this.userRepository.find({
-			where : {
-				username: Like(`%${username.toLowerCase()}%`)
-			}
-	})
+		return this.userRepository.findBy({
+			username: Like(`%${username.toLowerCase()}%`)
+		})
 	}
 
 	async findById(id: number): Promise<UserI> {
