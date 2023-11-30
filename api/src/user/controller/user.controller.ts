@@ -1,18 +1,23 @@
 import { Body, Controller, Post, Get, Query, UseGuards } from '@nestjs/common';
-import { UserService } from '../service/user-service/user.service';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { UserI } from '../model/user.interface';
-import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
+import { RoomI } from 'src/chat/model/room/room.interface';
+import { LoginChatroomResponseI } from '../model/login-chatroom-response.interface';
+import { RoomService } from 'src/chat/service/room-service/room.service';
+import { LoginChatroomDto } from '../model/dto/login-chatroom.dto';
+import { UserService } from '../service/user-service/user.service';
+import { UserHelperService } from '../service/user-helper/user-helper.service';
 
 @Controller('users')
 export class UserController {
 
 	constructor(
 		private userService: UserService,
-		private userHelperService: UserHelperService
+		private userHelperService: UserHelperService,
+		private roomService: RoomService
 	) { }
 
 	@Post()
@@ -32,7 +37,7 @@ export class UserController {
 
 	@Get('/find-by-username')
 	async findAllByUsername(@Query('username') username: string) {
-		console.log('FIND BY USERNAME - backend api call')
+		// console.log('FIND BY USERNAME - backend api call')
 		return this.userService.findAllByUsername(username)
 	}
 	@Get('/find-by-id')
@@ -68,5 +73,20 @@ export class UserController {
 		expires_in: 10000,
 		status: true,
 	  };
+	}
+
+
+	@Post('loginChatroom')
+	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<boolean> {
+		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto)
+		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto)
+		const loggedIn: boolean = await this.roomService.loginChatroom(roomEntity, enteredPassword)
+		return loggedIn
+	}
+
+	@Post('change-username')
+	async changeUsername(@Body() user: UserI): Promise<UserI> {
+		const updatedUser: UserI = await this.userService.changeUsername(user)
+		return updatedUser
 	}
 }

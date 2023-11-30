@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrivateRoutingModule } from './private-routing.module';
 import { ChatComponent } from './components/chat/chat.component';
-
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCardModule } from '@angular/material/card';
@@ -26,6 +25,8 @@ import { GameroomComponent } from './components/game/gameroom/gameroom.component
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
+import { UsersListedComponent } from './components/users-listed/users-listed.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 @NgModule({
 	declarations: [
@@ -40,7 +41,10 @@ import { TwoFactorSetupComponent } from './components/two-factor-setup/two-facto
 		GameComponent,
 		GameroomComponent,
 		TwoFactorSetupComponent,
+    UsersListedComponent,
+    UserSettingsComponent,
 	],
+
   imports: [
     CommonModule,
     FormsModule,
@@ -55,8 +59,8 @@ import { TwoFactorSetupComponent } from './components/two-factor-setup/two-facto
     MatChipsModule,
     MatAutocompleteModule,
     MatIconModule,
-	MatCheckboxModule,
-	MatSelectModule
+    MatCheckboxModule,
+    MatSelectModule
   ]
 })
-export class PrivateModule { }
+export class PrivateModule {}

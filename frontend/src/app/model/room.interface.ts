@@ -9,11 +9,18 @@ export interface RoomI {
 	created_at?: Date
 	updated_at?: Date
 	type?: string
-	// owner?: UserI
-	// password?: string
+	owner_id?: number
+	password?: string
+	admins?: number[]
+	mutedUsers?: MutedUserI[]
 }
 
 export interface RoomPaginateI {
 	items: RoomI[]
 	meta: Meta
 }
+
+export interface MutedUserI {
+	id: number;
+	muteExpiry: Date;
+  }

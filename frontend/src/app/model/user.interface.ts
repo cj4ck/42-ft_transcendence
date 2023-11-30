@@ -1,3 +1,5 @@
+import { Meta } from "./meta.interface";
+
 export interface UserI {
 	id?: number;
 	username?:  string;
@@ -6,4 +8,10 @@ export interface UserI {
 	score?: number;
 	wins?: number;
 	lost?: number;
+	blocked?: number[];
+}
+
+export interface UserPaginateI {
+	items: UserI[],
+	meta: Meta
 }

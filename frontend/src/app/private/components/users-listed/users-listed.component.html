@@ -1,0 +1,26 @@
+
+<!-- <ul>
+    <li *ngFor="let username of usernames" (click)="createPrivateChat(username)" class="button-style">
+    user: {{ username }}
+  </li>
+</ul> -->
+
+
+<ul>
+  <li *ngFor="let user of users" class="button-style">
+    <div class="user-info">
+      <span class="username">User: {{ user.username }}</span>
+    </div>
+    <div class="toggle-button">
+      <button (click)="toggleUserBlock(user.id)">
+        <i class="block-icon">Block</i>
+        <!-- <i class="block-icon">{{ isUserBlocked(user.id) ? 'Unblock' : 'Block' }}</i> -->
+      </button>
+    </div>
+    <div class="create-chat-button">
+      <button (click)="createPrivateChat(user.username)">
+        <h4 class="start-dm">Start DM</h4>
+      </button>
+    </div>
+  </li>
+</ul>

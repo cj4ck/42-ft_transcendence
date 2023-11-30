@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
+import { RoomI } from 'src/chat/model/room/room.interface';
 import { UserI } from 'src/user/model/user.interface'
 import { Repository } from 'typeorm';
 import * as speakeasy from 'speakeasy';
@@ -98,4 +99,9 @@ export class AuthService {
 		const user = await this.findByEmail(email);
 		return user && user.isTwoFactorEnabled;
 	}
+	
+	async generateJwtRoom(room: RoomI): Promise<string> {
+		return this.jwtService.signAsync({room});
+	}
 }
+

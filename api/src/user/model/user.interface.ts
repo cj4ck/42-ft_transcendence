@@ -1,4 +1,4 @@
-import { StrictMatchKeysAndValues } from "typeorm";
+import { Meta } from "./meta.interface";
 
 export interface UserI {
 	id?: number;
@@ -11,4 +11,10 @@ export interface UserI {
 	twoFactorSecret?: string;
 	isTwoFactorEnabled?: boolean;
 	temp2faSecret?: string;
+	blocked?: number[];
+}
+
+export interface UserPaginateI {
+	items: UserI[],
+	meta: Meta
 }

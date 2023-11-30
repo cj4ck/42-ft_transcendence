@@ -5,14 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './model/user.entity';
 import { UserHelperService } from './service/user-helper/user-helper.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { RoomService } from 'src/chat/service/room-service/room.service';
+import { RoomEntity } from 'src/chat/model/room/room.entity';
+import { UserGatewayGateway } from './user-gateway/user-gateway.gateway';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, RoomEntity]),
     AuthModule
   ],
   controllers: [UserController],
-  providers: [UserService, UserHelperService],
+//   providers: [UserService, UserHelperService, RoomService],
+  providers: [UserService, UserHelperService, RoomService, UserGatewayGateway],
   exports: [UserService]
 })
 export class UserModule {}

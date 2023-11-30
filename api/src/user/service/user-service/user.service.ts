@@ -6,6 +6,7 @@ import { UserI } from '../../model/user.interface';
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { AuthService } from 'src/auth/service/auth.service';
+import { Observable } from 'rxjs';
 
 
 @Injectable()
@@ -67,7 +68,7 @@ export class UserService {
 		const jwt = await this.authService.generateJwt(user);
 		return { jwt };
 	}
-	
+
 	async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
@@ -85,6 +86,59 @@ export class UserService {
 			}
 		})
 	}
+	async findOneByUsername(username: string): Promise<UserI> {
+		// console.log('findonebyusername ' + username)
+		return this.userRepository.findOne({
+			where: {
+				username: Like(`%${username.toLowerCase()}%`)
+			}
+		})
+	}
+
+	async doesUsernameExist(username: string) {
+			const user = await this.userRepository.findOne({
+			  where: {
+				username: Like(`%${username.toLowerCase()}%`),
+			  },
+			});
+			if (user === null)
+				return (false)
+			else
+				return (true)
+	}
+
+	async updateBlockedIds(user: UserI): Promise<UserI> {
+		console.log('update Blocked Ids')
+		// Assuming you have a method to retrieve the room from the database
+		const existingUser = await this.getOne(user.id);
+		if (!existingUser) {
+			console.log('user not found')
+		}
+		existingUser.blocked = user.blocked
+		// Save the updated room to the database
+		return this.userRepository.save(existingUser);
+	}
+
+	async getBlockedUsers(user_id: number): Promise<number[]> {
+		// console.log('get blocked users ' + user_id)
+		const foundUser = await this.userRepository.findOne({ where: { id: user_id } })
+		return foundUser.blocked
+		// .then(user => {
+		//   if (user) {
+		// 	console.log('User found, returning ' + user.blocked);
+		// 	return(user.blocked);
+		//   } else {
+		// 	console.log('User not found');
+		// 	return []
+		//   }
+		// })
+		// .catch(error => {
+		// 	console.log(error)
+		// 	return []
+		// });
+		// return []
+	}
+
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {
 		return this.userRepository.findOne({where: { email }, select: ['id', 'email', 'username', 'password']});
@@ -98,7 +152,7 @@ export class UserService {
 		return this.authService.comparePasswords(password, storedPasswordHash);
 	}
 
-	private async findOne(id: number): Promise<UserI> {
+	async findOne(id: number): Promise<UserI> {
 		return this.userRepository.findOne({ where: { id } });
 	}
 
@@ -118,5 +172,11 @@ export class UserService {
 	public async savePlayer(user: UserI)
 	{
 		await this.userRepository.save(user);
+	}
+
+	async changeUsername(user: UserI): Promise<UserI> {
+		const existingUser = await this.getOne(user.id)
+		existingUser.username = user.username
+		return this.userRepository.save(existingUser);
 	}
  }

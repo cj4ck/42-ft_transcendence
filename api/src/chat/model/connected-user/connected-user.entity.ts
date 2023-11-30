@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/model/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ConnectedUserEntity {
@@ -13,4 +13,7 @@ export class ConnectedUserEntity {
 	@ManyToOne(() => UserEntity, user => user.connections)
 	@JoinColumn()
 	user: UserEntity
+
+	@Column('int', { array: true, default: [] })
+	blocked: number[];
 }

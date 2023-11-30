@@ -1,0 +1,35 @@
+.page {
+	width: 1000px;
+	align-self: center;
+}
+
+.profile-header {
+	display: flex;
+	align-items: center;
+  }
+  
+  .avatar-container {
+	margin-right: 20px; /* Adjust as needed */
+  }
+  
+  .avatar {
+	width: 115px; /* Adjust as needed */
+	height: 145px; /* Adjust as needed */
+	border-radius: 50%;
+  }
+  
+  .username-container {
+	flex-grow: 1;
+  }
+  
+  .username {
+	font-size: 24px; /* Adjust as needed */
+	margin: 0; /* Remove default margin */
+  }
+  
+  .button-container {
+	margin: 5px; /* Adjust as needed */
+	display: flex;
+	gap: 10px; /* Adjust as needed */
+	justify-content: space-between;
+  }

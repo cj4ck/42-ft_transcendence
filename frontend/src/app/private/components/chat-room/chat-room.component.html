@@ -1,22 +1,81 @@
-<div class="c">
+<div *ngIf="chatRoom; else no_chatroom_selected">
+	<!-- this is for chatroom pswd validation window -->
+    <div *ngIf="isRoomProtected && !passwordValidated">
+        <mat-card>
+            <mat-card-content>
+                <form [formGroup]="passwordPrompt" (ngSubmit)="checkChatPassword()">
+                    <mat-form-field>
+                        <input type="password" matInput placeholder="Enter password for chatroom" formControlName="passwordValidation">
+                        <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
+                    </mat-form-field>
 
-	<div *ngIf="chatRoom; else no_chatroom_selected">
+                    <mat-hint *ngIf="!passwordPrompt.valid"><small>Please enter chatroom password</small></mat-hint>
 
-		<div class="header">
-			<h2 class="title">{{chatRoom.name}}</h2>
-			<div class="heder-info">
-				Last update: {{chatRoom.updated_at | date}}<br>
-				<span *ngFor="let user of chatRoom.users">{{user.username}},</span>
-				<p>Description: {{chatRoom.description}}</p>
-			</div>
+                    <div class="button">
+                        <button mat-button type="submit" [disabled]="!passwordPrompt.valid">Enter password</button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+<!-- contents of the room will only show when room is not protected or when pswd was validated -->
+	<div *ngIf="(!isRoomProtected || passwordValidated)">
+		<div style="height: 125px;">
+			<span style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+				<h2>{{chatRoom.name}}</h2>
+				<h4>{{chatRoom.type}}</h4>
+				<span style="display: flex; flex-direction: row; align-items: center;">
+					<mat-icon>event</mat-icon>
+					<p style="margin-left: 10px;">
+						{{chatRoom.updated_at | date}}
+					</p>
+				</span>
+			</span>
+			<span>
+				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
+				<div *ngFor="let user of chatRoomUsers">
+				  <span
+					(click)="toggleRoomAdmin(user.id)"
+					[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
+					>
+					<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
+					💃 {{ user.username }} 🕺
+					</span>
+
+					<span
+						(click)="toggleUserMute(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span *ngIf="userMuteToggles[user.id]">🔇</span>
+						<span *ngIf="!userMuteToggles[user.id]">🗣️</span>
+					</span>
+
+					<span
+						(click)="kickUser(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span>🥾</span>
+					</span>
+
+					<span
+						(click)="kickUser(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer' }"
+						>
+						<span>🚫</span>
+					</span>
+				</div>
+			</span>
 		</div>
 
-		<!-- <button mat-button (click)="togglePasswordForm()">Set password for chat</button> -->
+<!-- button for setting password that will trigger below section to appear -->
+		<div *ngIf="isRoomPrivate && isOwner">
+			<button mat-button (click)="toggleSetPasswordForm()">Set password for chat</button>
+		</div>
 
-		<!-- <div *ngIf="showPasswordForm">
+		<div *ngIf="showSetPasswordForm">
 			<mat-card>
 				<mat-card-content>
-					<form [formGroup]="passwordForm" (ngSubmit)="setChatPassword()">
+					<form [formGroup]="setPasswordForm" (ngSubmit)="setChatPassword()">
 						<mat-form-field>
 							<input type="password" matInput placeholder="Password" formControlName="password">
 							<mat-error *ngIf ="password.touched && password.hasError('required')">Password is required</mat-error>
@@ -24,46 +83,70 @@
 
 						<mat-form-field>
 							<input type="password" matInput placeholder="Password Confirmation" formControlName="passwordConfirm">
-							<mat-error *ngIf ="passwordConfirm.touched && passwordForm.hasError('passwordsNotMatching')">Passwords not matching</mat-error>
+							<mat-error *ngIf ="passwordConfirm.touched && setPasswordForm.hasError('passwordsNotMatching')">Passwords not matching</mat-error>
 						</mat-form-field>
 
-						<mat-hint *ngIf="!passwordForm.valid"><small>Please set password correctly</small></mat-hint>
+						<mat-hint *ngIf="!setPasswordForm.valid"><small>Please set password correctly</small></mat-hint>
 
 						<div class="button">
-							<button mat-button type="submit" [disabled]="!passwordForm.valid">Set password</button>
+							<button mat-button type="submit" [disabled]="!setPasswordForm.valid">Set chat password</button>
 						</div>
 					</form>
 				</mat-card-content>
 			</mat-card>
-		</div> -->
+		</div>
+
+<!-- button for changing password -->
+		<div *ngIf="isRoomProtected && isOwner" class="optionButton">
+			<button mat-raised-button (click)="toggleChangePasswordForm()" style="margin: 5px">Change chat password</button><br>
+			<button mat-raised-button (click)="removeChatPassword()" style="margin: 5px">Remove chat password</button>
+		</div>
+
+		<div *ngIf="showChangePasswordForm">
+			<mat-card>
+				<mat-card-content>
+					<form [formGroup]="changePasswordForm" (ngSubmit)="changeChatPassword()">
+						<mat-form-field>
+							<input type="password" matInput placeholder="New password" formControlName="newPassword">
+							<mat-error *ngIf ="newPassword.touched && newPassword.hasError('required')">Password is required</mat-error>
+						</mat-form-field>
+
+						<mat-form-field>
+							<input type="password" matInput placeholder="New Password Confirmation" formControlName="newPasswordConfirm">
+							<mat-error *ngIf ="newPasswordConfirm.touched && changePasswordForm.hasError('passwordsNotMatching')">Passwords not matching</mat-error>
+						</mat-form-field>
+
+						<mat-hint *ngIf="!changePasswordForm.valid"><small>Please set password correctly</small></mat-hint>
+
+						<div class="button">
+							<button mat-button type="submit" [disabled]="!changePasswordForm.valid">Change password</button>
+						</div>
+					</form>
+				</mat-card-content>
+			</mat-card>
+		</div>
 
 		<!-- Messages -->
-		<mat-list #messages class="message">
-			<mat-list-item *ngFor="let message of (messagesPaginate$ | async)?.items">
+		<div #messages class="message message-container">
+			<span *ngFor="let message of (messagesPaginate$ | async)?.items">
 				<app-chat-message [message]="message"></app-chat-message>
-			</mat-list-item>
-		</mat-list>
+			</span>
+		</div>
 
 		<!-- Add Message -->
-		<div>
-			<mat-form-field  class="text">
-				<input matInput [formControl]="chatMessage" type="text">
+		<div style="position: absolute; bottom: 0; display: flex; flex-direction: row; align-items: center;">
+			<mat-form-field style="width: 350px;">
+				<input matInput [formControl]="chatMessage" type="text" (keyup.enter)="sendMessage()">
 			</mat-form-field>
-
-			<button [disabled]="!chatMessage.valid" (click)="sendMessage()" class="sendbutton">
-					<mat-icon>send</mat-icon>
-					Send
+			<button mat-button [disabled]="!chatMessage.valid || !chatMessage.value || userMuteToggles[user.id]" (click)="sendMessage()">
+				<span style="display: flex; flex-direction: row; align-items: center;">
+					<mat-icon style="margin-left: 20px;">send</mat-icon>
+					<p style="margin-left: 10px;">Send</p>
+				</span>
 			</button>
-
 		</div>
-
 	</div>
-
-
-	<ng-template #no_chatroom_selected>
-		<div class="nochat">
-			No Chatroom Selected
-			<i class="bi bi-chat-left-text"></i>
-		</div>
-	</ng-template>
 </div>
+<ng-template #no_chatroom_selected>
+	<mat-error>No Chatroom Selected</mat-error>
+</ng-template>

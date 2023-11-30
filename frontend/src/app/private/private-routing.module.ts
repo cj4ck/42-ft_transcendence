@@ -8,9 +8,10 @@ import { PlayersComponent } from './components/players/players.component';
 import { GameComponent } from './components/game/game.component';
 import { GameroomComponent } from './components/game/gameroom/gameroom.component';
 import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
+import { ChatRoomComponent } from './components/chat-room/chat-room.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 const routes: Routes = [
-
   {
     path: 'chat',
     component: ChatComponent
@@ -37,7 +38,11 @@ const routes: Routes = [
   },
   {
     path: 'create-room',
-    component: CreateRoomComponent
+    component: CreateRoomComponent,
+  },
+  {
+    path: 'user-settings',
+    component: UserSettingsComponent,
   },
   {
     path: '2fa-setup',
@@ -52,6 +57,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PrivateRoutingModule { }
+export class PrivateRoutingModule {}

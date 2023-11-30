@@ -30,7 +30,7 @@ export class LoginComponent {
     const jwtToken = this.route.snapshot.queryParamMap.get('token');
     if (jwtToken) {
       localStorage.setItem('nestjs_chat_app', jwtToken);
-      this.router.navigate(['private/dashboard']);
+      this.router.navigate(['private']);
     }
   }
 
@@ -45,7 +45,7 @@ export class LoginComponent {
             this.twoFactorRequired = true;
           } else {
             localStorage.setItem('nestjs_chat_app', response.access_token);
-            this.router.navigate(['private/dashbo']);
+            this.router.navigate(['private']);
           }
         },
         error => {
@@ -55,7 +55,7 @@ export class LoginComponent {
       );
     }
   }
-  
+
   verifyTwoFactorCode() {
     if (this.twoFactorAuthCode.valid) {
       this.authService.verifyTwoFactorToken(
@@ -76,7 +76,7 @@ export class LoginComponent {
   loginWithFortyTwo() {
     window.location.href = '/api/auth/42/login';
   }
-  
+
   get email(): FormControl {
     return this.form.get('email') as FormControl;
   }
