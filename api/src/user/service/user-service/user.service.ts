@@ -101,4 +101,9 @@ export class UserService {
 				return false
 			}
 	}
+
+	public async savePlayer(user: UserI)
+	{
+		await this.userRepository.save(user);
+	}
  }

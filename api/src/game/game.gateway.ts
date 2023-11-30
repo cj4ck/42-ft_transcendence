@@ -9,12 +9,30 @@ export class GameGateway implements OnGatewayDisconnect {
   constructor(private gameService: GameService) {}
 
   handleDisconnect(socket: Socket) {
-    const index = this.gameService.queue.indexOf(socket.data.user, 0);
-    if (index > -1)
+    const user = socket.data.user;
+    const indexQueue = this.gameService.queue.indexOf(user, 0);
+    const playerGame = this.gameService.games.find((game) => game.player1.user == user || game.player2.user == user)
+    if (indexQueue > -1)
     {
       console.log("player " + socket.data.user.username + " leave queue");
-      this.gameService.queue.splice(index, 1);
+      this.gameService.queue.splice(indexQueue, 1);
       this.server.emit('PlayerInQueueChange', this.gameService.queue.length);
+    }
+    else if (playerGame != undefined)
+    {
+      console.log("Player " + socket.data.user.username + " quit game");
+
+      if (playerGame.player1.user == user)
+      {
+        playerGame.p2Score = this.gameService.winscore;
+      }
+      else
+      {
+        playerGame.p1Score = this.gameService.winscore;
+      }
+
+      this.gameService.finishGame(playerGame);
+
     }
     socket.disconnect();
   }

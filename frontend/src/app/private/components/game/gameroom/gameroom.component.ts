@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 import { tokenGetter } from 'src/app/app.module';
 import { GameDataI } from 'src/app/model/game-data.interface';
 import { GameI } from 'src/app/model/game.interface';
@@ -27,9 +28,15 @@ export class GameroomComponent implements OnInit, OnDestroy{
     constructor(private route: ActivatedRoute,
                 private gameService: GameService,
                 private userService: UserService,
-                private socket: CustomSocket
+                private socket: CustomSocket,
+                private snackbar: MatSnackBar,
+                private router: Router
                 ) {
-                  socket.on("GameUpdate", (gameData) => this.updateGame(gameData))
+                  socket.on("GameUpdate", (gameData) => this.updateGame(gameData));
+                  socket.on("EndOfGame", () => {
+                    this.snackbar.open(`The match end`, 'Close', { duration: 5000, horizontalPosition: 'right', verticalPosition: 'top'})
+                    this.router.navigate(['private/game/'])
+                  });
                 }
 
     ngOnInit() {

@@ -4,4 +4,6 @@ export interface UserI {
 	email: string;
 	password?: string;
 	score?: number;
+	wins?: number;
+	lost?: number;
 }

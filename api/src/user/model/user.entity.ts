@@ -22,6 +22,12 @@ export class UserEntity {
 	@Column()
 	score: number = 0;
 
+	@Column()
+	wins: number = 0;
+
+	@Column()
+	lost: number = 0;
+
 	@ManyToMany(() => RoomEntity, room => room.users)
 	rooms: RoomEntity[]
 

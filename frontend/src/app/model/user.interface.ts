@@ -1,6 +1,9 @@
 export interface UserI {
 	id?: number;
-	email?: string;
-	username?: string;
+	username?:  string;
+	email: string;
 	password?: string;
+	score?: number;
+	wins?: number;
+	lost?: number;
 }

@@ -1,6 +1,8 @@
 <p>gameroom works your room id: {{id}}</p>
 
-{{player1?.username}} {{gameData.p1Score}}vs {{gameData.p2Score}}<br>
+{{player1?.username}} {{gameData.p1Score}} vs {{player2?.username}}{{gameData.p2Score}}<br>
+Player1 elo: {{player1?.score}} | {{player1?.wins}}:{{player1?.lost}}<br>
+Player2 elo: {{player2?.score}} | {{player2?.wins}}:{{player2?.lost}}<br>
 
 <div class="container" >
 	<canvas #myCanvas id="canvas" width="400" height="400"></canvas>
