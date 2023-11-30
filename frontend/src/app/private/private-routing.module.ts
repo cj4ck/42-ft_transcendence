@@ -19,6 +19,10 @@ const routes: Routes = [
     component: UserSettingsComponent,
   },
   {
+   path: '2fa-setup',
+   component: UserSettingsComponent,
+  },
+  {
     path: '**',
     redirectTo: 'dashboard',
     pathMatch: 'full',

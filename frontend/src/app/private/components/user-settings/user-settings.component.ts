@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, map } from 'rxjs';
 import { UserI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
@@ -28,11 +29,21 @@ export class UserSettingsComponent {
       Validators.maxLength(12),
     ]),
   });
+  	doesExist: boolean
 
   changeUsername() {
     if (this.changeUsernameForm.valid) {
       const newUsername: string =
         this.changeUsernameForm.get('newUsername').value;
+		this.userService.isUsernameAvailable(newUsername).pipe(
+			map((ret: boolean) => {
+				this.doesExist = ret
+				console.log('doess exist', this.doesExist)
+			})
+		).subscribe()
+		if (this.doesExist) {
+			console.log('dziala')
+		}
       if (this.userService.isUsernameAvailable(newUsername)) {
         this.user.username = newUsername;
         this.userService.changeUsername(this.user);

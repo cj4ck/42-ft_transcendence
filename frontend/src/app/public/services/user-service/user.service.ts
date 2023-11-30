@@ -45,8 +45,9 @@ export class UserService {
 	)
   }
   
-  isUsernameAvailable(newUsername: string): boolean {
-	return (this.socket.emit('checkUsernameAvailabile', newUsername))
+  isUsernameAvailable(newUsername: string): Observable<boolean> {
+	this.socket.emit('checkUsernameAvailabile', newUsername)
+	return (this.socket.fromEvent('doesUsernameExist'))
   }
 }
 

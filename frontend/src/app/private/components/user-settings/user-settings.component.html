@@ -10,13 +10,16 @@
 			  <h1 class="username">{{ user.username }}</h1>
 			</div>
 		  </div>
-		  <div class="button-container">
-			  <button mat-raised-button color="primary" (click)="toggleChangeUsernameForm()">Change Username</button> <br>
-		  </div>
-		  <div class="button-container">
-			  <button mat-raised-button color="primary" (click)="changeAvatar()">Change Avatar</button> <br>
-		  </div>
-			<div class="button-container">
+		  <button mat-raised-button color="primary" (click)="toggleChangeUsernameForm()">Change Username</button> <br>
+			  <div class="button-container">
+		</div>
+		<div class="button-container">
+			<button mat-raised-button color="primary" (click)="changeAvatar()">Change Avatar</button> <br>
+		</div>
+		<div class="button-container">
+			<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Enable 2FA</button> <br>
+		</div>
+		<div class="button-container">
 				<button mat-raised-button color="warn" (click)="logout()">Logout</button> <br>
 			</div>
 		</mat-card-content>
@@ -32,6 +35,9 @@
 					<mat-error *ngIf="newUsername.touched && newUsername.hasError('required')">Can't be empty</mat-error>
 				</mat-form-field>
 				<mat-hint *ngIf="!changeUsernameForm.valid" style="margin: px"><small>Specify new username pls</small></mat-hint>
+				<div class="button">
+					<button mat-raised-button type="submit" [disabled]="!changeUsernameForm.valid">Change Username</button>
+				</div>
 			</form>
 		</mat-card-content>
 	</mat-card>

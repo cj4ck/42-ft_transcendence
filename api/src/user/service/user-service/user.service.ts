@@ -75,6 +75,18 @@ export class UserService {
 		})
 	}
 
+	async doesUsernameExist(username: string) {
+			const user = await this.userRepository.findOne({
+			  where: {
+				username: Like(`%${username.toLowerCase()}%`),
+			  },
+			});
+			if (user === null)
+				return (false)
+			else
+				return (true)
+	}
+
 	async updateBlockedIds(user: UserI): Promise<UserI> {
 		console.log('update Blocked Ids')
 		// Assuming you have a method to retrieve the room from the database
