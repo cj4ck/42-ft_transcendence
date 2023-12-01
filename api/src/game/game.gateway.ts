@@ -90,13 +90,13 @@ export class GameGateway implements OnGatewayDisconnect {
     if (this.gameService.games.some((game) => game.player1.user.id == socket.data.user.id))
     {
       var game = this.gameService.games.find((game) => game.player1.user.id == socket.data.user.id)
-      if (game.p1Pos < 300)
+      if (game.p1Pos < 700)
       game.p1Pos += 10;
     }
     if (this.gameService.games.some((game) => game.player2.user.id == socket.data.user.id))
     {
       var game = this.gameService.games.find((game) => game.player2.user.id == socket.data.user.id)
-      if (game.p2Pos < 300)
+      if (game.p2Pos < 700)
         game.p2Pos += 10;
     }
   }

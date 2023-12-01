@@ -42,12 +42,12 @@ export class GameService {
 				player2: this.queue.pop()!,
 				p1Score: 0,
 				p2Score: 0,
-				ballX: 200,
-				ballY: 200,
-				ballMoveX: 1.5,
-				ballMoveY: randomInt(-1,1),
-				p1Pos: 200,
-				p2Pos: 200
+				ballX: 400,
+				ballY: 400,
+				ballMoveX: 4,
+				ballMoveY: Math.random() * 2 - 1,
+				p1Pos: 400,
+				p2Pos: 400
 			}
 			newGame.p1Id = newGame.player1.user.id
 			newGame.p2Id = newGame.player2.user.id
@@ -70,25 +70,34 @@ export class GameService {
 			element.ballX += element.ballMoveX
 			element.ballY += element.ballMoveY
 
-			if (element.ballX < 60 && element.p1Pos < element.ballY && element.p1Pos + 100 > element.ballY)
-				element.ballMoveX = (element.ballMoveX - 0.3) * -1
-			if (element.ballX > 340 && element.p2Pos < element.ballY && element.p2Pos + 100 > element.ballY)
-				element.ballMoveX = (element.ballMoveX + 0.3) * -1
+			if (element.ballX < 50 && element.p1Pos - 10 < element.ballY && element.p1Pos + 110 > element.ballY)
+			{
+				element.ballX = 50;
+				element.ballMoveX = (element.ballMoveX - 1) * -1;
+				element.ballMoveY = Math.random() * 2 - 1;
+			}
 
-			if (element.ballX < 20 || element.ballX > 380)
+			if (element.ballX > 750 && element.p2Pos - 10 < element.ballY && element.p2Pos + 110 > element.ballY)
+			{
+				element.ballX = 750;
+				element.ballMoveX = (element.ballMoveX + 1) * -1;
+				element.ballMoveY = Math.random() * 2 - 1;
+			}
+
+			if (element.ballX < 20 || element.ballX > 780)
 			{
 				if (element.ballX < 20)
-					element.p2Score += 1
+					element.p2Score += 1;
 				else
-					element.p1Score += 1
+					element.p1Score += 1;
 
-				element.ballY = 200;
-				element.ballX = 200;
+				element.ballY = 400;
+				element.ballX = 400;
 
 				if (element.p2Score < this.winscore && element.p1Score < this.winscore)
 				{
-					element.ballMoveX = 1.5;
-					element.ballMoveY = randomInt(-1, 1);
+					element.ballMoveX = 4;
+					element.ballMoveY = Math.random() * 2 - 1;
 				}
 				else
 				{
@@ -99,8 +108,8 @@ export class GameService {
 				}
 
 			}
-			if (element.ballY < 20 || element.ballY > 380)
-				element.ballMoveY *= -1
+			if (element.ballY < 20 || element.ballY > 780)
+				element.ballMoveY *= -1;
 
 
 
@@ -120,6 +129,7 @@ export class GameService {
 	async finishGame(game: GameI)
 	{
 		console.log("End of the game");
+		console.log("Game score: ", game.p1Score, ":", game.p2Score);
 		await this.gameRepository.save(game);
 
 		if (game.p1Score == this.winscore)
@@ -138,7 +148,7 @@ export class GameService {
 			looser.score -= Math.floor((looser.score) / 20)
 
 		winer.wins += 1;
-		looser.lost += 1;
+		looser.losses += 1;
 
 		await this.userService.savePlayer(winer);
 		await this.userService.savePlayer(looser);

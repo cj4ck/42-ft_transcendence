@@ -1,37 +1,51 @@
 <body>
 	<section>
-	<div class="score">
-		{{game.p1Score}} : {{game.p2Score}}
+	<div class="score" *ngIf="gameData">
+		{{gameData?.p1Score}} : {{gameData?.p2Score}}
 	</div>
-	<div class="container">
+	<div class="score" *ngIf="!gameData">
+		Game is not active
+	</div>
+	<div class="cont">
+		<div class="simplename">{{player1?.username}}</div>
 		<div class="card">
 			<div class="content">
 				<div class="imgBx">
 					<img [src]="defaultAvatarUrl" width="30px">
 				</div>
 				<div class="contentBx">
-					<h3>{{player1.username}}<br>
-						<span>Score: {{player1.score}}</span><br>
-						<span>Wins: {{player1.wins}} | Lost: {{player1.lost}}</span><br>
+					<h3>{{player1?.username}}<br>
+						<span>Score: {{player1?.score}}</span><br>
+						<span>Wins: {{player1?.wins}} | Losses: {{player1?.losses}}</span><br>
 					</h3>
 				</div>
+				<ul class="sci">
+					<li class="rang">
+						<img [src]="player1rank" width="128px" height="128px" alt="rank">
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div class="game">
 			<canvas #myCanvas id="canvas" width="800" height="800"></canvas>
 		</div>
+		<div class="simplename">{{player2?.username}}</div>
 		<div class="card">
 			<div class="content">
 				<div class="imgBx">
 					<img [src]="defaultAvatarUrl" width="30px">
 				</div>
 				<div class="contentBx">
-					<h3>{{player2.username}}<br>
-						<span>Score: {{player2.score}}</span><br>
-						<span>Wins: {{player2.wins}} | Lost: {{player2.lost}}</span><br>
+					<h3>{{player2?.username}}<br>
+						<span>Score: {{player2?.score}}</span><br>
+						<span>Wins: {{player2?.wins}} | Losses: {{player2?.losses}}</span><br>
 					</h3>
-
 				</div>
+				<ul class="sci">
+					<li class="rang">
+						<img [src]="player2rank" width="128px" height="128px" alt="rank">
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

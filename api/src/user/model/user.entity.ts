@@ -26,7 +26,7 @@ export class UserEntity {
 	wins: number = 0;
 
 	@Column()
-	lost: number = 0;
+	losses: number = 0;
 
 	@Column({ nullable: true })
 	twoFactorSecret: string;

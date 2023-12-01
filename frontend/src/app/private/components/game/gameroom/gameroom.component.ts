@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { tokenGetter } from 'src/app/app.module';
 import { GameDataI } from 'src/app/model/game-data.interface';
 import { GameI } from 'src/app/model/game.interface';
 import { UserI } from 'src/app/model/user.interface';
@@ -21,6 +20,9 @@ export class GameroomComponent implements OnInit, OnDestroy, AfterViewInit{
     player1: UserI
     player2: UserI
     context: CanvasRenderingContext2D
+    player1rank: string
+    player2rank: string
+    gameData: GameDataI
 
     canvas_size = 800
     ball_radius = 15
@@ -51,32 +53,40 @@ export class GameroomComponent implements OnInit, OnDestroy, AfterViewInit{
       this.context = canvasEl.getContext("2d");
     }
 
-    ngOnInit() {
+    async ngOnInit() {
       this.sub = this.route.params.subscribe(params => {
         this.id = params['id'];
         this.gameService.findById(+this.id).subscribe(
-          game => {
+          (game) => {
+            if (!game)
+            {
+              this.router.navigate(['private/game/']);
+              return;
+            }
             this.game = game;
-            this.userService.findByID(game.p1Id).subscribe( p => this.player1 = p)
-            this.userService.findByID(game.p2Id).subscribe( p => this.player2 = p)
-          }
-          );
+            this.userService.findByID(game.p1Id).subscribe( p => {this.player1 = p; this.setPlayerRank();})
+            this.userService.findByID(game.p2Id).subscribe( p => {this.player2 = p; this.setPlayerRank();})
+          });
         });
 
       }
 
     @HostListener('window:keydown', ['$event'])
     keyEvent(event: KeyboardEvent) {
-      console.log(event.key)
-    if(event.key == "ArrowUp"){
-      this.socket.emit("PlayerUp")
-    }else if(event.key == "ArrowDown"){
-      this.socket.emit("PlayerDown")
+      event.preventDefault();
+      if(event.key == "ArrowUp")
+      {
+        this.socket.emit("PlayerUp")
+      }
+      else if(event.key == "ArrowDown")
+      {
+        this.socket.emit("PlayerDown")
+      }
     }
-  }
 
     updateGame(gameData: GameDataI)
     {
+      this.gameData = gameData;
 
       this.context.clearRect(0,0,this.canvas_size,this.canvas_size)
       this.context.beginPath();
@@ -97,5 +107,20 @@ export class GameroomComponent implements OnInit, OnDestroy, AfterViewInit{
       this.sub.unsubscribe();
     }
 
+    setPlayerRank() {
+      var rank_icons = ["https://cdn3.emoji.gg/emojis/7574-iron.png", "https://cdn3.emoji.gg/emojis/1184-bronze.png",
+          "https://cdn3.emoji.gg/emojis/7455-silver.png", "https://cdn3.emoji.gg/emojis/1053-gold.png", "https://cdn3.emoji.gg/emojis/3978-platinum.png",
+          "https://cdn3.emoji.gg/emojis/1053-diamond.png", "https://cdn3.emoji.gg/emojis/9231-master.png", "https://cdn3.emoji.gg/emojis/9476-grandmaster.png",
+          "https://cdn3.emoji.gg/emojis/9476-challenger.png"];
+
+      if (!this.player1 || !this.player2)
+        return
+
+      var p1 = Math.min(Math.floor(this.player1.score / 1000), 8);
+      var p2 = Math.min(Math.floor(this.player2.score / 1000), 8);
+
+      this.player1rank = rank_icons[p1];
+      this.player2rank = rank_icons[p2];
+    }
 }
 
