@@ -1,19 +1,23 @@
-<div class="container">
-  <h2>Two Factor Verification</h2>
+<body>
+  <div class="background">
+      <div class="shape"></div>
+      <div class="shape"></div>
+  </div>
 
-  <mat-card>
-    <mat-card-content>
-      <p>Enter the 6-digit code displayed in the app:</p>
-      <mat-form-field>
-        <input matInput [(ngModel)]="verificationCode" placeholder="6-digit code"
-               maxlength="6" pattern="^[0-9]{6}$">
+  <form>
+
+      <h3>Two Factor Verification</h3>
+
+      <mat-form-field class="inputc">
+        <input matInput [(ngModel)]="verificationCode" placeholder="6-digit code" maxlength="6" pattern="^[0-9]{6}$">
         <mat-error *ngIf="!isCodeValid()">Code must be 6 digits</mat-error>
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="verify2fa()">Verify</button>
+
+      <button (click)="verify2fa()" class="varify">Verify</button>
 
       <div *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+
+  </form>
+</body>
