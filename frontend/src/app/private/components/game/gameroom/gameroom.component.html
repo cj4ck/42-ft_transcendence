@@ -1,16 +1,39 @@
-<p>gameroom works your room id: {{id}}</p>
+<body>
+	<section>
+	<div class="score">
+		{{game.p1Score}} : {{game.p2Score}}
+	</div>
+	<div class="container">
+		<div class="card">
+			<div class="content">
+				<div class="imgBx">
+					<img [src]="defaultAvatarUrl" width="30px">
+				</div>
+				<div class="contentBx">
+					<h3>{{player1.username}}<br>
+						<span>Score: {{player1.score}}</span><br>
+						<span>Wins: {{player1.wins}} | Lost: {{player1.lost}}</span><br>
+					</h3>
+				</div>
+			</div>
+		</div>
+		<div class="game">
+			<canvas #myCanvas id="canvas" width="800" height="800"></canvas>
+		</div>
+		<div class="card">
+			<div class="content">
+				<div class="imgBx">
+					<img [src]="defaultAvatarUrl" width="30px">
+				</div>
+				<div class="contentBx">
+					<h3>{{player2.username}}<br>
+						<span>Score: {{player2.score}}</span><br>
+						<span>Wins: {{player2.wins}} | Lost: {{player2.lost}}</span><br>
+					</h3>
 
-{{player1?.username}} {{gameData.p1Score}} vs {{player2?.username}}{{gameData.p2Score}}<br>
-Player1 elo: {{player1?.score}} | {{player1?.wins}}:{{player1?.lost}}<br>
-Player2 elo: {{player2?.score}} | {{player2?.wins}}:{{player2?.lost}}<br>
-
-<div class="container" >
-	<canvas #myCanvas id="canvas" width="400" height="400"></canvas>
-</div>
-
-<p>
-	p1: {{gameData.p1Pos}}
-	p2: {{gameData.p2Pos}}
-	bX: {{gameData.ballX}}
-	bY: {{gameData.ballY}}
-</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	</section>
+</body>
