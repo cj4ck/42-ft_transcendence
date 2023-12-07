@@ -3,6 +3,7 @@ import { JoinedRoomEntity } from "src/chat/model/joined-room/joined-room.entity"
 import { MessageEntity } from "src/chat/model/message/message.entity";
 import { RoomEntity } from "src/chat/model/room/room.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { FriendRequestEntity } from "./friend-request.entity";
 
 @Entity()
 export class UserEntity {
@@ -50,6 +51,12 @@ export class UserEntity {
 
 	@OneToMany(() => MessageEntity, message => message.user)
 	messages: MessageEntity[]
+
+	@OneToMany(() => FriendRequestEntity, friendRequestEntity => friendRequestEntity.creator)
+	sentFriendRequests: FriendRequestEntity[]
+
+	@OneToMany(() => FriendRequestEntity, friendRequestEntity => friendRequestEntity.receiver)
+	receivedFriendRequests: FriendRequestEntity[]
 
 	@BeforeInsert()
 	@BeforeUpdate()

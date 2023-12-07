@@ -10,6 +10,8 @@ import { GameroomComponent } from './components/game/gameroom/gameroom.component
 import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
 import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { FriendProfileComponent } from './components/friend-profile/friend-profile.component';
 
 const routes: Routes = [
   {
@@ -47,6 +49,14 @@ const routes: Routes = [
   {
     path: '2fa-setup',
     component: TwoFactorSetupComponent
+  },
+  {
+    path: 'user-profile',
+    component: UserProfileComponent
+  },
+  {
+    path: ':id',
+    component: FriendProfileComponent
   },
   {
     path: '**',

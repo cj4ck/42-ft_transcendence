@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            Pending Friend Requests
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div *ngFor="let request of friendRequests">
+            <p>{{ request.creator.username }}</p>
+        </div>
+    </mat-card-content>
+</mat-card>

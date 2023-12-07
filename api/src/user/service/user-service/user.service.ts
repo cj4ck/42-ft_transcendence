@@ -2,11 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/model/user.entity';
 import { UserI } from '../../model/user.interface';
-
 import { Like, Repository } from 'typeorm';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { AuthService } from 'src/auth/service/auth.service';
-import { Observable } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
+import { FriendRequestI, FriendRequestStatus, FriendRequestStatusI } from 'src/user/model/friend-request.interface';
+import { FriendRequestEntity } from 'src/user/model/friend-request.entity';
 
 
 @Injectable()
@@ -15,7 +16,9 @@ export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private readonly userRepository: Repository<UserEntity>,
-		private authService: AuthService
+		private authService: AuthService,
+		@InjectRepository(FriendRequestEntity)
+		private readonly friendRequestRepository: Repository<FriendRequestEntity>,
 	) {}
 
 	async create(newUser: UserI): Promise<UserI> {
@@ -73,6 +76,27 @@ export class UserService {
 		return paginate<UserEntity>(this.userRepository, options);
 	}
 
+	async findAllFriends(userId: number): Promise<UserI[]> {
+		const friendRequests = await this.friendRequestRepository.find({
+			where: [
+				{ creator: { id: userId }, status: 'accepted' },
+				{ receiver: { id: userId }, status: 'accepted' }
+			],
+			relations: ['creator', 'receiver']
+		});
+	
+		const friends: UserI[] = [];
+	
+		friendRequests.forEach(request => {
+			if (request.creator.id === userId) {
+				friends.push(request.receiver);
+			} else {
+				friends.push(request.creator);
+			}
+		});
+		return friends;
+	}
+	
 	async findAllByUsername(username: string): Promise<UserI[]> {
 		return this.userRepository.findBy({
 			username: Like(`%${username.toLowerCase()}%`)
@@ -138,6 +162,129 @@ export class UserService {
 		// });
 		// return []
 	}
+
+	findUserById(id: number): Observable<UserI> {
+		return from(
+			this.userRepository.findOneBy({ id }),
+		).pipe(
+			map((user: UserI) => {
+				if (!user) {
+					throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+				}
+				return user;
+			})
+		)
+	}
+
+	hasRequestBeenSentOrReceived(creator: UserI, receiver: UserI): Observable<boolean> {
+		return from(this.friendRequestRepository.findOne({
+			where: [
+				{ creator: { id: creator.id }, receiver: { id: receiver.id }},
+				{ creator: { id: receiver.id }, receiver: { id: creator.id } },
+			],
+		}),
+		).pipe(
+			switchMap((friendRequest: FriendRequestI) => {
+				if (!friendRequest) return of(false);
+				return of(true);
+			})
+		);
+	}
+
+	sendFriendRequest(
+		receiverId: number,
+		creator: UserI,
+	): Observable<FriendRequestI | { error: string }> {
+		if (receiverId === creator.id) {
+			return of({ error: 'It is not possible to add yourself' });
+		}
+		return from(this.findUserById(receiverId)).pipe(
+			switchMap((receiver: UserI) => {
+				return this.hasRequestBeenSentOrReceived(creator, receiver).pipe(
+					switchMap((hasRequestBeenSentOrReceived: boolean) => {
+						if (hasRequestBeenSentOrReceived) return of({ error: 'A friend request has already been sent or received.' })
+						let friendRequest: FriendRequestI = {
+							creator,
+							receiver,
+							status: 'pending',
+						}
+						return from(this.friendRequestRepository.save(friendRequest));
+					})
+				);
+			}),
+		)
+	}
+
+	getFriendRequestStatus(
+		userId: number,
+		currentUser: UserI,
+	): Observable<FriendRequestStatusI> {
+		return this.findUserById(userId).pipe(
+			switchMap((receiver: UserI) => {
+				return from(
+					this.friendRequestRepository.findOne({
+						where: [
+							{ creator: { id: currentUser.id }, receiver: { id: receiver.id }},
+							{ creator: { id: receiver.id }, receiver: { id: currentUser.id }},
+						],
+						relations: ['creator', 'receiver'],
+					}),
+				);
+			}),
+			switchMap((friendRequest: FriendRequestI) => {
+				if (friendRequest?.receiver.id === currentUser.id) {
+					return of({ status: 'waiting-for-current-user-response' as FriendRequestStatus });
+				}
+				return of({ status: friendRequest?.status || 'not-sent' });
+			}),
+		)
+	}
+
+	getFriendRequestById(friendRequestId: number): Observable<FriendRequestI> {
+		let friendRequest =  from(
+			this.friendRequestRepository.findOneBy({
+				id: friendRequestId,
+			})
+		);
+		if (!friendRequest) {
+			throw new HttpException('Friend Request not found', HttpStatus.NOT_FOUND);
+		}
+		return friendRequest;
+	}
+
+	respondToFriendRequest(
+		statusResponse: FriendRequestStatus,
+		friendRequestId: number,
+	): Observable<FriendRequestStatusI> {
+		return this.getFriendRequestById(friendRequestId).pipe(
+			switchMap((friendRequest: FriendRequestEntity) => {
+				return from(
+					this.friendRequestRepository.save({
+						...friendRequest,
+						status: statusResponse,
+					}),
+				);
+			}),
+		);
+	}
+
+	getFriendRequestsForUser(
+		currentUser: UserI): Observable<FriendRequestI[]> {
+		return from(this.friendRequestRepository.find({
+			where: [{ receiver: { id: currentUser.id }}],
+			relations: ['receiver', 'creator'],
+		}))
+	}
+
+	// async getFriendRequestId(receiver: UserI, creator: UserI): Promise<number> {
+	// 	const friendRequest = await this.friendRequestRepository.find({
+	// 		where: [
+	// 			{ creator: { id: creator.id }, receiver: { id: receiver.id } },
+	// 		],
+	// 		relations: ['creator', 'receiver']
+	// 	});
+	// 	return friendRequest.id
+	// }
 
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {

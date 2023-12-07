@@ -1,0 +1,37 @@
+<body>
+    <section>
+        <div class="container">
+            <div class="card">
+                <div class="content">
+                    <div *ngIf="user; else noUser">
+                        <div class="imgBx">
+                            <img
+                                src="https://cdn.vox-cdn.com/thumbor/Si2spWe-6jYnWh8roDPVRV7izC4=/0x0:1192x795/1400x788/filters:focal(596x398:597x399)/cdn.vox-cdn.com/uploads/chorus_asset/file/22312759/rickroll_4k.jpg">
+                        </div>
+                        <h3>{{ user.username }}</h3>
+                        <h2>Score: <span>{{ user.score }}</span></h2>
+                        <h2>Wins: <span>{{ user.wins }}</span></h2>
+                        <h2>Losses: <span>{{ user.lost }}</span></h2>
+                    </div>
+
+                    <ng-container
+                        *ngIf="friendRequestStatus === 'waiting-for-current-user-response' && !responseClicked">
+                        <button (click)="responseToFriendRequest(friendRequestId, 'accepted')"
+                            class="button button-primary">Accept</button>
+                        <button (click)="responseToFriendRequest(friendRequestId, 'declined')"
+                            class="button button-warn">Decline</button>
+                    </ng-container>
+
+                    <ng-container *ngIf="['not-sent', 'pending'].includes(friendRequestStatus)">
+                        <button (click)="addUser()" class="button button-primary"
+                            [disabled]="friendRequestStatus === 'pending'">Send Request</button>
+                    </ng-container>
+
+                    <ng-template #noUser>
+                        <p>User not found</p>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>

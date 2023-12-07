@@ -27,6 +27,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { TwoFactorSetupComponent } from './components/two-factor-setup/two-factor-setup.component';
 import { UsersListedComponent } from './components/users-listed/users-listed.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { FriendProfileComponent } from './components/friend-profile/friend-profile.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
 	declarations: [
@@ -43,6 +45,8 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
 		TwoFactorSetupComponent,
     UsersListedComponent,
     UserSettingsComponent,
+    FriendProfileComponent,
+    UserProfileComponent,
 	],
 
   imports: [
