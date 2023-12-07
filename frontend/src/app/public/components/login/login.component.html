@@ -1,57 +1,42 @@
-<div class="container">
-    <div>
-        <div class="Login In">
-            <a [routerLink]="['..', 'register']">Go to Register</a>
-        </div>
-        <div>
-            <mat-card>
-                <mat-card-title>Login</mat-card-title>
-
-                <!-- Error message -->
-                <div *ngIf="errorMessage" class="error-message">
-                    {{ errorMessage }}
-                </div>
-                <br>
-
-                <mat-card-content>
-                    <form [formGroup]="form" (ngSubmit)="twoFactorRequired ? verifyTwoFactorCode() : login()">
-                        
-                        <!-- Email Field -->
-                        <mat-form-field *ngIf="!twoFactorRequired">
-                            <input type="email" matInput placeholder="Email" formControlName="email">
-                            <mat-error *ngIf="email.touched && email.hasError('required')">Email is required</mat-error>
-                            <mat-error *ngIf="email.touched && email.hasError('email')">Email must be valid</mat-error>
-                        </mat-form-field>
-
-                        <!-- Password Field -->
-                        <mat-form-field *ngIf="!twoFactorRequired">
-                            <input type="password" matInput placeholder="Password" formControlName="password">
-                            <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
-                        </mat-form-field>
-
-                        <!-- 2FA Field -->
-                        <mat-form-field *ngIf="twoFactorRequired">
-                            <input type="text" matInput placeholder="2FA Code" formControlName="twoFactorAuthCode">
-                            <mat-error *ngIf="twoFactorAuthCode.touched && twoFactorAuthCode.invalid">2FA Code is required</mat-error>
-                        </mat-form-field>
-                        
-                        <!-- Submit Button -->
-                        <div class="button">
-                            <button mat-button type="submit" [disabled]="!form.valid || (twoFactorRequired && !twoFactorAuthCode.valid)">
-                                {{ twoFactorRequired ? 'Verify 2FA Code' : 'Login' }}
-                            </button>
-                        </div>
-
-                        <mat-hint *ngIf="!form.valid"><small>Please fill out all required fields</small></mat-hint>
-                    </form>
-                </mat-card-content>
-
-                <mat-card-actions>
-                    <!-- Login with 42 Button -->
-                    <button mat-button (click)="loginWithFortyTwo()">Login with 42</button>
-                </mat-card-actions>
-
-            </mat-card>
-        </div>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
-</div>
+
+    <form [formGroup]="form" (ngSubmit)="twoFactorRequired ? verifyTwoFactorCode() : login()">
+
+        <h3>Login Here</h3>
+
+
+
+        <!-- Email Field -->
+        <mat-form-field class="inputc" *ngIf="!twoFactorRequired">
+            <input type="email" matInput placeholder="Email" formControlName="email">
+            <mat-error *ngIf="email.touched && email.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="email.touched && email.hasError('email')">Email must be valid</mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field class="inputc"  *ngIf="!twoFactorRequired">
+            <input type="password" matInput placeholder="Password" formControlName="password">
+            <mat-error *ngIf="password.touched && password.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+
+        <!-- 2FA Field -->
+        <mat-form-field class="inputc" *ngIf="twoFactorRequired">
+            <input type="text" matInput placeholder="2FA Code" formControlName="twoFactorAuthCode">
+            <mat-error *ngIf="twoFactorAuthCode.touched && twoFactorAuthCode.invalid">2FA Code is required</mat-error>
+        </mat-form-field>
+
+        <!-- Submit Button -->
+        <button class="login" type="submit" [disabled]="!form.valid || (twoFactorRequired && !twoFactorAuthCode.valid)">
+            {{ twoFactorRequired ? 'Verify 2FA Code' : 'Login' }}
+        </button>
+
+        <button (click)="loginWithFortyTwo()" class="login">Login with 42</button>
+        <button [routerLink]='["../register"]' class="register">Go to Register</button>
+
+        <mat-hint class="hint" ><small *ngIf="!form.valid">Please fill out all required fields</small>{{errorMessage}}</mat-hint>
+    </form>
+</body>

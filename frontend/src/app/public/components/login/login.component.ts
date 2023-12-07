@@ -39,8 +39,9 @@ export class LoginComponent {
       this.authService.login({
         email: this.email.value,
         password: this.password.value
-      }).subscribe(
-        response => {
+      }).subscribe({
+        next:
+        (response) => {
           if (response.status === '2FA_required') {
             this.twoFactorRequired = true;
           } else {
@@ -48,11 +49,11 @@ export class LoginComponent {
             this.router.navigate(['private']);
           }
         },
-        error => {
-          console.error('Login error:', error);
+        error:
+        (_error) => {
           this.errorMessage = "Incorrect email or password";
         }
-      );
+    });
     }
   }
 

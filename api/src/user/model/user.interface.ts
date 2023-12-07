@@ -7,7 +7,7 @@ export interface UserI {
 	password?: string;
 	score?: number;
 	wins?: number;
-	lost?: number;
+	losses?: number;
 	twoFactorSecret?: string;
 	isTwoFactorEnabled?: boolean;
 	temp2faSecret?: string;

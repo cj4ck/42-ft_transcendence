@@ -1,15 +1,111 @@
-.container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  mat-form-field {
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #080710;
+}
+.background{
+    width: 430px;
+    height: 220px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+}
+.background .shape{
+    height: 300px;
+    width: 300px;
+    position: absolute;
+    border-radius: 50%;
+}
+.shape:first-child{
+    background: linear-gradient(
+        #1f6f04,
+        #20f019
+    );
+    left: -100px;
+    top: -100px;
+}
+.shape:last-child{
+    background: linear-gradient(
+        to right,
+     #18a0ad,
+        #23a2f6
+    );
+    right: -70px;
+    bottom: -150px;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 400px;
+    width: 400px;
+    background-color: rgba(255,255,255,0.13);
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    padding: 50px 35px;
+}
+
+form h3{
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 42px;
+    text-align: center;
+}
+
+input{
+    display: block;
+    height: 50px;
     width: 100%;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
-  
+    background-color: rgba(255,255,255,0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.inputc{
+	width: 100%;
+	background-color: rgba(255,255,255,0.07);
+}
+
+::placeholder{
+    color: #e5e5e5;
+}
+
+
+.varify{
+  padding: 15px;
+  background-color: rgb(60, 3, 193);
+  color: white;
+  border-radius: 3px;
+  width: 90%;
+  margin: 0 auto;
+  font-family: 'Poppins',sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  outline: none;
+  border: none;
+}
+
+.hint{
+	text-align: center;
+}
+
+h3 {
+  color: white;
+  font-family: 'Poppins',sans-serif;
+  letter-spacing: 0.5px;
+}
