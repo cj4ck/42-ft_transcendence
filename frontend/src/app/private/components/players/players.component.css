@@ -11,6 +11,7 @@ body {
 	background: #161616;
 	min-height: 100vh;
 	background-attachment: fixed;
+	overflow: scroll;
 }
 
 section::before {
@@ -23,6 +24,11 @@ section::before {
 	background: linear-gradient(-10deg, #59d85b, #267ada);
 	clip-path: circle(40% at right 80%);
 }
+
+body::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
 
 section::after {
 	content: '';
@@ -37,7 +43,7 @@ section::after {
 
 .goBack {
 	position: absolute;
-	color: #267ada;
+	color: white;
 	top: 10px;
 	right: 10px;
 	padding: 4px;
@@ -45,7 +51,7 @@ section::after {
 	background: linear-gradient(20deg, #59d85b, #5FC3E4);
 }
 
-.container {
+.containera {
 	position: relative;
 	z-index: 1;
 	display: flex;
@@ -55,10 +61,10 @@ section::after {
 	margin: 30px 0;
 }
 
-.container .card {
+.containera .card {
 	position: relative;
-	width: 300px;
-	height: 400px;
+	width: 250px;
+	height: 300px;
 	background: rgba(255, 255, 255, 0.05);
 	margin: 20px;
 	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
@@ -69,7 +75,7 @@ section::after {
 	backdrop-filter: blur(10px);
 }
 
-.container .card .content {
+.containera .card .content {
 	position: relative;
 	display: flex;
 	justify-content: center;
@@ -78,18 +84,18 @@ section::after {
 	transition: 0.5s;
 }
 
-.container .card:hover .content {
+.containera .card:hover .content {
 	transform: translateY(-20px);
 }
 
-.container .card .content .imgBx {
+.containera .card .content .imgBx {
 	position: relative;
 	width: 150px;
 	height: 150px;
 	overflow: hidden;
 }
 
-.container .card .content .imgBx img {
+.containera .card .content .imgBx img {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -98,7 +104,7 @@ section::after {
 	object-fit: cover;
 }
 
-.container .card .content .contentBx h3 {
+.containera .card .content .contentBx h3 {
 	color: #fff;
 	text-transform: uppercase;
 	letter-spacing: 2px;
@@ -109,34 +115,39 @@ section::after {
 	line-height: 1.1em;
 }
 
-.container .card .content .contentBx h3 span {
+.containera .card .content .contentBx h3 span {
 	font-size: 12px;
 	font-weight: 300;
 	text-transform: initial;
 }
 
-.container .card .sci {
+.containera .card .sci {
 	position: absolute;
-	bottom: 50px;
+	bottom: 20px;
 	display: flex;
 }
 
-.container .card .sci li {
+.containera .card .sci li {
 	list-style: none;
 	margin: 0 10px;
-	transform: translateY(40px);
+	transform: translateY(0px);
 	transition: 0.5s;
 	opacity: 0;
 }
 
-.container .card:hover .sci li {
+.containera .card:hover .sci li {
 	transform: translateY(0px);
 	opacity: 1;
 }
 
-.container .card .sci li a {
+.containera .card .sci li a {
 	color: #fff;
 	font-size: 20px;
+}
+
+.card{
+	overflow: hidden;
+	cursor: pointer;
 }
 
 .pagination-controls {
@@ -144,11 +155,31 @@ section::after {
 	margin-top: 20px;
 }
 
-.pagination-controls button {
-	margin: 0 10px;
-}
-
 .pagination-controls span {
 	font-size: 16px;
 	margin: 0 5px;
+}
+
+.previous{
+	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	color: white;
+	padding: 5px 30px;
+	border-right: #010101 solid 2px;
+	border-radius: 20px 0px 0px 20px;
+	font-size: 30px;
+	font-weight: 700;
+}
+
+.next{
+	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	color: white;
+	padding: 5px 30px;
+	border-left: #010101 solid 2px;
+	border-radius: 0px 20px 20px 0px;
+	font-size: 30px;
+	font-weight: 700;
+}
+
+.bi:hover{
+	color: #264f5c;
 }

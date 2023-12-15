@@ -1,11 +1,11 @@
 <body>
     <section>
-        <div class="container">
+        <div class="containera">
+
             <div class="card" *ngFor="let user of users" [routerLink]="['..', user.id]">
                 <div class="content">
                     <div class="imgBx">
-                        <img
-                            src="https://cdn.vox-cdn.com/thumbor/Si2spWe-6jYnWh8roDPVRV7izC4=/0x0:1192x795/1400x788/filters:focal(596x398:597x399)/cdn.vox-cdn.com/uploads/chorus_asset/file/22312759/rickroll_4k.jpg">
+                        <img src="https://cdn.vox-cdn.com/thumbor/Si2spWe-6jYnWh8roDPVRV7izC4=/0x0:1192x795/1400x788/filters:focal(596x398:597x399)/cdn.vox-cdn.com/uploads/chorus_asset/file/22312759/rickroll_4k.jpg">
                     </div>
                     <div class="contentBx">
                         <h3>{{ user.username }}<br><span>Score: {{user.score}}</span></h3>
@@ -17,10 +17,12 @@
                     </li>
                 </ul>
             </div>
+
+
         </div>
         <div class="pagination-controls">
-            <button (click)="goToPreviousPage()" type="button">Previous</button>
-            <button (click)="goToNextPage()" type="button">Next</button>
+            <button class="previous" (click)="goToPreviousPage()" type="button"><i class="bi bi-arrow-left"></i></button>
+            <button class="next" (click)="goToNextPage()" type="button"><i class="bi bi-arrow-right"></i></button>
           </div>
         <button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i
                 class="bi bi-sign-turn-left-fill"></i> Go back</button>

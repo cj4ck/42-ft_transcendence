@@ -12,7 +12,7 @@ export class PlayersService {
     private http: HttpClient,
   ) { }
 
-  getUsers(page: number, limit: number = 9): Observable<UserI[]> {
+  getUsers(page: number, limit: number = 12): Observable<UserI[]> {
     return this.http.get<{ items: UserI[] }>(`api/users?page=${page}&limit=${limit}`).pipe(
       map(response => response.items)
     );

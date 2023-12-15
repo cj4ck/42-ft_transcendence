@@ -12,7 +12,7 @@ export class GameService {
   constructor(private socket: CustomSocket, private http: HttpClient) { }
 
   joinGame(changeWaitingPlayers) {
-    console.log("asd");
+    this.socket.connect()
     this.socket.emit('PlayerJoinQueue', changeWaitingPlayers);
   }
 
