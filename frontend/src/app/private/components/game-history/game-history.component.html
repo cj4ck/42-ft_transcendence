@@ -1,0 +1,12 @@
+
+<div class="wrapper">
+	<div class="card-list">
+		<h2 id="wins">Wins</h2>
+		<app-gamecard *ngFor="let game of winGames" [id]="game.id"></app-gamecard>
+	</div>
+
+	<div class="card-list">
+		<h2 id="loses">Loses</h2>
+		<app-gamecard *ngFor="let game of lostGames" [id]="game.id"></app-gamecard>
+	</div>
+</div>

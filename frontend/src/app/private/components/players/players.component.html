@@ -11,6 +11,11 @@
                         <h3>{{ user.username }}<br><span>Score: {{user.score}}</span></h3>
                     </div>
                 </div>
+                <ul class="sci">
+                    <li>
+                        <a [routerLink]='["../history", user.id]'><i class="bi bi-floppy2"></i></a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="pagination-controls">

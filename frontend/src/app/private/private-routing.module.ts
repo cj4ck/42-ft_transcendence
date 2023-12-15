@@ -12,6 +12,7 @@ import { ChatRoomComponent } from './components/chat-room/chat-room.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendProfileComponent } from './components/friend-profile/friend-profile.component';
+import { GameHistoryComponent } from './components/game-history/game-history.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,10 @@ const routes: Routes = [
   {
     path: 'gameroom/:id',
     component: GameroomComponent
+  },
+  {
+    path: 'history/:id',
+    component: GameHistoryComponent
   },
   {
     path: 'create-room',

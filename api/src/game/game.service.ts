@@ -163,4 +163,22 @@ export class GameService {
 			}
 		})
 	}
+
+	async winGameForPlayer(id: number){
+		return this.gameRepository.find({
+			where : [
+				{p1Id: id, p1Score: this.winscore},
+				{p2Id: id, p2Score: this.winscore}
+			]
+		})
+	}
+
+	async lostGameForPlayer(id: number){
+		return this.gameRepository.find({
+			where : [
+				{p1Id: id, p2Score: this.winscore},
+				{p2Id: id, p1Score: this.winscore}
+			]
+		})
+	}
 }

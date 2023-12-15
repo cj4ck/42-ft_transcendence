@@ -29,6 +29,8 @@ import { UsersListedComponent } from './components/users-listed/users-listed.com
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { FriendProfileComponent } from './components/friend-profile/friend-profile.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { GameHistoryComponent } from './components/game-history/game-history.component';
+import { GamecardComponent } from './components/game-history/gamecard/gamecard.component';
 
 @NgModule({
 	declarations: [
@@ -47,6 +49,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     UserSettingsComponent,
     FriendProfileComponent,
     UserProfileComponent,
+    GameHistoryComponent,
+    GamecardComponent,
 	],
 
   imports: [

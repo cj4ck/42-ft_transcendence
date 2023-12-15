@@ -1,0 +1,36 @@
+.card {
+	width: 80%;
+	margin: 10px auto;
+	border: 1px solid #654597;
+	border-radius: 8px;
+}
+
+.cardheader {
+	padding: 12px;
+	text-align: center;
+	font-weight: bold;
+	background: linear-gradient(90deg, #574AE2, #3125bb);
+	color: wheat;
+}
+
+.cardbody{
+	display: flex;
+	background: linear-gradient(-90deg, #4e1b9fe4, #7106cae5);
+}
+
+.avatar{
+	border-radius: 10%;
+	max-height: 150px;
+}
+
+.player{
+	padding: 10px;
+	color: azure;
+	display: flex;
+	min-width: 100px;
+	width:250px;
+	flex-direction: column;
+	margin: auto;
+	justify-content: center;
+	align-items: center;
+}

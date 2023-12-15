@@ -12,6 +12,7 @@ export class GameService {
   constructor(private socket: CustomSocket, private http: HttpClient) { }
 
   joinGame(changeWaitingPlayers) {
+    console.log("asd");
     this.socket.emit('PlayerJoinQueue', changeWaitingPlayers);
   }
 
@@ -21,5 +22,13 @@ export class GameService {
 
   findById(id: number): Observable<GameI> {
     return this.http.get<GameI>(`api/game/game?id=${id}`)
+  }
+
+  getWinGamesForPlayer(id: number): Observable<GameI[]> {
+    return this.http.get<GameI[]>(`api/game/wingames?id=${id}`)
+  }
+
+  getLostGamesForPlayer(id: number): Observable<GameI[]> {
+    return this.http.get<GameI[]>(`api/game/lostgames?id=${id}`)
   }
 }
