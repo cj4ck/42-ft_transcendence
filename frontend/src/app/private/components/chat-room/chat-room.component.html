@@ -34,40 +34,45 @@
 			<span>
 				<h3 style="color: grey;">{{ chatRoom.description }}</h3>
 				<div *ngFor="let user of chatRoomUsers">
-				  <span
-					(click)="toggleRoomAdmin(user.id)"
-					[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
-					>
-					<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
-					💃 {{ user.username }} 🕺
-					</span>
-
-					<span
-						(click)="toggleUserMute(user.id)"
-						[ngStyle]="{ 'cursor': 'pointer' }"
+					<button>
+						<span
+						(click)="toggleRoomAdmin(user.id)"
+						[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }"
 						>
-						<span *ngIf="userMuteToggles[user.id]">🔇</span>
-						<span *ngIf="!userMuteToggles[user.id]">🗣️</span>
-					</span>
-
-					<span
-						(click)="kickUser(user.id)"
-						[ngStyle]="{ 'cursor': 'pointer' }"
-						>
-						<span>🥾</span>
-					</span>
-
-					<span
-						(click)="kickUser(user.id)"
-						[ngStyle]="{ 'cursor': 'pointer' }"
-						>
-						<span>🚫</span>
-					</span>
+						<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
+						💃 {{ user.username }} 🕺
+						</span>
+					</button>
+					<button>
+						<span
+							(click)="toggleUserMute(user.id)"
+							[ngStyle]="{ 'cursor': 'pointer' }"
+							>
+							<span *ngIf="userMuteToggles[user.id]">🔇</span>
+							<span *ngIf="!userMuteToggles[user.id]">🗣️</span>
+						</span>
+					</button>
+					<button>
+						<span
+							(click)="kickUser(user.id)"
+							[ngStyle]="{ 'cursor': 'pointer' }"
+							>
+							<span>🥾</span>
+						</span>
+					</button>
+					<button>
+						<span
+							(click)="kickUser(user.id)"
+							[ngStyle]="{ 'cursor': 'pointer' }"
+							>
+							<span>🚫</span>
+						</span>
+					</button>
 				</div>
 			</span>
 		</div>
 
-<!-- button for setting password that will trigger below section to appear -->
+		<!-- button for setting password that will trigger below section to appear -->
 		<div *ngIf="isRoomPrivate && isOwner">
 			<button mat-button (click)="toggleSetPasswordForm()">Set password for chat</button>
 		</div>
@@ -96,7 +101,7 @@
 			</mat-card>
 		</div>
 
-<!-- button for changing password -->
+		<!-- button for changing password -->
 		<div *ngIf="isRoomProtected && isOwner" class="optionButton">
 			<button mat-raised-button (click)="toggleChangePasswordForm()" style="margin: 5px">Change chat password</button><br>
 			<button mat-raised-button (click)="removeChatPassword()" style="margin: 5px">Remove chat password</button>
@@ -131,20 +136,26 @@
 			<span *ngFor="let message of (messagesPaginate$ | async)?.items">
 				<app-chat-message [message]="message"></app-chat-message>
 			</span>
+
+			<!-- Add Message -->
+
+			<div *ngIf="userInRoom()" style="position: absolute; bottom: 0; display: flex; flex-direction: row; align-items: center;">
+				<mat-form-field style="width: 300px;">
+					<input matInput [formControl]="chatMessage" type="text" (keyup.enter)="sendMessage()">
+				</mat-form-field>
+				<button mat-button [disabled]="!chatMessage.valid || !chatMessage.value || userMuteToggles[user.id]" (click)="sendMessage()">
+					<span style="display: flex; flex-direction: row; align-items: center;">
+						<mat-icon style="margin-left: 20px;">send</mat-icon>
+						<p style="margin-left: 10px;">Send</p>
+					</span>
+				</button>
+			</div>
+			
+			<div *ngIf="!userInRoom()" style="position: absolute; bottom: 0; align-items: center;">
+				<button mat-button (click)="joinChatRoom()">Join Chatroom</button>
+			</div>
 		</div>
 
-		<!-- Add Message -->
-		<div style="position: absolute; bottom: 0; display: flex; flex-direction: row; align-items: center;">
-			<mat-form-field style="width: 350px;">
-				<input matInput [formControl]="chatMessage" type="text" (keyup.enter)="sendMessage()">
-			</mat-form-field>
-			<button mat-button [disabled]="!chatMessage.valid || !chatMessage.value || userMuteToggles[user.id]" (click)="sendMessage()">
-				<span style="display: flex; flex-direction: row; align-items: center;">
-					<mat-icon style="margin-left: 20px;">send</mat-icon>
-					<p style="margin-left: 10px;">Send</p>
-				</span>
-			</button>
-		</div>
 	</div>
 </div>
 <ng-template #no_chatroom_selected>

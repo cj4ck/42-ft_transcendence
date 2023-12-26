@@ -3,7 +3,7 @@ import { CustomSocket } from '../sockets/custom-socket';
 import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
 import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 
 @Injectable({
@@ -12,6 +12,8 @@ import { MessageI, MessagePaginateI } from 'src/app/model/message.interface';
 export class ChatService {
 
   constructor(private socket: CustomSocket, private snackbar: MatSnackBar) { }
+
+  public blockedUsersSubject = new BehaviorSubject<number[]>([])
 
   getAddedMessage(): Observable<MessageI> {
     return this.socket.fromEvent<MessageI>('messageAdded')
@@ -24,6 +26,10 @@ export class ChatService {
 
   joinRoom(room: RoomI) {
     this.socket.emit('joinRoom', room)
+  }
+
+  addUserToRoom(room: RoomI) {
+    this.socket.emit('addUserToRoom', room)
   }
 
   leaveRoom(room: RoomI) {
@@ -74,7 +80,7 @@ export class ChatService {
 
   getBlockedUsers(user_id: number): Observable<number[]> {
     // console.log('get blocked users chat.service')
-    // this.socket.emit('getBlockedUsers', user_id)
+    this.socket.emit('getBlockedUsers', user_id)
     return this.socket.fromEvent<number[]>('checkBlockedRes')
   }
 

@@ -10,9 +10,9 @@ import { ChatService } from '../../services/chat.service';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css'],
+  styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit, AfterViewInit{
+export class ChatComponent implements AfterViewInit {
 
   rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms() //?? ask Karol about this
   selectedRoom = null
@@ -33,7 +33,7 @@ export class ChatComponent implements OnInit, AfterViewInit{
 
   ngAfterViewInit(): void {
 	this.rooms$.subscribe((rooms: RoomPaginateI) => {
-		// console.log('rooms:', rooms);
+		console.log('rooms:', rooms);
 	  });
     this.chatService.emitPaginateRooms(10, 0)
   }

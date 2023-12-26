@@ -120,8 +120,9 @@ export class UserService {
 	}
 
 	async getBlockedUsers(user_id: number): Promise<number[]> {
-		// console.log('get blocked users ' + user_id)
 		const foundUser = await this.userRepository.findOne({ where: { id: user_id } })
+		console.log('get blocked users ' + user_id, 'blocked:', foundUser.blocked)
+
 		return foundUser.blocked
 		// .then(user => {
 		//   if (user) {

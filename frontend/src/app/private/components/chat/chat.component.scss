@@ -1,0 +1,44 @@
+._container {
+	display: flex;
+	justify-content: center;
+	
+	mat-card { 
+		position: fixed;
+		margin: 20px;
+		width: 90%;
+
+		.rooms {
+			height: 590px;
+			width: 60%;
+			overflow-y: scroll;
+			scrollbar-color: lightgrey darkgrey;
+			scrollbar-width: thin;
+		}
+		.chatroom {
+			// margin-left: 5px;
+			width: 40%
+		}
+		.users_list {
+			width: 20%;
+		}
+	}
+}
+
+// ::-webkit-scrollbar-track {
+// 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// 	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// 	border-radius: 10px;
+// 	background-color: rgb(255, 255, 255);
+// }
+
+// ::-webkit-scrollbar {
+// 	width: 12px;
+// 	background-color: rgb(85, 85, 85);
+// }
+
+// ::-webkit-scrollbar-thumb {
+// 	border-radius: 10px;
+// 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// 	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// 	background-color: lightgray;
+// }
