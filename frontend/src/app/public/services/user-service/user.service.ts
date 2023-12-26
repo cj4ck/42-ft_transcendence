@@ -16,7 +16,7 @@ export class UserService {
 	private socket: CustomSocket) { }
 
   getAllUsers() {
-    return this.http.get<UserPaginateI>(`api/users/`)
+    return this.http.get<UserI[]>(`api/users/`)
   }
 
   findByUsername(username: string): Observable<UserI[]> {

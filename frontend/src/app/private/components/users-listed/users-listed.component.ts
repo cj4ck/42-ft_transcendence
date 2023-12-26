@@ -34,11 +34,11 @@ export class UsersListedComponent implements OnInit {
     this.userService.findByID(this.currentUser.id).subscribe((user: UserI) => {
       this.usersBlocked = user.blocked
       this.userService.getAllUsers().subscribe((data) => {
-        this.filteredUsers = data.items
-        this.numUsers = data.meta.totalItems
+        // this.filteredUsers = data.items
+        // this.numUsers = data.meta.totalItems
         // //   console.log(this.filteredUsers)
-        for (let i = 0; i < this.numUsers; i++) {
-          const user = this.filteredUsers[i]
+        for (let i = 0; i < data.length; i++) {
+          const user = data[i]
           if (user.username != this.currentUser.username) {
             this.users.push(user)
             if (this.usersBlocked.includes(user.id)) {
