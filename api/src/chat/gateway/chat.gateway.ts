@@ -63,7 +63,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	socket.disconnect();
   }
 
-	@SubscribeMessage('createRoom')
+@SubscribeMessage('createRoom')
 	async onCreateRoom(socket: Socket, room: RoomI) {
 	// console.log('CreateRoom [creator_id]:' + socket.data.user.id)
 	// console.log('CreateRoom [users]:' + room.users)
@@ -82,6 +82,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 			await this.server.to(connection.socketId).emit('rooms', rooms)
 		}
 	}
+  }
+
+  @SubscribeMessage('addUserToRoom')
+  async onAddUserToRoom(socket: Socket, room: RoomI) {
+  	const newRoom = await this.roomService.addCreatorToRoom(room, socket.data.user)
+	this.roomService.updateRoom(newRoom)
   }
 
   // need to update this to use id, bc usernames can be duplicated
@@ -144,21 +150,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 //     return this.server.to(socket.id).emit('mutedUserUpdate', updatedRoom.mutedUsers)
 //   }
 
-//   @SubscribeMessage('toggleUserBlock')
-//   async toggleUserBlock(socket: Socket, updatedUser: UserI) {
-//     // console.log('toggle user block')
-//     await this.userService.updateBlockedIds(updatedUser)
-//     return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
-//   }
+  @SubscribeMessage('toggleUserBlock')
+  async toggleUserBlock(socket: Socket, updatedUser: UserI) {
+    // console.log('toggle user block')
+    await this.userService.updateBlockedIds(updatedUser)
+    return this.server.to(socket.id).emit('checkBlockedRes', updatedUser.blocked)
+  }
 
 
   @SubscribeMessage('paginateRooms')
 		async onPaginateRoom(socket: Socket, page: PageI) {
-		const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page))
-		console.log('onPaginate:', socket.data.user.id)
-		// substract page -1 to match the angular material paginator
-		rooms.meta.currentPage = rooms.meta.currentPage - 1
-		return this.server.to(socket.id).emit('rooms', rooms)
+		
+		if (socket.data.user) {
+			const rooms = await this.roomService.getRoomsForUser(socket.data.user.id, this.handleIncomingPageRequest(page))
+			console.log('onPaginate:', socket.data.user.id)
+			// substract page -1 to match the angular material paginator
+			rooms.meta.currentPage = rooms.meta.currentPage - 1
+			return this.server.to(socket.id).emit('rooms', rooms)
+		}
+		else {
+			console.log("no user to paginateRooms with")
+		}
   }
 
   @SubscribeMessage('joinRoom')
@@ -203,7 +215,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
 	async checkBlockedUsers(socket: Socket, user_id: number) {
 		try {
 			const blockedUsers = await this.userService.getBlockedUsers(user_id)
-			// console.log('return from observable: ', blockedUsers)
+			console.log('return from observable: ', blockedUsers)
 			this.server.emit('checkBlockedRes', blockedUsers)
 		} catch (error) {
 			console.error('Error checking password', error.message)

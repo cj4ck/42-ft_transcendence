@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, distinctUntilChanged, map, pipe, switchMap, tap, toArray } from 'rxjs';
+import { Observable, debounceTime, distinctUntilChanged, firstValueFrom, map, pipe, switchMap, tap, toArray } from 'rxjs';
 import { UserI, UserPaginateI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
@@ -27,20 +27,31 @@ export class UsersListedComponent implements OnInit {
   users: UserI[] = []
   usersBlocked: number[] = []
   currentUser: UserI = this.authService.getLoggedInUser()
+  userBlockedToggles: {[user_id: number]: boolean } = {};
+
 
   ngOnInit(): void {
-    this.userService.getAllUsers().subscribe((data) => {
-      this.filteredUsers = data.items
-      this.numUsers = data.meta.totalItems
-    //   console.log(this.filteredUsers)
-      for (let i = 0; i < this.numUsers; i++) {
-        const user = this.filteredUsers[i]
-        if (user.username != this.currentUser.username) {
-          this.users.push(user)
+    this.userService.findByID(this.currentUser.id).subscribe((user: UserI) => {
+      this.usersBlocked = user.blocked
+      this.userService.getAllUsers().subscribe((data) => {
+        this.filteredUsers = data.items
+        this.numUsers = data.meta.totalItems
+        // //   console.log(this.filteredUsers)
+        for (let i = 0; i < this.numUsers; i++) {
+          const user = this.filteredUsers[i]
+          if (user.username != this.currentUser.username) {
+            this.users.push(user)
+            if (this.usersBlocked.includes(user.id)) {
+              this.userBlockedToggles[user.id] = true
+            }
+            else {
+              this.userBlockedToggles[user.id] = false
+            }
+          }
         }
-      }
+      })
     })
-    this.usersBlocked = this.currentUser.blocked
+
   }
 
   createPrivateChat(username: string) {
@@ -50,7 +61,7 @@ export class UsersListedComponent implements OnInit {
 
   toggleUserBlock(user_id: number) {
     console.log("clicked on id to block: " + user_id)
-    this.usersBlocked = this.currentUser.blocked
+    // this.usersBlocked = this.currentUser.blocked
     let blocked: boolean = false
     for (let i = 0; i < this.usersBlocked.length; i++) {
       if (this.usersBlocked[i] === user_id) {
@@ -60,6 +71,8 @@ export class UsersListedComponent implements OnInit {
         break;
       }
     }
+    // flip the toggle
+    this.userBlockedToggles[user_id] = !this.userBlockedToggles[user_id]
     // if not blocked, add to block list
     if (!blocked) {
       this.usersBlocked.push(user_id);
@@ -67,9 +80,4 @@ export class UsersListedComponent implements OnInit {
     this.currentUser.blocked = this.usersBlocked
     this.chatService.toggleUserBlock(this.currentUser)
   }
-
-  // if true: blocked - label = Unblock, if false: unblocked - label = Block
-  // isUserBlocked(userId: number): boolean {
-  //   return this.usersBlocked.includes(userId);
-  // }
 }

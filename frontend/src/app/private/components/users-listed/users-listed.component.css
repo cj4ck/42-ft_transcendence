@@ -1,17 +1,14 @@
 
-/* Add this to your CSS file */
 .button-style {
-  background-color: #9000ff; /* Change to your desired button background color */
-  color: #ffffff; /* Text color */
-  border: 1px solid #007bff;
+  background-color: whitesmoke; /* Change to your desired button background color */
+  color: black; /* Text color */
+  border: 1px solid black;
   padding: 8px 2px; /* Adjust padding to your preference */
   cursor: pointer;
   border-radius: 5px; /* Rounded corners */
-  transition: background-color 0.3s ease; /* Add a smooth transition effect */
-
-  /* You can add more styling like hover effects, etc. */
+  transition: background-color 0.8s ease; /* Add a smooth transition effect */
 }
 
 .button-style:hover {
-  background-color: #b3ad00; /* Change to the hover color you prefer */
+  background-color: lightgreen; /* Change to the hover color you prefer */
 }

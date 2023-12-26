@@ -1,16 +1,13 @@
-<div class="container">
+<div class="_container">
   <mat-card>
     <div style="display: flex; flex-direction: row">
       <div>
         <div>
-          <span
-            style="display: flex; flex-direction: row; align-items: baseline"
-          >
+          <span style="display: flex; flex-direction: row; align-items: baseline">
             <h2>My Chatrooms</h2>
-            <small style="margin-left: 10px"
-              >Logged in as {{ user.username }}</small
-            >
+            <small style="margin-left: 10px">Logged in as {{ user.username }}</small>
           </span>
+
           <button
             mat-raised-button
             [routerLink]="['../create-room']"
@@ -19,6 +16,7 @@
             Create new Room
             <mat-icon>library_add</mat-icon>
           </button>
+  
           <div style="margin: 5px">
             <button mat-raised-button [routerLink]="['../user-settings']">
               Go to User Profile
@@ -73,18 +71,18 @@
           (chatRoomUpdate)="updateRoom($event)"
         ></app-chat-room>
       </div>
-      <!-- <div>
-				<app-chat-room "></app-chat-room>
-			</div> -->
+
+      <div class="users_list">
+        <app-users-listed></app-users-listed>
+        <ng-template #no_rooms>
+          <div>
+            <mat-error
+              >No Chatrooms for you so far, please create one or get invited!</mat-error
+            >
+          </div>
+        </ng-template>
+      </div>
     </div>
   </mat-card>
 </div>
 
-<app-users-listed></app-users-listed>
-<ng-template #no_rooms>
-  <div>
-    <mat-error
-      >No Chatrooms for yo so far, please create one or get invited!</mat-error
-    >
-  </div>
-</ng-template>
