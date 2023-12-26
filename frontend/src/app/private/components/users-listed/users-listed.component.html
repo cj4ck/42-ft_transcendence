@@ -1,38 +1,20 @@
+<mat-list class="c">
+  <mat-list-item class="user-item" *ngFor="let user of users">
 
-<!-- <ul>
-    <li *ngFor="let username of usernames" (click)="createPrivateChat(username)" class="button-style">
-    user: {{ username }}
-  </li>
-</ul> -->
+    <div class="user">
 
-<!-- <li *ngFor="let user of users" class="button-style">
-  <div class="user-info">
-    <span class="username">{{ user.username }}</span>
-  </div>
-  <div class="toggle-button">
-    <button (click)="toggleUserBlock(user.id)">
-
-      <span *ngIf="userBlockedToggles[user.id]">Un-</span>
-      <span>Block</span>	
-    </button>
-  </div>
-  <div class="create-chat-button">
-    <button (click)="createPrivateChat(user.username)">
-      <span class="start-dm">Start DM</span>
-    </button>
-  </div>
-</li> -->
-
-<mat-list>
-  <mat-list-item *ngFor="let user of users">
       {{user.username}}
-    <button mat-icon-button (click)="toggleUserBlock(user.id)">
-      <!-- <span *ngIf="userBlockedToggles[user.id]">Un-</span>
-      <span>Block</span> -->
-      <mat-icon class="block-user" [ngStyle]="{'color': userBlockedToggles[user.id] ? 'red' : 'black'}">block</mat-icon>
-    </button>
-    <button (click)="createPrivateChat(user.username)">
-      <mat-icon class="start-dm">mail_outline</mat-icon>
-    </button>
+
+      <div class="buttons">
+        <button mat-icon-button (click)="toggleUserBlock(user.id)">
+          <mat-icon class="block-user" [ngStyle]="{'color': userBlockedToggles[user.id] ? 'red' : 'white'}">block</mat-icon>
+        </button>
+
+        <button mat-icon-button (click)="createPrivateChat(user.username)">
+          <mat-icon class="start-dm" [ngStyle]="{'color': 'white'}" >mail_outline</mat-icon>
+        </button>
+      </div>
+
+    </div>
   </mat-list-item>
 </mat-list>

@@ -1,88 +1,49 @@
 <div class="_container">
-  <mat-card>
-    <div style="display: flex; flex-direction: row">
+  <div class="card">
+    <div class="room-list">
       <div>
-        <div>
-          <span style="display: flex; flex-direction: row; align-items: baseline">
-            <h2>My Chatrooms</h2>
-            <small style="margin-left: 10px">Logged in as {{ user.username }}</small>
-          </span>
-
-          <button
-            mat-raised-button
-            [routerLink]="['../create-room']"
-            style="margin: 5px"
-          >
-            Create new Room
-            <mat-icon>library_add</mat-icon>
+        <div style="margin: 5px">
+          <button mat-raised-button [routerLink]="['../user-settings']">
+            Logged in as {{ user.username }}
+            <mat-icon>account_box</mat-icon>
           </button>
-  
-          <div style="margin: 5px">
-            <button mat-raised-button [routerLink]="['../user-settings']">
-              Go to User Profile
-              <mat-icon>account_box</mat-icon>
-            </button>
-          </div>
         </div>
 
-        <div
-          *ngIf="(rooms$ | async)?.items?.length > 0; else no_rooms"
-          class="rooms"
-        >
-          <mat-selection-list
-            [multiple]="false"
-            (selectionChange)="onSelectRoom($event)"
-          >
-            <mat-list-option
-              *ngFor="let room of (rooms$ | async)?.items"
-              [value]="room"
-            >
-              <!-- <app-room-list [room]="room"></app-room-list> -->
-              {{ room.name }} Id: {{ room.id }}
-              <!-- <mat-divider></mat-divider> -->
-            </mat-list-option>
-          </mat-selection-list>
-          <mat-paginator
-            [length]="(rooms$ | async)?.meta?.totalItems"
-            [pageSize]="(rooms$ | async)?.meta?.itemsPerPage"
-            [pageIndex]="(rooms$ | async)?.meta?.currentPage"
-            [pageSizeOptions]="[10, 25, 50]"
-            (page)="onPaginateRooms($event)"
-          >
-          </mat-paginator>
-
-          <!-- <mat-paginator>
-						[length]="(users$ | async)?.meta?.totalItems"
-						[pageIndex]="(users$ | async)?.meta?.currentPage"
-					</mat-paginator> -->
-        </div>
-        <!-- <mat-selection-list [multiple]="false">
-				<mat-list-option *ngFor="let user of (users$ | async)?.items" [value]="user">
-					User: {{user.username}} Id: {{user.id}}
-					<mat-divider></mat-divider>
-				</mat-list-option>
-			</mat-selection-list> -->
+        <button mat-raised-button [routerLink]="['../create-room']" style="margin: 5px">
+          Create new Room
+          <mat-icon>library_add</mat-icon>
+        </button>
       </div>
 
-      <div class="chatroom">
-        <!-- <app-chat-room [chatRoom]="selectedRoom"></app-chat-room> -->
-        <app-chat-room
-          [chatRoom]="selectedRoom"
-          (chatRoomUpdate)="updateRoom($event)"
-        ></app-chat-room>
+      <div *ngIf="(rooms$ | async)?.items?.length > 0; else no_rooms" class="rooms">
+        <mat-selection-list [multiple]="false" (selectionChange)="onSelectRoom($event)">
+          <mat-list-option *ngFor="let room of (rooms$ | async)?.items" [value]="room">
+            <span class="room">{{ room.name }}</span>
+          </mat-list-option>
+        </mat-selection-list>
       </div>
 
-      <div class="users_list">
-        <app-users-listed></app-users-listed>
-        <ng-template #no_rooms>
-          <div>
-            <mat-error
-              >No Chatrooms for you so far, please create one or get invited!</mat-error
-            >
-          </div>
-        </ng-template>
-      </div>
+      <mat-paginator [length]="(rooms$ | async)?.meta?.totalItems" [pageSize]="15"
+        [pageIndex]="(rooms$ | async)?.meta?.currentPage" [hidePageSize]="true"
+        (page)="onPaginateRooms($event)">
+      </mat-paginator>
+
     </div>
-  </mat-card>
-</div>
 
+    <div class="chatroom">
+      <app-chat-room [chatRoom]="selectedRoom" (chatRoomUpdate)="updateRoom($event)"></app-chat-room>
+    </div>
+
+    <div class="users_list">
+      <app-users-listed></app-users-listed>
+      <ng-template #no_rooms>
+        <div>
+          <mat-error>No Chatrooms for you so far, please create one or get invited!</mat-error>
+        </div>
+      </ng-template>
+    </div>
+
+    <button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i
+      class="bi bi-sign-turn-left-fill"></i> Go back</button>
+  </div>
+</div>

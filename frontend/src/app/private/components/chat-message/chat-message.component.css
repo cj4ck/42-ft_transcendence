@@ -3,7 +3,16 @@
 }
 
 .ownMessage {
-	background-color: lightblue;
+	text-align: right !important;
+	background-color: #00A8E8;
+}
+
+p{
+	background-color: #02729e;
+	padding: 4px;
+	border-radius: 5px;
+	font-size: 19px;
+	text-align: left;
 }
 
 em {

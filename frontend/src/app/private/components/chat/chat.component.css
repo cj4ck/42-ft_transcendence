@@ -1,0 +1,95 @@
+._container{
+	display: flex;
+	justify-content: center;
+	min-height: 100vh;
+	background: linear-gradient(#00171F, #002634)  ;
+}
+
+.room-list{
+	min-width: 200px;
+	overflow: hidden;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	border-right: white 1px solid;
+	width: 20%;
+}
+
+.card {
+	display: flex;
+	flex-direction: row;
+	position: fixed;
+	margin: 20px 0px;
+	width: 90%;
+	z-index: 1;
+	height: 95%;
+	backdrop-filter: blur(20px);
+	background: #003459a7;
+	color: white;
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.room{
+	color: white !important;
+}
+
+.rooms {
+	height: 100%;
+	width: 90%;
+	overflow-y: scroll;
+	scrollbar-color: lightgrey darkgrey;
+	scrollbar-width: thin;
+}
+
+.rooms::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+mat-paginator{
+	background: #0069b4a0;
+	border-radius: 10px;
+	width: 95%;
+	color: white;
+}
+
+.chatroom {
+	width: 60%
+}
+.users_list {
+	width: 20%;
+}
+
+._container::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(-10deg, #00A8E8, #267ada);
+	clip-path: circle(40% at right 80%);
+}
+
+._container::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(#00A8E8, #5FC3E4);
+	clip-path: circle(25% at 10% 10%);
+}
+
+.goBack {
+	position: absolute;
+	color: white;
+	bottom: 10px;
+	right: 10px;
+	padding: 4px;
+	font-weight: 500;
+	background: linear-gradient(20deg, #267ada, #1f647b);
+	border: none;
+}

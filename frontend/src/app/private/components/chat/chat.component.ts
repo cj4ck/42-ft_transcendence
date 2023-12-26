@@ -10,7 +10,7 @@ import { ChatService } from '../../services/chat.service';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss'],
+  styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements AfterViewInit {
 
@@ -28,14 +28,14 @@ export class ChatComponent implements AfterViewInit {
 
   async ngOnInit() {
 	  this.rooms$ = this.chatService.getMyRooms() //?? ask Karol about this await stuff
-    this.chatService.emitPaginateRooms(10, 0)
+    this.chatService.emitPaginateRooms(15, 0)
   }
 
   ngAfterViewInit(): void {
 	this.rooms$.subscribe((rooms: RoomPaginateI) => {
 		console.log('rooms:', rooms);
 	  });
-    this.chatService.emitPaginateRooms(10, 0)
+    this.chatService.emitPaginateRooms(15, 0)
   }
 
   onSelectRoom(event: MatSelectionListChange) {

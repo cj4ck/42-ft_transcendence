@@ -12,7 +12,7 @@ import { ChatService } from '../../services/chat.service';
 @Component({
 	selector: 'app-chat-room',
 	templateUrl: './chat-room.component.html',
-	styleUrls: ['./chat-room.component.scss']
+	styleUrls: ['./chat-room.component.css']
 })
 
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
@@ -138,8 +138,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //changing password
   showChangePasswordForm = false
   changePasswordForm: FormGroup = new FormGroup({
-	newPassword: new FormControl(null, [Validators.required]),
-	newPasswordConfirm: new FormControl(null, [Validators.required])
+    password: new FormControl(null, [Validators.required]),
+    passwordConfirm: new FormControl(null, [Validators.required])
   },
   {
 	validators: CustomValidators.passwordsMatching
@@ -150,7 +150,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
   changeChatPassword() {
 	if (this.changePasswordForm.valid) {
-		const newPassword: string = this.changePasswordForm.get('newPassword').value
+		const newPassword: string = this.changePasswordForm.get('password').value
 		this.chatRoom.password = newPassword
 		this.chatService.setChatPassword(this.chatRoom)
 		// console.log('Password is changed')

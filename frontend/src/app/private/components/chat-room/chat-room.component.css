@@ -1,59 +1,141 @@
-.c {
+h3 {
+	padding: 0px;
+	padding-top: -10px;
+	margin: 0px;
+}
+
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: aliceblue;
+}
+
+::-webkit-scrollbar {
+	width: 12px;
+	background-color: aliceblue;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: aliceblue;
+}
+
+.message-container {
+	border-top: 1px white solid;
+	overflow-y: auto;
+	height: 100%;
+	padding: 10px;
+}
+
+.optionButton {
+	display: flex;
+	justify-content: flex-end;
+	margin: 16px;
+}
+
+.c{
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	flex-direction: column;
+	align-items: center;
+	border-right: 1px white solid;
+}
+
+.a{
 	width: 100%;
 	height: 100%;
-	background-color: #62C2E4;
 }
 
-.nochat{
-	font-size: 30px;
-	color: #a51f23;
-	padding: 20px;
+.btn-send{
+	color: white;
 }
 
-.header{
-	background-color: #49306B;
-	color: #96E6B3;
-	text-align: center;
-	padding-bottom: 5px;
+
+.btn-send:hover{
+	color: rgb(5, 218, 176);
 }
+
+.information{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.inf-left{
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+}
+
+.inf-right{
+	padding: 10px;
+	align-items: center;
+	justify-content: center;
+}
+
 .title{
-	padding-top: 10px;
-	font-size: 25px;
+	font-size: 20px;
 	font-weight: 600;
 }
-.text{
-	width: 80%;
+
+.description
+{
+	color: rgb(141, 141, 141);
 }
 
-.sendbutton{
-	background-color: #731DD8;
-	color: #96E6B3;
-	margin-left: 5px;
-	font-size: 20px;
-	padding: 10px 0px;
-	border-radius: 4px;
-	text-align: center;
-	vertical-align: middle;
-	width: 15%;
+.buttons{
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	padding: 10px;
+	max-height: 100px;
+	overflow: scroll;
+	margin-bottom: 4px;
 }
 
-.sendbutton:disabled{
-	background-color: #b783f3;
+.username{
+	width: 300px;
 }
 
-.sendbutton:hover:enabled{
-	color: #4ee284;
+button{
+	margin: 2px;
 }
 
-.message{
-	min-height: 530px;
+.buttons::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
 }
 
-mat-list {
-	flex-grow: 1;
-	overflow: auto;
+.g{
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 100%;
 }
 
-mat-list-item {
-	margin-bottom: 3px;
+.send{
+	padding-top: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inp{
+	width: 200px !important;
+}
+
+.form-cont{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	padding: 10px;
+}
+
+.inputs{
+	width: 40%;
 }

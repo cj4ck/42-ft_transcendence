@@ -1,10 +1,7 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable, debounceTime, distinctUntilChanged, firstValueFrom, map, pipe, switchMap, tap, toArray } from 'rxjs';
-import { UserI, UserPaginateI } from 'src/app/model/user.interface';
+import { Component, OnInit } from '@angular/core';
+import { UserI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
-import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
@@ -14,9 +11,6 @@ import { ChatService } from '../../services/chat.service';
 })
 export class UsersListedComponent implements OnInit {
 
-  // @Input() users: UserI[] = []
-  // @Output() addUser: EventEmitter<UserI> = new EventEmitter<UserI>()
-  // @Output() removeuser: EventEmitter<UserI> = new EventEmitter<UserI>()
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -29,14 +23,10 @@ export class UsersListedComponent implements OnInit {
   currentUser: UserI = this.authService.getLoggedInUser()
   userBlockedToggles: {[user_id: number]: boolean } = {};
 
-
   ngOnInit(): void {
     this.userService.findByID(this.currentUser.id).subscribe((user: UserI) => {
       this.usersBlocked = user.blocked
       this.userService.getAllUsers().subscribe((data) => {
-        // this.filteredUsers = data.items
-        // this.numUsers = data.meta.totalItems
-        // //   console.log(this.filteredUsers)
         for (let i = 0; i < data.length; i++) {
           const user = data[i]
           if (user.username != this.currentUser.username) {
@@ -51,7 +41,6 @@ export class UsersListedComponent implements OnInit {
         }
       })
     })
-
   }
 
   createPrivateChat(username: string) {
@@ -61,22 +50,22 @@ export class UsersListedComponent implements OnInit {
 
   toggleUserBlock(user_id: number) {
     console.log("clicked on id to block: " + user_id)
-    // this.usersBlocked = this.currentUser.blocked
     let blocked: boolean = false
+
     for (let i = 0; i < this.usersBlocked.length; i++) {
       if (this.usersBlocked[i] === user_id) {
         blocked = true;
-        // removing from blockedList
         this.usersBlocked.splice(i, 1);
         break;
       }
     }
-    // flip the toggle
+
     this.userBlockedToggles[user_id] = !this.userBlockedToggles[user_id]
-    // if not blocked, add to block list
+
     if (!blocked) {
       this.usersBlocked.push(user_id);
     }
+
     this.currentUser.blocked = this.usersBlocked
     this.chatService.toggleUserBlock(this.currentUser)
   }

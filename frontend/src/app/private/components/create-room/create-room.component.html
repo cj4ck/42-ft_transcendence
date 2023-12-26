@@ -1,44 +1,42 @@
-<div class="container">
-	<div>
-		<div class="chat">
-			<a [routerLink]="['..', 'chat']">Go to Chat</a>
-		</div>
+<body>
 
-		<div>
-			<mat-card>
-				<mat-card-title>Create Chatroom</mat-card-title>
-				<mat-card-content>
-				<form [formGroup]="form" (ngSubmit)="create()">
+	<section>
 
-					<mat-form-field>
-						<input type="text" matInput placeholder="Name" formControlName="name">
-						<mat-error *ngIf ="name.touched && name.hasError('required')">Name is required</mat-error>
-					</mat-form-field>
+		<button [routerLink]="['..', 'chat']" type="button" class="goBack btn btn-success btn-lg"><i
+			class="bi bi-sign-turn-left-fill"></i> Go back</button>
 
-					<mat-form-field>
-						<input type="text" matInput placeholder="Description" formControlName="description">
-					</mat-form-field>
+		<form [formGroup]="form" (ngSubmit)="create()">
 
-					<mat-form-field>
-						<mat-label>Select an option</mat-label>
-						<mat-select matInput formControlName="type">
-						  <mat-option>None</mat-option>
-						  <mat-option value="public">Public</mat-option>
-						  <mat-option value="private">Private</mat-option>
-						</mat-select>
-					</mat-form-field>
+			<h3>Create room</h3>
 
-					<app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"
-						(removeuser)="removeUser($event.id)"></app-select-users>
+			<mat-form-field>
+				<input type="text" matInput placeholder="Name" formControlName="name">
+				<mat-error *ngIf="name.touched && name.hasError('required')">Name is required</mat-error>
+			</mat-form-field>
 
-					<mat-hint *ngIf="!form.valid"><small>Please fill out all required information</small></mat-hint>
+			<mat-form-field>
+				<input type="text" matInput placeholder="Description" formControlName="description">
+			</mat-form-field>
 
-                    <div class="button">
-                        <button mat-button type="submit" [disabled]="!form.valid">Create Chatroom</button>
-                    </div>
-					</form>
-				</mat-card-content>
-			</mat-card>
-		</div>
-	</div>
-</div>
+			<mat-form-field>
+				<mat-label>Select an option</mat-label>
+				<mat-select matInput formControlName="type">
+					<mat-option>None</mat-option>
+					<mat-option value="public">Public</mat-option>
+					<mat-option value="private">Private</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<app-select-users [users]="users.value" (addUser)="addUser(initUser($event))"
+				(removeuser)="removeUser($event.id)"></app-select-users>
+
+			<mat-hint *ngIf="!form.valid"><small class="red">Please fill out all required information</small></mat-hint>
+
+			<div class="button">
+				<button class="create" type="submit" [disabled]="!form.valid">Create Chatroom</button>
+			</div>
+
+		</form>
+	</section>
+
+	<body>
