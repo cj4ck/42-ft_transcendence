@@ -12,9 +12,12 @@ export interface UserI {
 	isTwoFactorEnabled?: boolean;
 	temp2faSecret?: string;
 	blocked?: number[];
+	activityStatus?: ActivityStatus;
 }
 
 export interface UserPaginateI {
 	items: UserI[],
 	meta: Meta
 }
+
+export type ActivityStatus = 'online' | 'in game' | 'offline'

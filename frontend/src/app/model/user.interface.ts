@@ -9,9 +9,12 @@ export interface UserI {
 	wins?: number;
 	losses?: number;
 	blocked?: number[];
+	activityStatus?: ActivityStatus;
 }
 
 export interface UserPaginateI {
 	items: UserI[],
 	meta: Meta
 }
+
+export type ActivityStatus = 'online' | 'in game' | 'offline'

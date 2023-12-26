@@ -5,7 +5,8 @@ export type FriendRequestStatus =
 	| 'pending'
 	| 'accepted'
 	| 'declined'
-	| 'waiting-for-current-user-response';
+	| 'waiting-for-current-user-response'
+	| 'current';
 
 export interface FriendRequestStatusI {
 	status?: FriendRequestStatus;

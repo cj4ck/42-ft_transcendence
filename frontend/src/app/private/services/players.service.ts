@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserI } from 'src/app/model/user.interface';
 
 @Injectable({
@@ -12,13 +12,11 @@ export class PlayersService {
     private http: HttpClient,
   ) { }
 
-  getUsers(page: number, limit: number = 9): Observable<UserI[]> {
-    return this.http.get<{ items: UserI[] }>(`api/users?page=${page}&limit=${limit}`).pipe(
-      map(response => response.items)
-    );
+  getUsers(): Observable<UserI[]> {
+    return this.http.get<UserI[]>('api/users')
   }
 
   getFriends(id: number) {
-    return this.http.get<UserI[]>(`api/users?id=${id}`);
+    return this.http.get<UserI[]>(`api/users/find-friends?id=${id}`);
   }
 }

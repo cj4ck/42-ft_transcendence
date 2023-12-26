@@ -64,4 +64,9 @@ export class UserEntity {
 		this.email = this.email.toLowerCase();
 		this.username = this.username.toLowerCase();
 	}
+
+	@Column({default: 'offline'})
+	activityStatus: ActivityStatus
 }
+
+export type ActivityStatus = 'online' | 'in game' | 'offline'

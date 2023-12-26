@@ -1,7 +1,12 @@
 <body>
+    <label class="switch" id="toggleSwitch">
+        <input type="checkbox" [(ngModel)]="loadFriendsMode" (change)="onToggleSwitchChange()">
+        <span class="slider round"></span>
+        Load Friends
+    </label>
     <section>
         <div class="container">
-            <div class="card" *ngFor="let user of users" [routerLink]="['..', user.id]">
+            <div class="card" *ngFor="let user of paginatedUsers" [routerLink]="['../user-profile/', user.id]">
                 <div class="content">
                     <div class="imgBx">
                         <img
@@ -14,9 +19,9 @@
             </div>
         </div>
         <div class="pagination-controls">
-            <button (click)="goToPreviousPage()" type="button">Previous</button>
-            <button (click)="goToNextPage()" type="button">Next</button>
-          </div>
+            <button (click)="goToPreviousPage()" type="button" [disabled]="!isPreviousPageAvailable()">Previous</button>
+            <button (click)="goToNextPage()" type="button" [disabled]="!isNextPageAvailable()">Next</button>
+        </div>
         <button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i
                 class="bi bi-sign-turn-left-fill"></i> Go back</button>
     </section>

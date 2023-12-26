@@ -19,7 +19,7 @@ export class FriendProfileService {
   ) { }
 
   getUser(id: number):Observable<UserI> {
-    return this.http.get<UserI>(`api/users/${id}`)
+    return this.http.get<UserI>(`api/users/user-profile/${id}`)
   }
 
   getFriendRequestStatus(id: number): Observable<FriendRequestStatusI> {
@@ -46,5 +46,9 @@ export class FriendProfileService {
       { status: statusResponse },
       this.httpOptions
     );
+  }
+
+  getFriendRequestId(creatorId: number, receiverId: number): Observable<number> {
+    return this.http.get<number>(`api/users/friend-request-id?creatorId=${creatorId}&receiverId=${receiverId}`);
   }
 }

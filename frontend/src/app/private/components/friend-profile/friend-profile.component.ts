@@ -4,6 +4,7 @@ import { map, Observable, Subscription, switchMap, take, tap } from 'rxjs';
 import { FriendRequestI, FriendRequestStatus, FriendRequestStatusI } from 'src/app/model/friend-request.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { FriendProfileService } from '../../services/friend-profile.service';
+import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-friend-profile',
@@ -17,12 +18,14 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   friendRequestStatusSubscription$: Subscription;
   userSubscription$: Subscription;
   friendRequestsSubscription$: Subscription;
-  friendRequestId: number; 
+  friendRequestId: number;
   responseClicked = false;
+  friendRequestIdSubscription$: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private friendProfileService: FriendProfileService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
@@ -42,6 +45,16 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
         })
       }
     );
+
+    this.friendRequestIdSubscription$ = this.getUserIdFromUrl().pipe(
+      switchMap((userId: number) => {
+        return this.friendProfileService.getFriendRequestId(userId, this.authService.getLoggedInUser().id);
+      })
+    ).subscribe(
+      (friendRequestId: number) => {
+        this.friendRequestId = friendRequestId;
+      }
+    );
   }
 
   getUser(): Observable<UserI> {
@@ -56,6 +69,7 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     this.userSubscription$.unsubscribe();
     this.friendRequestStatusSubscription$.unsubscribe();
     this.friendRequestsSubscription$.unsubscribe();
+    this.friendRequestIdSubscription$.unsubscribe();
   }
 
   addUser(): Subscription {
@@ -78,7 +92,8 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   private getUserIdFromUrl(): Observable<number> {
     return this.route.url.pipe(
       map((urlSegment: UrlSegment[]) => {
-        return +urlSegment[0].path
+        const userId = +urlSegment[1].path
+        return userId
       })
     )
   }
@@ -86,12 +101,11 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   async responseToFriendRequest(
     id: number,
     statusResponse: 'accepted' | 'declined'
-  ){
-    this.responseClicked = false;
+  ) {
+    this.responseClicked = true;
     const handledFriendRequest: FriendRequestI = this.friendProfileService.friendRequests.find(
       (friendRequest) => friendRequest.id === id
     );
-    console.log(handledFriendRequest);
     const unhandledFriendRequest: FriendRequestI[] = this.friendProfileService.friendRequests.filter(
       (friendRequest) => friendRequest.id !== handledFriendRequest.id
     );

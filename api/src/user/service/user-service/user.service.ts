@@ -51,6 +51,8 @@ export class UserService {
 			if (payload.isTwoFactorEnabled) {
 				return { isTwoFactorRequired: true };
 			}
+			// payload.activityStatus = 'online'
+			// await this.authService.saveUser(payload)
 			const jwt = await this.authService.generateJwt(payload);
 				return { jwt };
 		} catch (error) {
@@ -68,12 +70,14 @@ export class UserService {
 		if (!is2faCodeValid) {
 			throw new HttpException('Invalid two-factor authentication code', HttpStatus.FORBIDDEN);
 		}
+		// user.activityStatus = 'online'
+		// this.authService.saveUser(user)
 		const jwt = await this.authService.generateJwt(user);
 		return { jwt };
 	}
 
-	async findAll(options: IPaginationOptions): Promise<Pagination<UserI>> {
-		return paginate<UserEntity>(this.userRepository, options);
+	async findAll(): Promise<UserI[]> {
+		return this.userRepository.find();
 	}
 
 	async findAllFriends(userId: number): Promise<UserI[]> {
@@ -233,7 +237,12 @@ export class UserService {
 			}),
 			switchMap((friendRequest: FriendRequestI) => {
 				if (friendRequest?.receiver.id === currentUser.id) {
-					return of({ status: 'waiting-for-current-user-response' as FriendRequestStatus });
+					if (friendRequest?.status === 'pending') {
+						return of({ status: 'waiting-for-current-user-response' as FriendRequestStatus });
+					}
+					else {
+						return of({ status: friendRequest?.status })
+					}
 				}
 				return of({ status: friendRequest?.status || 'not-sent' });
 			}),
@@ -276,15 +285,15 @@ export class UserService {
 		}))
 	}
 
-	// async getFriendRequestId(receiver: UserI, creator: UserI): Promise<number> {
-	// 	const friendRequest = await this.friendRequestRepository.find({
-	// 		where: [
-	// 			{ creator: { id: creator.id }, receiver: { id: receiver.id } },
-	// 		],
-	// 		relations: ['creator', 'receiver']
-	// 	});
-	// 	return friendRequest.id
-	// }
+	async getFriendRequestId(creatorId: number, receiverId: number): Promise<number> {
+		const friendRequest: FriendRequestEntity[] = await this.friendRequestRepository.find({
+			where: [
+				{ creator: { id: creatorId } , receiver: { id: receiverId } },
+			],
+			relations: ['creator', 'receiver']
+		});
+		return friendRequest.length > 0 ? friendRequest[0].id : null;
+	}
 
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {

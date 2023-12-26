@@ -16,10 +16,10 @@ export class AuthService {
 	constructor(
 		private readonly jwtService: JwtService,
 		@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>
-	) {}
+	) { }
 
 	async generateJwt(user: UserI): Promise<string> {
-		return this.jwtService.signAsync({user});
+		return this.jwtService.signAsync({ user });
 	}
 
 	hashPassword(password: string): Promise<string> {
@@ -99,9 +99,14 @@ export class AuthService {
 		const user = await this.findByEmail(email);
 		return user && user.isTwoFactorEnabled;
 	}
-	
+
 	async generateJwtRoom(room: RoomI): Promise<string> {
-		return this.jwtService.signAsync({room});
+		return this.jwtService.signAsync({ room });
 	}
+
+	// async logout(user: UserI): Promise<void> {
+	// 	user.activityStatus = 'offline';
+	// 	await this.saveUser(user);
+	// }
 }
 

@@ -39,6 +39,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem("nestjs_chat_app");
     this.router.navigate(['/public/login'])
+    // return this.http.get('api/auth/logout')
   }
 
   initialize2fa() {

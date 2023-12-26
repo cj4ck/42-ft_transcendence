@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Get, Query, UseGuards, Request, HttpStatus, HttpException, Param, Put } from '@nestjs/common';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { UserI } from '../model/user.interface';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
 import { RoomI } from 'src/chat/model/room/room.interface';
@@ -11,8 +10,9 @@ import { LoginChatroomDto } from '../model/dto/login-chatroom.dto';
 import { UserService } from '../service/user-service/user.service';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FriendRequestI, FriendRequestStatusI } from '../model/friend-request.interface';
+import { AuthService } from 'src/auth/service/auth.service';
 
 @Controller('users')
 export class UserController {
@@ -20,7 +20,8 @@ export class UserController {
 	constructor(
 		private userService: UserService,
 		private userHelperService: UserHelperService,
-		private roomService: RoomService
+		private roomService: RoomService,
+		private authService: AuthService,
 	) { }
 
 	@Post()
@@ -29,13 +30,18 @@ export class UserController {
 		return this.userService.create(userEntity)
 	}
 
+	// @Get()
+	// async findAll(
+	// 	@Query('page') page: number = 1,
+	// 	@Query('limit') limit: number = 9
+	// ): Promise<Pagination<UserI>> {
+	// 	limit = limit > 100 ? 100 : limit;
+	// 	return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' })
+	// }
+
 	@Get()
-	async findAll(
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 9
-	): Promise<Pagination<UserI>> {
-		limit = limit > 100 ? 100 : limit;
-		return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' })
+	async findAll(): Promise<UserI[]> {
+		return this.userService.findAll()
 	}
 
 	@Get('/find-friends')
@@ -99,7 +105,7 @@ export class UserController {
 	}
 
 	@UseGuards(JwtAuthGuard)
-	@Get(':userId')
+	@Get('user-profile/:userId')
 	findUserById(@Param('userId') userStringId: string): Observable<UserI> {
 		const userId = parseInt(userStringId);
 		if (Number.isNaN(userId)) {
@@ -133,7 +139,8 @@ export class UserController {
 		}
 		const currentUser = req.user;
 		if (userId === currentUser.id) {
-			throw new HttpException('It is not possible to add yourself', HttpStatus.BAD_REQUEST)
+			return of({ status: 'current' })
+			// throw new HttpException('It is not possible to add yourself', HttpStatus.BAD_REQUEST)
 		}
 		return this.userService.getFriendRequestStatus(userId, currentUser);
 	}
@@ -160,5 +167,14 @@ export class UserController {
 		@Request() req,
 	): Observable<FriendRequestStatusI[]> {
 		return this.userService.getFriendRequestsForUser(req.user);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Get('friend-request-id')
+	async getFriendRequestId(
+		@Query('creatorId') creatorId: number,
+		@Query('receiverId') receiverId: number
+	): Promise<number> {
+		return await this.userService.getFriendRequestId(creatorId, receiverId);
 	}
 }
