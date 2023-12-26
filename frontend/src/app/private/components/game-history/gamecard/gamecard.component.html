@@ -1,0 +1,17 @@
+<div class="card">
+	<div class="cardheader">
+		{{game?.p1Score}} : {{game?.p2Score}}
+	</div>
+	<div class="cardbody">
+		<div class="player">
+			<img class="avatar" [src]="defaultAvatarUrl" width="100px">
+			<h2>{{player1?.username}}</h2>
+			<img [src]="player1rank" width="100px" alt="rank">
+		</div>
+		<div class="player">
+			<img class="avatar" [src]="defaultAvatarUrl" width="100px">
+			<h2>{{player2?.username}}</h2>
+			<img [src]="player1rank" width="100px" alt="rank">
+		</div>
+	</div>
+</div>

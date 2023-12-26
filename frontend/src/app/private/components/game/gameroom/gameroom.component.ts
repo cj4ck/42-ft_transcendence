@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { GameDataI } from 'src/app/model/game-data.interface';
 import { GameI } from 'src/app/model/game.interface';
 import { UserI } from 'src/app/model/user.interface';
@@ -13,7 +15,7 @@ import { UserService } from 'src/app/public/services/user-service/user.service';
   templateUrl: './gameroom.component.html',
   styleUrls: ['./gameroom.component.css']
 })
-export class GameroomComponent implements OnInit, OnDestroy, AfterViewInit{
+export class GameroomComponent implements ComponentCanDeactivate, OnInit, OnDestroy, AfterViewInit{
     id: string;
     private sub: any;
     game: GameI;
@@ -28,6 +30,13 @@ export class GameroomComponent implements OnInit, OnDestroy, AfterViewInit{
     ball_radius = 15
     player_w = 25
     player_h = 100
+
+    @HostListener('window:beforeunload')
+    canDeactivate(): Observable<boolean> | boolean {
+      this.socket.disconnect();
+      this.socket.connect();
+      return true;
+    }
 
     @ViewChild("myCanvas", { static: false }) myCanvas: ElementRef;
     defaultAvatarUrl = '../../../assets/defaultAvatar.png';

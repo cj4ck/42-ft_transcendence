@@ -12,4 +12,14 @@ export class GameController {
 		return this.gameService.gameByID(id);
 	}
 
+	@Get('/wingames')
+	async findWinGameForPlayer(@Query('id') id: number) {
+		return this.gameService.winGameForPlayer(id);
+	}
+
+	@Get('/lostgames')
+	async findLostGameForPlayer(@Query('id') id: number) {
+		return this.gameService.lostGameForPlayer(id);
+	}
+
 }

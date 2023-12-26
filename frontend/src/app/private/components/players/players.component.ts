@@ -14,7 +14,7 @@ export class PlayersComponent implements OnInit {
   paginatedUsers: UserI[] = [];
   friends: UserI[] = [];
   currentPage: number = 1;
-  usersPerPage = 9;
+  usersPerPage = 8;
   loadFriendsMode: boolean = false;
 
   constructor(

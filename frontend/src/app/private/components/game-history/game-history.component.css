@@ -1,0 +1,29 @@
+.card-list {
+	width: 50%;
+	height: 100vh;
+	overflow: auto;
+	margin: auto;
+	text-align: center;
+}
+
+.card-list::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
+}
+
+.wrapper {
+	display: flex;
+	background: linear-gradient(#08415c, #0b6189);
+}
+
+#loses{
+	font-family: 'Oswald', Helvetica, sans-serif;
+	color: #CC2936;
+	font-weight: 700;
+}
+
+#wins{
+	font-family: 'Oswald', Helvetica, sans-serif;
+	font-weight: 700;
+	color: #B5FFE1;
+}
+

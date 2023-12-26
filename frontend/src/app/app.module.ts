@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { JwtModule } from '@auth0/angular-jwt';
+import { PendingChangesGuard } from './guards/pending-changes.guard';
 
 export function tokenGetter() {
   // problemo with jwt local storage item
@@ -30,7 +31,7 @@ export function tokenGetter() {
       }
     })
   ],
-  providers: [],
+  providers: [PendingChangesGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
