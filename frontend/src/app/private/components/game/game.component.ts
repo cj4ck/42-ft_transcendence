@@ -1,15 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { GameService } from '../../services/game.service';
 import { CustomSocket } from '../../sockets/custom-socket';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
 })
-export class GameComponent {
+export class GameComponent implements ComponentCanDeactivate{
+
+  @HostListener('window:beforeunload')
+  canDeactivate(): Observable<boolean> | boolean {
+    this.leaveQueqe();
+    return true;
+  }
 
   constructor(private gameService: GameService, private socket: CustomSocket, private snackbar: MatSnackBar, private router: Router) {
     socket.on("PlayerInQueueChange", (nbr) => this.changeWaitingPlayers(nbr))
@@ -29,6 +37,7 @@ export class GameComponent {
   }
 
   leaveQueqe(){
+    console.log("asd")
     this.gameService.leaveGame(this.changeWaitingPlayers);
     this.playerIsInQueue = false;
   }

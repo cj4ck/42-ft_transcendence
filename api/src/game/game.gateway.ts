@@ -57,9 +57,7 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('PlayerLeaveQueue')
   LeaveQueue(socket: Socket){
-    console.log("player " + socket.data.user.username + " leave queue");
-
-    const index = this.gameService.queue.indexOf(socket.data.user, 0);
+    const index = this.gameService.queue.findIndex((user) => user.socketId == socket.id);
     if (index > -1)
     {
       console.log("player " + socket.data.user.username + " leave queue");

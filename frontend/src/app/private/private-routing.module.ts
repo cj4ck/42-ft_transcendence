@@ -13,6 +13,7 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendProfileComponent } from './components/friend-profile/friend-profile.component';
 import { GameHistoryComponent } from './components/game-history/game-history.component';
+import { PendingChangesGuard } from '../guards/pending-changes.guard';
 
 const routes: Routes = [
   {
@@ -34,10 +35,12 @@ const routes: Routes = [
   {
     path: 'game',
     component: GameComponent,
+    canDeactivate: [PendingChangesGuard],
   },
   {
     path: 'gameroom/:id',
-    component: GameroomComponent
+    component: GameroomComponent,
+    canDeactivate: [PendingChangesGuard],
   },
   {
     path: 'history/:id',
