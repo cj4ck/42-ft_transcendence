@@ -34,6 +34,7 @@ export class SelectUsersComponent implements OnInit {
 
   addUserToForm() {
     // console.log('add user')
+    if(this.selectedUser)
     this.addUser.emit(this.selectedUser)
     this.filteredUsers = []
     this.selectedUser = null
