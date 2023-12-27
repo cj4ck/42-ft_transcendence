@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { PlayersService } from '../../services/players.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-players',
@@ -16,6 +17,7 @@ export class PlayersComponent implements OnInit {
   currentPage: number = 1;
   usersPerPage = 8;
   loadFriendsMode: boolean = false;
+  currentUser: UserI;
 
   constructor(
     private playersService: PlayersService,
@@ -24,6 +26,7 @@ export class PlayersComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.currentUser = this.authService.getLoggedInUser();
   }
 
   loadData() {
@@ -78,4 +81,9 @@ export class PlayersComponent implements OnInit {
     this.currentPage = 1;
     this.loadData();
   }
+
+  isCurrentUser(user): boolean {
+    return user.id === this.currentUser.id;
+  }
+  
 }

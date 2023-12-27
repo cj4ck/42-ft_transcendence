@@ -21,6 +21,8 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   friendRequestId: number;
   responseClicked = false;
   friendRequestIdSubscription$: Subscription;
+  isFriend$: Observable<boolean>;
+  isFriend: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,6 +57,13 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
         this.friendRequestId = friendRequestId;
       }
     );
+
+    this.getUserIdFromUrl().subscribe(userId => {
+      this.friendProfileService.isFriend(userId).subscribe(isFriend => {
+        this.isFriend = isFriend;
+        console.log("Is Friend", this.isFriend);
+      });
+    });
   }
 
   getUser(): Observable<UserI> {

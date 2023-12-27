@@ -92,7 +92,7 @@ export class UserService {
 		const friends: UserI[] = [];
 	
 		friendRequests.forEach(request => {
-			if (request.creator.id === userId) {
+			if (request.creator.id == userId) {
 				friends.push(request.receiver);
 			} else {
 				friends.push(request.creator);

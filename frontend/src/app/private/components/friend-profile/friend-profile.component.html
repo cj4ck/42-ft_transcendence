@@ -1,6 +1,6 @@
 <body>
     <section>
-        <div class="container">
+        <div class="_container">
             <div class="card">
                 <div class="content">
                     <div *ngIf="user; else noUser">
@@ -12,27 +12,32 @@
                         <h2>Score: <span>{{ user.score }}</span></h2>
                         <h2>Wins: <span>{{ user.wins }}</span></h2>
                         <h2>Losses: <span>{{ user.losses }}</span></h2>
-                        <h2>Activity Status: <span>{{ user.activityStatus }}</span></h2>
+                        <div *ngIf="isFriend; else notFriend">
+                            <h2>Activity Status: <span>{{ user.activityStatus }}</span></h2>
+                        </div>
+                        <ng-template #notFriend>
+                            <ng-container
+                                *ngIf="friendRequestStatus === 'waiting-for-current-user-response' && !responseClicked">
+                                <button (click)="responseToFriendRequest(friendRequestId, 'accepted')"
+                                    class="button button-primary">Accept</button>
+                                <button (click)="responseToFriendRequest(friendRequestId, 'declined')"
+                                    class="button button-warn">Decline</button>
+                            </ng-container>
+
+                            <ng-container *ngIf="['not-sent', 'pending'].includes(friendRequestStatus)">
+                                <button (click)="addUser()" class="button button-primary"
+                                    [disabled]="friendRequestStatus === 'pending'">Send Request</button>
+                            </ng-container>
+                        </ng-template>
                     </div>
-
-                    <ng-container
-                        *ngIf="friendRequestStatus === 'waiting-for-current-user-response' && !responseClicked">
-                        <button (click)="responseToFriendRequest(friendRequestId, 'accepted')"
-                            class="button button-primary">Accept</button>
-                        <button (click)="responseToFriendRequest(friendRequestId, 'declined')"
-                            class="button button-warn">Decline</button>
-                    </ng-container>
-
-                    <ng-container *ngIf="['not-sent', 'pending'].includes(friendRequestStatus)">
-                        <button (click)="addUser()" class="button button-primary"
-                            [disabled]="friendRequestStatus === 'pending'">Send Request</button>
-                    </ng-container>
 
                     <ng-template #noUser>
                         <p>User not found</p>
                     </ng-template>
                 </div>
             </div>
+            <button [routerLink]='["../../players"]' type="button" class="goBack btn btn-success btn-lg"><i
+                    class="bi bi-sign-turn-left-fill"></i> Go back</button>
         </div>
     </section>
 </body>

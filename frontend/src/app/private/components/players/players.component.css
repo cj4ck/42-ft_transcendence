@@ -12,11 +12,14 @@ body {
 	min-height: 100vh;
 	background-attachment: fixed;
 	overflow: scroll;
+	z-index: 1;
 }
 
 .title {
 	color: white;
 	margin-right: 10px;
+	z-index: 1;
+	margin-top: 25px;
 }
 
 section::before {
@@ -26,14 +29,13 @@ section::before {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(-10deg, #59d85b, #267ada);
-	clip-path: circle(40% at right 80%);
+	background: linear-gradient(-10deg, #451063, #984eda);
+	clip-path: circle(30% at right 80%);
 }
 
 body::-webkit-scrollbar {
     display: none; /* Hide the scrollbar */
 }
-
 
 section::after {
 	content: '';
@@ -42,8 +44,8 @@ section::after {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(#59d85b, #5FC3E4);
-	clip-path: circle(25% at 10% 10%);
+	background: linear-gradient(#451063, #984eda);
+	clip-path: circle(30% at 30% 10%);
 }
 
 .goBack {
@@ -53,7 +55,8 @@ section::after {
 	right: 10px;
 	padding: 4px;
 	font-weight: 500;
-	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	background: linear-gradient(#451063, #984eda);
+	border: none;
 }
 
 .containera {
@@ -78,6 +81,10 @@ section::after {
 	justify-content: center;
 	align-items: center;
 	backdrop-filter: blur(10px);
+}
+
+.containera .current-user-card {
+	background: rgba(119, 11, 108, 0.734);
 }
 
 .containera .card .content {
@@ -167,9 +174,10 @@ section::after {
 }
 
 .previous{
-	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	background: linear-gradient(20deg, #451063, #984eda);
 	color: white;
 	padding: 5px 30px;
+	border: #451063;
 	border-right: #010101 solid 2px;
 	border-radius: 20px 0px 0px 20px;
 	font-size: 30px;
@@ -177,9 +185,10 @@ section::after {
 }
 
 .next{
-	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	background: linear-gradient(20deg, #451063, #984eda);
 	color: white;
 	padding: 5px 30px;
+	border: #984eda;
 	border-left: #010101 solid 2px;
 	border-radius: 0px 20px 20px 0px;
 	font-size: 30px;
@@ -195,6 +204,8 @@ section::after {
 	display: inline-block;
 	width: 60px;
 	height: 34px;
+	z-index: 1;
+	margin-top: 20px;
 }
 
 .switch input {
@@ -247,4 +258,14 @@ input:checked+.slider:before {
 
 .slider.round:before {
 	border-radius: 50%;
+}
+
+.top-container {
+	position: relative;
+    display: flex;
+	flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+	z-index: 2;
 }

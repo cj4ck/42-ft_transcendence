@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { FriendRequestI, FriendRequestStatusI } from 'src/app/model/friend-request.interface';
 import { UserI } from 'src/app/model/user.interface';
 
@@ -9,7 +9,7 @@ import { UserI } from 'src/app/model/user.interface';
 })
 export class FriendProfileService {
   friendRequests: FriendRequestI[];
-  
+
   private httpOptions: { headers: HttpHeaders } = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
   };
@@ -18,7 +18,7 @@ export class FriendProfileService {
     private http: HttpClient,
   ) { }
 
-  getUser(id: number):Observable<UserI> {
+  getUser(id: number): Observable<UserI> {
     return this.http.get<UserI>(`api/users/user-profile/${id}`)
   }
 
@@ -50,5 +50,11 @@ export class FriendProfileService {
 
   getFriendRequestId(creatorId: number, receiverId: number): Observable<number> {
     return this.http.get<number>(`api/users/friend-request-id?creatorId=${creatorId}&receiverId=${receiverId}`);
+  }
+
+  isFriend(id: number): Observable<boolean> {
+    return this.http.get<FriendRequestStatusI>(`api/users/friend-request/status/${id}`).pipe(
+      map(friendRequestStatus => friendRequestStatus.status === 'accepted')
+    );
   }
 }
