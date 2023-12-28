@@ -115,6 +115,14 @@ export class UserService {
 		await this.userRepository.save(user);
 	}
 
+	async userInGame(userID: number) {
+		var user = await this.userRepository.findOneBy({id: userID});
+
+		user.activityStatus = "in game";
+
+		await this.userRepository.save(user);
+	}
+
 	async userOffline(userID: number) {
 		var user = await this.userRepository.findOneBy({id: userID});
 

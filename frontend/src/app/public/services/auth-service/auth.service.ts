@@ -9,6 +9,7 @@ import { LoginChatroomResponseI } from 'src/app/model/login-chatroom-response.in
 import { LoginResponseI } from 'src/app/model/login-response.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface'
+import { CustomSocket } from 'src/app/private/sockets/custom-socket';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class AuthService {
     private snackbar: MatSnackBar,
     private jwtService: JwtHelperService,
     private router: Router,
+    private socket: CustomSocket,
   ) { }
 
   login(user: UserI): Observable<LoginResponseI> {
@@ -37,9 +39,9 @@ export class AuthService {
   }
 
   logout() {
+    this.socket.emit("Disconnect", this.getLoggedInUser().id);
     localStorage.removeItem("nestjs_chat_app");
-    this.router.navigate(['/public/login'])
-    // return this.http.get('api/auth/logout')
+    this.router.navigate(['/public/login']);
   }
 
   initialize2fa() {
