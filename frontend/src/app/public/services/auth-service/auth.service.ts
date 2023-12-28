@@ -17,7 +17,7 @@ import { CustomSocket } from 'src/app/private/sockets/custom-socket';
 export class AuthService {
 
   constructor(
-    private http:HttpClient,
+    private http: HttpClient,
     private snackbar: MatSnackBar,
     private jwtService: JwtHelperService,
     private router: Router,
@@ -76,13 +76,14 @@ export class AuthService {
     return this.http.get('api/auth/2fa/enabled');
   }
 
-  loginChatroom(room: RoomI, password: string): Observable<boolean> {
-	const requestBody = { room, password }
-	return this.http.post<boolean>('api/users/loginChatroom', requestBody).pipe(
-		// tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
-		tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
-			duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
-		  }))
-	)}
+  async loginChatroom(room: RoomI, password: string): Promise<boolean> {
+    const requestBody = { room, password }
+    return this.http.post<boolean>('api/users/loginChatroom', requestBody).pipe(
+      // tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
+      tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      }))
+    ).toPromise()
+  }
 
 }

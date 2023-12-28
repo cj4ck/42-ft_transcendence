@@ -10,9 +10,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatService } from '../../services/chat.service';
 
 @Component({
-	selector: 'app-chat-room',
-	templateUrl: './chat-room.component.html',
-	styleUrls: ['./chat-room.component.css']
+  selector: 'app-chat-room',
+  templateUrl: './chat-room.component.html',
+  styleUrls: ['./chat-room.component.css']
 })
 
 export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
@@ -29,17 +29,17 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   isOwner: boolean = false
   chatroomObs$: Observable<RoomI>
 
-  @ViewChild('messages', {static: false}) private messagesScroller: ElementRef
+  @ViewChild('messages', { static: false }) private messagesScroller: ElementRef
 
-	constructor(private chatService: ChatService,
-		private authService: AuthService,
-		private snackbar: MatSnackBar,
-		private cdr: ChangeDetectorRef) { }
+  constructor(private chatService: ChatService,
+    private authService: AuthService,
+    private snackbar: MatSnackBar,
+    private cdr: ChangeDetectorRef) { }
 
-	isRoomProtected: boolean = false
-	isRoomDM: boolean = false
-	isRoomPrivate: boolean = false
-  filteredMessagesPaginate : MessagePaginateI
+  isRoomProtected: boolean = false
+  isRoomDM: boolean = false
+  isRoomPrivate: boolean = false
+  filteredMessagesPaginate: MessagePaginateI
   lastCreatedMessage: number
   usersBlocked: number[] = []
 
@@ -49,18 +49,18 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     this.chatService.getBlockedUsers(this.user.id).pipe(startWith(this.usersBlocked)),
   ]).pipe(
     map(([messagePaginate, message, blockedUsers]) => {
-      this.filteredMessagesPaginate = {items: [],meta: null};
+      this.filteredMessagesPaginate = { items: [], meta: null };
       this.lastCreatedMessage = this.lastCreatedMessage || null
       if (message &&
-          message.room.id === this.chatRoom.id &&
-          this.lastCreatedMessage != new Date(message.created_at).getTime()
+        message.room.id === this.chatRoom.id &&
+        this.lastCreatedMessage != new Date(message.created_at).getTime()
       ) {
         messagePaginate.items.push(message);
         this.lastCreatedMessage = new Date(message.created_at).getTime()
       }
       const items = messagePaginate.items.sort(
         (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
+      );
       messagePaginate.items = items;
       this.filteredMessagesPaginate.items = messagePaginate.items.filter((item) => {
         return !blockedUsers.includes(item.user.id);
@@ -80,31 +80,31 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //adding password to chat
   showSetPasswordForm = false
   setPasswordForm: FormGroup = new FormGroup({
-	password: new FormControl(null, [Validators.required]),
-	passwordConfirm: new FormControl(null, [Validators.required])
+    password: new FormControl(null, [Validators.required]),
+    passwordConfirm: new FormControl(null, [Validators.required])
   },
-  {
-	validators: CustomValidators.passwordsMatching
-  })
+    {
+      validators: CustomValidators.passwordsMatching
+    })
 
   toggleSetPasswordForm() {
-	this.showSetPasswordForm = !this.showSetPasswordForm
+    this.showSetPasswordForm = !this.showSetPasswordForm
   }
 
   async setChatPassword() {
-	if (this.setPasswordForm.valid) {
-		const newPassword: string = this.setPasswordForm.get('password').value
-		this.chatRoom.password = newPassword
-		this.chatService.setChatPassword(this.chatRoom)
-		// console.log('Password is set')
-		this.toggleSetPasswordForm()
-		this.chatService.returnUpdatedRoom().pipe(
-			map((room: RoomI) => {
-				// console.log('updated room here hehe', room)
-				this.updateCurrentChatroom(room)
-			})
-		).subscribe()
-	}
+    if (this.setPasswordForm.valid) {
+      const newPassword: string = this.setPasswordForm.get('password').value
+      this.chatRoom.password = newPassword
+      this.chatService.setChatPassword(this.chatRoom)
+      // console.log('Password is set')
+      this.toggleSetPasswordForm()
+      this.chatService.returnUpdatedRoom().pipe(
+        map((room: RoomI) => {
+          // console.log('updated room here hehe', room)
+          this.updateCurrentChatroom(room)
+        })
+      ).subscribe()
+    }
   }
 
   get password(): FormControl {
@@ -118,7 +118,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //validating password
   passwordValidated: boolean = false
   passwordPrompt: FormGroup = new FormGroup({
-	passwordValidation: new FormControl(null, [Validators.required])
+    passwordValidation: new FormControl(null, [Validators.required])
   })
 
   get passwordValidation(): FormControl {
@@ -126,13 +126,13 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   async checkChatPassword() {
-	if (this.passwordPrompt.valid) {
-		const passwordEntered: string = this.passwordPrompt.get('passwordValidation').value
-		// console.log('given password is:', passwordEntered)
-		const jwtReturn = this.authService.loginChatroom(this.chatRoom, passwordEntered).pipe(
-			tap(() => this.passwordValidated = true)
-		).subscribe()
-	  }
+    if (this.passwordPrompt.valid) {
+      const passwordEntered: string = this.passwordPrompt.get('passwordValidation').value
+      // console.log('given password is:', passwordEntered)
+      this.passwordValidated = await this.authService.loginChatroom(this.chatRoom, passwordEntered);
+    }
+    console.log("Password Validated:", this.passwordValidated)
+    this.chatService.joinRoom(this.chatRoom)
   }
 
   //changing password
@@ -141,27 +141,28 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     password: new FormControl(null, [Validators.required]),
     passwordConfirm: new FormControl(null, [Validators.required])
   },
-  {
-	validators: CustomValidators.passwordsMatching
-  })
+    {
+      validators: CustomValidators.passwordsMatching
+    })
 
   toggleChangePasswordForm() {
-	this.showChangePasswordForm = !this.showChangePasswordForm
+    this.showChangePasswordForm = !this.showChangePasswordForm
   }
+
   changeChatPassword() {
-	if (this.changePasswordForm.valid) {
-		const newPassword: string = this.changePasswordForm.get('password').value
-		this.chatRoom.password = newPassword
-		this.chatService.setChatPassword(this.chatRoom)
-		// console.log('Password is changed')
-		this.toggleChangePasswordForm()
-		this.chatService.returnUpdatedRoom().pipe(
-			map((room: RoomI) => {
-				// console.log('updated room here hehe', room)
-				this.updateCurrentChatroom(room)
-			})
-		).subscribe()
-	}
+    if (this.changePasswordForm.valid) {
+      const newPassword: string = this.changePasswordForm.get('password').value
+      this.chatRoom.password = newPassword
+      this.chatService.setChatPassword(this.chatRoom)
+      // console.log('Password is changed')
+      this.toggleChangePasswordForm()
+      this.chatService.returnUpdatedRoom().pipe(
+        map((room: RoomI) => {
+          // console.log('updated room here hehe', room)
+          this.updateCurrentChatroom(room)
+        })
+      ).subscribe()
+    }
   }
 
   get newPassword(): FormControl {
@@ -174,33 +175,34 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   //removing password
   async removeChatPassword() {
-	await this.chatService.removeChatPassword(this.chatRoom.id)
-	this.chatService.returnUpdatedRoom().pipe(
-		map((room: RoomI) => {
-			// console.log('updated room here hehe', room)
-			this.updateCurrentChatroom(room)
-		})
-	).subscribe()
+    await this.chatService.removeChatPassword(this.chatRoom.id)
+    this.chatService.returnUpdatedRoom().pipe(
+      map((room: RoomI) => {
+        // console.log('updated room here hehe', room)
+        this.updateCurrentChatroom(room)
+      })
+    ).subscribe()
+    this.isRoomProtected = false
   }
 
   //end of password stuffs
 
   leaveChat() {
-	this.chatService.leaveChat(this.user.id, this.chatRoom.id)
-	// this.chatService.returnUpdatedRoom().pipe(
-	// 	map((room: RoomI) => {
-	// 		console.log('updated room here hehe', room)
-	// 		this.updateCurrentChatroom(null)
-	// 	})
-	// ).subscribe()
-	this.snackbar.open(`${this.user.username} left the room '${this.chatRoom.name}' succesfully`, 'Close', {
-		duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
-	})
+    this.chatService.leaveChat(this.user.id, this.chatRoom.id)
+    // this.chatService.returnUpdatedRoom().pipe(
+    // 	map((room: RoomI) => {
+    // 		console.log('updated room here hehe', room)
+    // 		this.updateCurrentChatroom(null)
+    // 	})
+    // ).subscribe()
+    this.snackbar.open(`${this.user.username} left the room '${this.chatRoom.name}' succesfully`, 'Close', {
+      duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+    })
   }
 
   async toggleRoomAdmin(user_id: number) {
     if (this.chatRoom.owner_id === this.user.id) {
-    //   console.log("clicked on user_id to make admin: " + user_id)
+      //   console.log("clicked on user_id to make admin: " + user_id)
       this.roomAdmins = this.chatRoom.admins
       let admin: boolean = false
       for (let i = 0; i < this.roomAdmins.length; i++) {
@@ -247,7 +249,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       console.log('after', this.mutedUsers)
       if (!mutedUserSet) {
         console.log('add to list here')
-        let muteObject: MutedUserI = {id: user_id, muteExpiry: muteExpiry}
+        let muteObject: MutedUserI = { id: user_id, muteExpiry: muteExpiry }
         this.chatRoom.mutedUsers.push(muteObject);
       }
       this.chatRoom.mutedUsers = this.mutedUsers
@@ -297,7 +299,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //this function will trigger when @Input chatRoom changes in dashboard
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
-    if(this.chatRoom) {
+    if (this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
       //resetting some stuff
       this.passwordValidated = false
@@ -315,8 +317,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-      setInterval(() => {
-        if (this.chatRoom && this.chatRoom.id !== null) {
+    setInterval(() => {
+      if (this.chatRoom && this.chatRoom.id !== null) {
         this.chatService.getChatroomInfo(this.chatRoom.id).pipe(
           map((room: RoomI) => {
             this.chatRoom = room;
@@ -338,32 +340,32 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
             });
 
           })
-          ).subscribe();
-          this.cdr.markForCheck();
-        }
-      }, 1000);
+        ).subscribe();
+        this.cdr.markForCheck();
+      }
+    }, 1000);
   }
 
   ngAfterViewInit() {
     if (this.chatRoom) {
       console.log('afterviewinit:', this.chatRoom.users)
       this.scrollToBottom()
-	}
+    }
   }
 
   ngOnDestroy() {
-	console.log('ondestroy')
+    console.log('ondestroy')
     this.chatService.leaveRoom(this.chatRoom)
   }
 
   sendMessage() {
     if (this.chatMessage.value && this.chatMessage.valid && !this.userMuteToggles[this.user.id]) {
-      this.chatService.sendMessage({text: this.chatMessage.value, room: this.chatRoom})
+      this.chatService.sendMessage({ text: this.chatMessage.value, room: this.chatRoom })
       this.chatMessage.reset()
     }
   }
 
   scrollToBottom(): void {
-    setTimeout(() => {this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight}, 1)
+    setTimeout(() => { this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight }, 1)
   }
 }
