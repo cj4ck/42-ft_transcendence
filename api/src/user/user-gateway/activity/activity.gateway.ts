@@ -1,20 +1,19 @@
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { UserService } from 'src/user/service/user-service/user.service';
 
 @WebSocketGateway()
-export class ActivityGateway implements OnGatewayConnection, OnGatewayDisconnect{
+export class ActivityGateway implements  OnGatewayDisconnect{
 
-  handleConnection(socket: Socket) {
-    console.log("User conect " + socket.data.user)
+  constructor(private userService: UserService) {}
+
+  @SubscribeMessage('UserConnect')
+  async hello(socket: Socket, userID: number){
+    await this.userService.userOnline(userID);
   }
 
-  @SubscribeMessage('hello')
-  hello(socket: Socket){
-    console.log("Hello")
-  }
-
-  handleDisconnect(socket: Socket) {
-    console.log("User disconect " + socket.data.user)
+  async handleDisconnect(socket: Socket) {
+    await this.userService.userOffline(socket.data.user?.id);
   }
 
 }

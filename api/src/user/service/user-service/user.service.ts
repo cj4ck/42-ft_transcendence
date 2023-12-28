@@ -88,9 +88,9 @@ export class UserService {
 			],
 			relations: ['creator', 'receiver']
 		});
-	
+
 		const friends: UserI[] = [];
-	
+
 		friendRequests.forEach(request => {
 			if (request.creator.id == userId) {
 				friends.push(request.receiver);
@@ -100,11 +100,27 @@ export class UserService {
 		});
 		return friends;
 	}
-	
+
 	async findAllByUsername(username: string): Promise<UserI[]> {
 		return this.userRepository.findBy({
 			username: Like(`%${username.toLowerCase()}%`)
 		})
+	}
+
+	async userOnline(userID: number) {
+		var user = await this.userRepository.findOneBy({id: userID});
+
+		user.activityStatus = "online";
+
+		await this.userRepository.save(user);
+	}
+
+	async userOffline(userID: number) {
+		var user = await this.userRepository.findOneBy({id: userID});
+
+		user.activityStatus = "offline";
+
+		await this.userRepository.save(user);
 	}
 
 	async findById(id: number): Promise<UserI> {

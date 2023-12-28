@@ -22,7 +22,6 @@ export class LoginComponent {
     private authService: AuthService,
     private router : Router,
     private route: ActivatedRoute,
-    private socket: CustomSocket
   ) { }
 
   twoFactorRequired: boolean = false;
@@ -50,7 +49,6 @@ export class LoginComponent {
             localStorage.setItem('nestjs_chat_app', response.access_token);
             this.router.navigate(['private']);
           }
-          this.socket.emit("hello");
         },
         error:
         (_error) => {
