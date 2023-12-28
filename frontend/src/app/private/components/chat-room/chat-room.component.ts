@@ -300,7 +300,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   async ngOnChanges(changes: SimpleChanges) {
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if (this.chatRoom) {
-      this.chatService.joinRoom(this.chatRoom)
       //resetting some stuff
       this.passwordValidated = false
       this.passwordPrompt.reset()
@@ -313,6 +312,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       this.isRoomPrivate = this.chatRoom.type === 'private'
       this.chatRoomUsers = this.chatRoom.users
       this.user.id === this.chatRoom.owner_id ? this.isOwner = true : false
+      this.chatService.joinRoom(this.chatRoom)
     }
   }
 
