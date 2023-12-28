@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CustomSocket } from 'src/app/private/sockets/custom-socket';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent {
     private authService: AuthService,
     private router : Router,
     private route: ActivatedRoute,
+    private socket: CustomSocket
   ) { }
 
   twoFactorRequired: boolean = false;
@@ -48,6 +50,7 @@ export class LoginComponent {
             localStorage.setItem('nestjs_chat_app', response.access_token);
             this.router.navigate(['private']);
           }
+          this.socket.emit("hello");
         },
         error:
         (_error) => {

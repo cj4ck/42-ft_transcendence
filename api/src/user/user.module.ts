@@ -9,6 +9,7 @@ import { RoomService } from 'src/chat/service/room-service/room.service';
 import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { UserGatewayGateway } from './user-gateway/user-gateway.gateway';
 import { FriendRequestEntity } from './model/friend-request.entity';
+import { ActivityGateway } from './user-gateway/activity/activity.gateway';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { FriendRequestEntity } from './model/friend-request.entity';
     AuthModule
   ],
   controllers: [UserController],
-  providers: [UserService, UserHelperService, RoomService, UserGatewayGateway],
+  providers: [UserService, UserHelperService, RoomService, UserGatewayGateway, ActivityGateway],
   exports: [UserService]
 })
 export class UserModule {}
