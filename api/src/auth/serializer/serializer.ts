@@ -11,13 +11,13 @@ export class SessionSerializer extends PassportSerializer {
         super();
     }
     serializeUser(user: UserEntity, done: Function) {
-        console.log('Serialize User');
+        // console.log('Serialize User');
         done(null, user);
     }
 
     async deserializeUser(payload: any, done: Function) {
         const user = await this.authService.findUser(payload.id);
-        console.log('Deserialize User');
+        // console.log('Deserialize User');
         console.log(user);
         return user ? done(null, user) : done(null, null);
     }

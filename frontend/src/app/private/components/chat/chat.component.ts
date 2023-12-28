@@ -27,7 +27,7 @@ export class ChatComponent implements OnInit, AfterViewInit{
     ) { }
 
   async ngOnInit() {
-	  this.rooms$ = this.chatService.getMyRooms() //?? ask Karol about this await stuff
+	this.rooms$ = this.chatService.getMyRooms() //?? ask Karol about this await stuff
     this.chatService.emitPaginateRooms(10, 0)
   }
 
@@ -49,7 +49,7 @@ export class ChatComponent implements OnInit, AfterViewInit{
   async updateRoom(event: Event) {
 	const updatedRoom = event as unknown as RoomI
 	this.selectedRoom = updatedRoom
-	console.log()
+	console.log('in dashboard', this.selectedRoom)
 	if (updatedRoom === null) {
 		this.selectionList.deselectAll()
 		// this.reloadCurrentPage()

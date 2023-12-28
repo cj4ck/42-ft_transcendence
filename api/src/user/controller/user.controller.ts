@@ -84,9 +84,10 @@ export class UserController {
 		return loggedIn
 	}
 
-	@Post('change-username')
-	async changeUsername(@Body() user: UserI): Promise<UserI> {
-		const updatedUser: UserI = await this.userService.changeUsername(user)
-		return updatedUser
+	@Post('changeUsername')
+	async changeUsername(@Body() user: UserI): Promise<boolean> {
+		console.log('controller:', user.username)
+		const usernameChanged: boolean = await this.userService.changeUsername(user)
+		return usernameChanged
 	}
 }

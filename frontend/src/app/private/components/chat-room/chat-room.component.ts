@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from 'src/app/model/user.interface';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ChatService } from '../../services/chat.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-chat-room',
@@ -95,14 +96,14 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		const newPassword: string = this.setPasswordForm.get('password').value
 		this.chatRoom.password = newPassword
 		this.chatService.setChatPassword(this.chatRoom)
-		// console.log('Password is set')
 		this.toggleSetPasswordForm()
+		console.log('Password is set')
 		this.chatService.returnUpdatedRoom().pipe(
 			map((room: RoomI) => {
 				// console.log('updated room here hehe', room)
 				this.updateCurrentChatroom(room)
 			})
-		).subscribe()
+			).subscribe()
 	}
   }
 
@@ -115,7 +116,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   //validating password
-  passwordValidated: boolean = false
+  passwordValidated: boolean = true
   passwordPrompt: FormGroup = new FormGroup({
 	passwordValidation: new FormControl(null, [Validators.required])
   })
@@ -127,11 +128,17 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   async checkChatPassword() {
 	if (this.passwordPrompt.valid) {
 		const passwordEntered: string = this.passwordPrompt.get('passwordValidation').value
-		// console.log('given password is:', passwordEntered)
 		const jwtReturn = this.authService.loginChatroom(this.chatRoom, passwordEntered).pipe(
 			tap(() => this.passwordValidated = true)
-		).subscribe()
-		// console.log('hello I am here ', this.passwordValidated)
+			).subscribe()
+			console.log('check password', this.messagesPaginate$)
+	// 		// this.chatService.returnUpdatedRoom().pipe(
+	// 		// 		map((room: RoomI) => {
+	// 		// 				// console.log('updated room here hehe', room)
+	// 		// 				this.updateCurrentChatroom(room)
+	// 		// 			})
+	// 		// 		).subscribe()
+	// 				// console.log('hello I am here ', this.passwordValidated)
 	}
 	// console.log('pswd val', this.passwordValidated)
   }
@@ -154,14 +161,14 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 		const newPassword: string = this.changePasswordForm.get('newPassword').value
 		this.chatRoom.password = newPassword
 		this.chatService.setChatPassword(this.chatRoom)
-		// console.log('Password is changed')
 		this.toggleChangePasswordForm()
+		console.log('Password is changed')
 		this.chatService.returnUpdatedRoom().pipe(
 			map((room: RoomI) => {
 				// console.log('updated room here hehe', room)
 				this.updateCurrentChatroom(room)
 			})
-		).subscribe()
+			).subscribe()
 	}
   }
 
@@ -176,6 +183,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //removing password
   async removeChatPassword() {
 	await this.chatService.removeChatPassword(this.chatRoom.id)
+	console.log('removed')
 	this.chatService.returnUpdatedRoom().pipe(
 		map((room: RoomI) => {
 			// console.log('updated room here hehe', room)
@@ -295,11 +303,11 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   //this function will trigger when @Input chatRoom changes in dashboard
   async ngOnChanges(changes: SimpleChanges) {
+	console.log('on changes eheh')
     this.chatService.leaveRoom(changes['chatRoom'].previousValue)
     if(this.chatRoom) {
       this.chatService.joinRoom(this.chatRoom)
       //resetting some stuff
-      this.passwordValidated = false
       this.passwordPrompt.reset()
       this.setPasswordForm.reset()
       this.changePasswordForm.reset()

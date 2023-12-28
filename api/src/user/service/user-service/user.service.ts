@@ -169,14 +169,30 @@ export class UserService {
 			}
 	}
 
+	async changeUsername(user: UserI): Promise<boolean> {
+			const exists: boolean = await this.usernameExists(user.username)
+			if(!exists) {
+				const dbUser = await this.userRepository.findOne({where: {id: user.id}})
+				dbUser.username = user.username
+				await this.userRepository.save(dbUser)
+				console.log('bend ', dbUser.username, user.username)
+				return true
+			} else {
+				return false
+			}
+	}
+
+	private async usernameExists(username: string): Promise<boolean> {
+		const user = await this.userRepository.findOne({where : { username }});
+			if(user) {
+				return true
+			} else {
+				return false
+			}
+	}
+
 	public async savePlayer(user: UserI)
 	{
 		await this.userRepository.save(user);
-	}
-
-	async changeUsername(user: UserI): Promise<UserI> {
-		const existingUser = await this.getOne(user.id)
-		existingUser.username = user.username
-		return this.userRepository.save(existingUser);
 	}
  }

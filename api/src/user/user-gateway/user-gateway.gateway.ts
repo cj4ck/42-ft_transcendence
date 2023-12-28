@@ -10,11 +10,12 @@ export class UserGatewayGateway {
 
 	constructor(private userService: UserService) {}
 
-	@SubscribeMessage('checkUsernameAvailabile')
-	async onUsernameAvailable(socket: Socket, newUsername: string) {
+	@SubscribeMessage('checkNewUsername')
+	async onCheckNewUsername(socket: Socket, newUsername: string) {
 		const doesExist = await this.userService.doesUsernameExist(newUsername)
-		console.log('doesExist:', doesExist)
-		this.server.to(socket.id).emit('doesUsernameExist', doesExist)
+		const isAvailable: boolean = !doesExist
+		console.log('doesExist, isAvailable:', doesExist, isAvailable)
+		this.server.to(socket.id).emit('isUsernameAvailable', doesExist)
 	}
 
 }
