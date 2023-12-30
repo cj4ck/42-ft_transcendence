@@ -82,10 +82,14 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.userSubscription$.unsubscribe();
+    if (this.userSubscription$)
+      this.userSubscription$.unsubscribe();
+    if (this.friendRequestStatusSubscription$)
     this.friendRequestStatusSubscription$.unsubscribe();
-    this.friendRequestsSubscription$.unsubscribe();
-    this.friendRequestIdSubscription$.unsubscribe();
+    if (this.friendRequestsSubscription$)
+      this.friendRequestsSubscription$.unsubscribe();
+    if (this.friendRequestIdSubscription$)
+      this.friendRequestIdSubscription$.unsubscribe();
   }
 
   addUser(): Subscription {

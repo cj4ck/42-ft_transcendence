@@ -57,7 +57,7 @@ export class UserService {
 			return { jwt };
 		} catch (error) {
 			console.error('Login error:', error);
-			throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
 		}
 	}
 

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { generate, Observable, of } from 'rxjs';
+import { EMPTY, generate, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators'
 import { LoginChatroomResponseI } from 'src/app/model/login-chatroom-response.interface';
 import { LoginResponseI } from 'src/app/model/login-response.interface';
@@ -35,7 +35,7 @@ export class AuthService {
 
   getLoggedInUser() {
     const decodedToken = this.jwtService.decodeToken()
-    return <UserI>decodedToken.user;
+    return <UserI>decodedToken?.user;
   }
 
   logout() {
@@ -82,7 +82,7 @@ export class AuthService {
       // tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
       tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
         duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
-      }))
+      })), catchError((err, caught) => {return EMPTY})
     ).toPromise()
   }
 
