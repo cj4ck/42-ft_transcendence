@@ -20,6 +20,19 @@ body::-webkit-scrollbar {
     display: none; /* Hide the scrollbar */
 }
 
+.fight_button{
+    border: none;
+    background-color: tomato;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+    font-size: 19px;
+}
+
+.fight_button:hover{
+    background-color: rgb(254, 69, 36);
+}
+
 ._container {
     display: flex;
     justify-content: center;

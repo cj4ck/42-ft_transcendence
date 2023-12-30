@@ -8,17 +8,13 @@ import { CustomSocket } from '../../sockets/custom-socket';
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.css']
 })
-export class NavigationComponent implements OnInit{
+export class NavigationComponent {
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private socket: CustomSocket
   ) {}
-
-  ngOnInit(): void {
-    this.socket.emit("UserConnect", this.authService.getLoggedInUser().id)
-  }
 
   logout(){
     this.authService.logout();

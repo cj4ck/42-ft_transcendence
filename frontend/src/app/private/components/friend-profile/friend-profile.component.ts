@@ -5,6 +5,7 @@ import { FriendRequestI, FriendRequestStatus, FriendRequestStatusI } from 'src/a
 import { UserI } from 'src/app/model/user.interface';
 import { FriendProfileService } from '../../services/friend-profile.service';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-friend-profile',
@@ -28,6 +29,7 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private friendProfileService: FriendProfileService,
     private authService: AuthService,
+    private gameService: GameService
   ) { }
 
   ngOnInit() {
@@ -72,6 +74,11 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
         return this.friendProfileService.getUser(userId);
       })
     )
+  }
+
+  fightAgainstUser()
+  {
+    this.gameService.fightAgainstUser(this.user.id, this.authService.getLoggedInUser().id)
   }
 
   ngOnDestroy(): void {

@@ -13,7 +13,7 @@ import { ThemePalette } from '@angular/material/core';
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css'],
 })
-export class GameComponent implements OnInit, ComponentCanDeactivate {
+export class GameComponent implements ComponentCanDeactivate {
 
   quickGame: boolean;
   theme: ThemePalette = "warn"
@@ -36,15 +36,6 @@ export class GameComponent implements OnInit, ComponentCanDeactivate {
     private authService: AuthService
   ) {
     socket.on("PlayerInQueueChange", (nbr) => this.changeWaitingPlayers(nbr))
-    socket.on("PlayerGetMatch", (new_game) => {
-      console.log(new_game);
-      this.snackbar.open(`U get match`, 'Close', { duration: 5000, horizontalPosition: 'right', verticalPosition: 'top' })
-      this.router.navigate(['private/gameroom/' + new_game.id])
-    })
-  }
-
-  ngOnInit(): void {
-    this.socket.emit("GameConnect", this.authService.getLoggedInUser().id)
   }
 
   playersWaiting: number = 0;

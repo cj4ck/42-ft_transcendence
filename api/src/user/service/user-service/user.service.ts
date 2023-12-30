@@ -109,26 +109,33 @@ export class UserService {
 
 	async userOnline(userID: number) {
 		var user = await this.userRepository.findOneBy({id: userID});
+		if (user)
+		{
+			user.activityStatus = "online";
 
-		user.activityStatus = "online";
-
-		await this.userRepository.save(user);
+			await this.userRepository.save(user);
+		}
 	}
 
 	async userInGame(userID: number) {
 		var user = await this.userRepository.findOneBy({id: userID});
+		if (user)
+		{
+			user.activityStatus = "in game";
 
-		user.activityStatus = "in game";
-
-		await this.userRepository.save(user);
+			await this.userRepository.save(user);
+		}
 	}
 
 	async userOffline(userID: number) {
 		var user = await this.userRepository.findOneBy({id: userID});
 
-		user.activityStatus = "offline";
+		if (user)
+		{
+			user.activityStatus = "offline";
 
-		await this.userRepository.save(user);
+			await this.userRepository.save(user);
+		}
 	}
 
 	async findById(id: number): Promise<UserI> {

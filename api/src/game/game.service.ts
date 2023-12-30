@@ -9,6 +9,7 @@ import { GameEntity } from './model/game.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { randomInt } from 'crypto';
 import { UserService } from 'src/user/service/user-service/user.service';
+import { AvailablePlayerI } from './model/available-player.interface';
 
 @Injectable()
 export class GameService {
@@ -26,10 +27,12 @@ export class GameService {
 	games: GameI[] = [];
 	server: Server;
 
+	availablePlayers: AvailablePlayerI[] = [];
+
 	canvas_size = 400;
 	winscore = 5;
 
-	lookForGamePair(server: Server, q: PlayerI[]){
+	async lookForGamePair(server: Server, q: PlayerI[]){
 		this.server = server
 
 		var queue_size = q.length;
@@ -37,6 +40,7 @@ export class GameService {
 		if (queue_size > 1)
 		{
 			q.sort((p1, p2) => p1.user.score - p2.user.score);
+
 			var newGame: GameI = {
 
 				player1: q.pop()!,
@@ -51,16 +55,25 @@ export class GameService {
 				p2Pos: 400
 			}
 
-			newGame.p1Id = newGame.player1.user.id
-			newGame.p2Id = newGame.player2.user.id
-
-			this.gameRepository.save(this.gameRepository.create(newGame)).then(
-				(game) => {
-					server.to(newGame.player1.socketId).to(newGame.player2.socketId).emit('PlayerGetMatch', game);
-					this.games.push(newGame);
-				}
-			);
+			this.createGame(newGame, server);
 		}
+	}
+
+	async createGame(newGame, server){
+		this.server = server;
+		
+		newGame.p1Id = newGame.player1.user.id
+		newGame.p2Id = newGame.player2.user.id
+
+		await this.userService.userInGame(newGame.p1Id);
+		await this.userService.userInGame(newGame.p2Id);
+
+		this.gameRepository.save(this.gameRepository.create(newGame)).then(
+			(game) => {
+				server.to(newGame.player1.socketId).to(newGame.player2.socketId).emit('PlayerGetMatch', game);
+				this.games.push(newGame);
+			}
+		);
 	}
 
 	gameUpdates(){
@@ -152,6 +165,9 @@ export class GameService {
 
 		await this.userService.savePlayer(winer);
 		await this.userService.savePlayer(looser);
+
+		await this.userService.userOnline(winer.id);
+		await this.userService.userOnline(looser.id);
 
 		this.server.to(game.player2.socketId).to(game.player1.socketId).emit('EndOfGame');
 	}

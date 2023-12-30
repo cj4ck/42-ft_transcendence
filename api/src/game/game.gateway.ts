@@ -2,13 +2,20 @@ import { OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServe
 import { Server, Socket } from 'socket.io';
 import { UserI } from 'src/user/model/user.interface';
 import { GameService } from './game.service';
+import { GameI } from './model/game.interface';
+import { UserService } from 'src/user/service/user-service/user.service';
 
 @WebSocketGateway({ cors: { origin: ['http://localhost:3000', 'http://localhost:4200'] } })
 export class GameGateway implements OnGatewayDisconnect {
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private userService: UserService) { }
 
   handleDisconnect(socket: Socket) {
+
+    var availablePlayerIndex  = this.gameService.availablePlayers.findIndex((val) => val.socketId == socket.id);
+    if (availablePlayerIndex > -1)
+      this.gameService.availablePlayers.splice(availablePlayerIndex, 1);
+
     const user = socket.data.user;
     var q = this.gameService.queue;
     var indexQueue = q.indexOf(user, 0);
@@ -117,5 +124,48 @@ export class GameGateway implements OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('UserConnect')
+  PlayerIsAvailable(socket: Socket, userID: number)
+  {
+    if (this.gameService.availablePlayers.findIndex((el) => el.socketId == socket.id) < 0)
+      this.gameService.availablePlayers.push({socketId: socket.id, userID: userID});
+  }
 
+  @SubscribeMessage('PlayerWannaDuel')
+  PlayerWannaDuel(socket: Socket, ids: number[]){
+    //* ids[0] - guest ID
+    //* ids[1] - host ID
+
+    var guest_socket_id = this.gameService.availablePlayers.find((val) => val.userID == ids[0])?.socketId
+
+    if (guest_socket_id != null)
+    {
+      this.server.to(guest_socket_id).emit("GameInvitation", ids[1]);
+    }
+  }
+
+  @SubscribeMessage('DuelTime')
+  async DuelTime(socket: Socket, ids: number[]){
+    var p1_socet_id = this.gameService.availablePlayers.find((val) => val.userID == ids[0])?.socketId;
+    var p2_socet_id = this.gameService.availablePlayers.find((val) => val.userID == ids[1])?.socketId;
+
+    var user1 = await this.userService.findById(ids[0]);
+    var user2 = await this.userService.findById(ids[1]);
+
+    var newGame: GameI = {
+
+      player1: {socketId: p1_socet_id, user: user1, quickGame: false},
+      player2: {socketId: p2_socet_id, user: user2, quickGame: false},
+      p1Score: 0,
+      p2Score: 0,
+      ballX: 400,
+      ballY: 400,
+      ballMoveX: 4,
+      ballMoveY: Math.random() * 2 - 1,
+      p1Pos: 400,
+      p2Pos: 400
+    }
+
+    this.gameService.createGame(newGame, this.server);
+  }
 }

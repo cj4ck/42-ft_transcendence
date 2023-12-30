@@ -14,6 +14,7 @@
                         <h2>Losses: <span>{{ user.losses }}</span></h2>
                         <div *ngIf="isFriend; else notFriend">
                             <h2>Activity Status: <span>{{ user.activityStatus }}</span></h2>
+                            <button class="fight_button" (click)="fightAgainstUser();">⚔️ Invite to game ⚔️</button>
                         </div>
                         <ng-template #notFriend>
                             <ng-container

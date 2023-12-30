@@ -30,4 +30,9 @@ export class GameService {
   getLostGamesForPlayer(id: number): Observable<GameI[]> {
     return this.http.get<GameI[]>(`api/game/lostgames?id=${id}`)
   }
+
+  fightAgainstUser(id_guest: number, host_id: number){
+    console.log('click')
+    this.socket.emit('PlayerWannaDuel', id_guest, host_id);
+  }
 }
