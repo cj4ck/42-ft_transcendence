@@ -17,4 +17,11 @@ export class UserGatewayGateway {
 		this.server.to(socket.id).emit('doesUsernameExist', doesExist)
 	}
 
+	@SubscribeMessage('checkNewUsername')
+	async onCheckNewUsername(socket: Socket, newUsername: string) {
+		const doesExist = await this.userService.doesUsernameExist(newUsername)
+		const isAvailable: boolean = !doesExist
+		console.log('doesExist, isAvailable:', doesExist, isAvailable)
+		this.server.to(socket.id).emit('isUsernameAvailable', doesExist)
+	}
 }

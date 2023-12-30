@@ -98,12 +98,6 @@ export class UserController {
 		return loggedIn
 	}
 
-	@Post('change-username')
-	async changeUsername(@Body() user: UserI): Promise<UserI> {
-		const updatedUser: UserI = await this.userService.changeUsername(user)
-		return updatedUser
-	}
-
 	@UseGuards(JwtAuthGuard)
 	@Get('user-profile/:userId')
 	findUserById(@Param('userId') userStringId: string): Observable<UserI> {
@@ -176,5 +170,12 @@ export class UserController {
 		@Query('receiverId') receiverId: number
 	): Promise<number> {
 		return await this.userService.getFriendRequestId(creatorId, receiverId);
+	}
+
+	@Post('changeUsername')
+	async changeUsername(@Body() user: UserI): Promise<boolean> {
+		console.log('controller:', user.username)
+		const usernameChanged: boolean = await this.userService.changeUsername(user)
+		return usernameChanged
 	}
 }

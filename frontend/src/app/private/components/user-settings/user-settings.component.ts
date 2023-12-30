@@ -12,15 +12,21 @@ import { UserService } from 'src/app/public/services/user-service/user.service';
   styleUrls: ['./user-settings.component.css'],
 })
 export class UserSettingsComponent {
+	defaultAvatarUrl = '../../../assets/defaultAvatar.png';
+	userId: number = this.authService.getLoggedInUser().id
+	user: UserI = null
+
   constructor(
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {}
-
-  defaultAvatarUrl = '../../../assets/defaultAvatar.png';
-  user: UserI = this.authService.getLoggedInUser();
+  ) {
+	const userId: number = this.authService.getLoggedInUser().id;
+	this.userService.findByID(userId).subscribe(user => {
+	  this.user = user;
+	});
+  }
 
   showChangeUsernamePrompt: boolean = false;
   changeUsernameForm: FormGroup = new FormGroup({
@@ -29,29 +35,16 @@ export class UserSettingsComponent {
       Validators.maxLength(12),
     ]),
   });
-  	doesExist: boolean
 
   changeUsername() {
-    if (this.changeUsernameForm.valid) {
-      const newUsername: string =
-        this.changeUsernameForm.get('newUsername').value;
-		this.userService.isUsernameAvailable(newUsername).pipe(
-			map((ret: boolean) => {
-				this.doesExist = ret
-				console.log('doess exist', this.doesExist)
-			})
-		).subscribe()
-		if (this.doesExist) {
-			console.log('dziala')
-		}
-      if (this.userService.isUsernameAvailable(newUsername)) {
-        this.user.username = newUsername;
-        this.userService.changeUsername(this.user);
-        this.toggleChangeUsernameForm();
-      } else {
-        console.log('username is taken. please, choose a different username');
-      }
-    }
+	if (this.changeUsernameForm.valid)
+	{
+		const newUsername: string = this.changeUsernameForm.get('newUsername').value
+		this.user.username = newUsername
+		console.log('username:', this.user.username)
+		const ret = this.userService.changeUsername(this.user).subscribe()
+		console.log('changed: ', ret)
+	}
   }
 
   toggleChangeUsernameForm() {

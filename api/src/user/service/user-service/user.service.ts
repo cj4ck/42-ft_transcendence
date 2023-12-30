@@ -19,12 +19,12 @@ export class UserService {
 		private authService: AuthService,
 		@InjectRepository(FriendRequestEntity)
 		private readonly friendRequestRepository: Repository<FriendRequestEntity>,
-	) {}
+	) { }
 
 	async create(newUser: UserI): Promise<UserI> {
 		try {
 			const exists: boolean = await this.mailExists(newUser.email)
-			if(!exists) {
+			if (!exists) {
 				const passwordHash: string = await this.hashPassword(newUser.password)
 				newUser.password = passwordHash
 				const user = await this.userRepository.save(this.userRepository.create(newUser))
@@ -54,10 +54,10 @@ export class UserService {
 			// payload.activityStatus = 'online'
 			// await this.authService.saveUser(payload)
 			const jwt = await this.authService.generateJwt(payload);
-				return { jwt };
+			return { jwt };
 		} catch (error) {
-		console.error('Login error:', error);
-		throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+			console.error('Login error:', error);
+			throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -108,9 +108,8 @@ export class UserService {
 	}
 
 	async userOnline(userID: number) {
-		var user = await this.userRepository.findOneBy({id: userID});
-		if (user)
-		{
+		var user = await this.userRepository.findOneBy({ id: userID });
+		if (user) {
 			user.activityStatus = "online";
 
 			await this.userRepository.save(user);
@@ -118,9 +117,8 @@ export class UserService {
 	}
 
 	async userInGame(userID: number) {
-		var user = await this.userRepository.findOneBy({id: userID});
-		if (user)
-		{
+		var user = await this.userRepository.findOneBy({ id: userID });
+		if (user) {
 			user.activityStatus = "in game";
 
 			await this.userRepository.save(user);
@@ -128,10 +126,9 @@ export class UserService {
 	}
 
 	async userOffline(userID: number) {
-		var user = await this.userRepository.findOneBy({id: userID});
+		var user = await this.userRepository.findOneBy({ id: userID });
 
-		if (user)
-		{
+		if (user) {
 			user.activityStatus = "offline";
 
 			await this.userRepository.save(user);
@@ -140,7 +137,7 @@ export class UserService {
 
 	async findById(id: number): Promise<UserI> {
 		return this.userRepository.findOne({
-			where : {
+			where: {
 				id
 			}
 		})
@@ -155,15 +152,15 @@ export class UserService {
 	}
 
 	async doesUsernameExist(username: string) {
-			const user = await this.userRepository.findOne({
-			  where: {
+		const user = await this.userRepository.findOne({
+			where: {
 				username: Like(`%${username.toLowerCase()}%`),
-			  },
-			});
-			if (user === null)
-				return (false)
-			else
-				return (true)
+			},
+		});
+		if (user === null)
+			return (false)
+		else
+			return (true)
 	}
 
 	async updateBlockedIds(user: UserI): Promise<UserI> {
@@ -215,7 +212,7 @@ export class UserService {
 	hasRequestBeenSentOrReceived(creator: UserI, receiver: UserI): Observable<boolean> {
 		return from(this.friendRequestRepository.findOne({
 			where: [
-				{ creator: { id: creator.id }, receiver: { id: receiver.id }},
+				{ creator: { id: creator.id }, receiver: { id: receiver.id } },
 				{ creator: { id: receiver.id }, receiver: { id: creator.id } },
 			],
 		}),
@@ -260,8 +257,8 @@ export class UserService {
 				return from(
 					this.friendRequestRepository.findOne({
 						where: [
-							{ creator: { id: currentUser.id }, receiver: { id: receiver.id }},
-							{ creator: { id: receiver.id }, receiver: { id: currentUser.id }},
+							{ creator: { id: currentUser.id }, receiver: { id: receiver.id } },
+							{ creator: { id: receiver.id }, receiver: { id: currentUser.id } },
 						],
 						relations: ['creator', 'receiver'],
 					}),
@@ -282,7 +279,7 @@ export class UserService {
 	}
 
 	getFriendRequestById(friendRequestId: number): Observable<FriendRequestI> {
-		let friendRequest =  from(
+		let friendRequest = from(
 			this.friendRequestRepository.findOneBy({
 				id: friendRequestId,
 			})
@@ -312,7 +309,7 @@ export class UserService {
 	getFriendRequestsForUser(
 		currentUser: UserI): Observable<FriendRequestI[]> {
 		return from(this.friendRequestRepository.find({
-			where: [{ receiver: { id: currentUser.id }}],
+			where: [{ receiver: { id: currentUser.id } }],
 			relations: ['receiver', 'creator'],
 		}))
 	}
@@ -320,7 +317,7 @@ export class UserService {
 	async getFriendRequestId(creatorId: number, receiverId: number): Promise<number> {
 		const friendRequest: FriendRequestEntity[] = await this.friendRequestRepository.find({
 			where: [
-				{ creator: { id: creatorId } , receiver: { id: receiverId } },
+				{ creator: { id: creatorId }, receiver: { id: receiverId } },
 			],
 			relations: ['creator', 'receiver']
 		});
@@ -329,7 +326,7 @@ export class UserService {
 
 	// also returns password
 	private async findByEmail(email: string): Promise<UserI> {
-		return this.userRepository.findOne({where: { email }, select: ['id', 'email', 'username', 'password']});
+		return this.userRepository.findOne({ where: { email }, select: ['id', 'email', 'username', 'password'] });
 	}
 
 	private async hashPassword(password: string): Promise<string> {
@@ -345,26 +342,41 @@ export class UserService {
 	}
 
 	public getOne(id: number): Promise<UserI> {
-		return this.userRepository.findOneOrFail({ where : { id }});
+		return this.userRepository.findOneOrFail({ where: { id } });
 	}
 
 	private async mailExists(email: string): Promise<boolean> {
-		const user = await this.userRepository.findOne({where : { email }});
-			if(user) {
-				return true
-			} else {
-				return false
-			}
+		const user = await this.userRepository.findOne({ where: { email } });
+		if (user) {
+			return true
+		} else {
+			return false
+		}
 	}
 
-	public async savePlayer(user: UserI)
-	{
+	public async savePlayer(user: UserI) {
 		await this.userRepository.save(user);
 	}
 
-	async changeUsername(user: UserI): Promise<UserI> {
-		const existingUser = await this.getOne(user.id)
-		existingUser.username = user.username
-		return this.userRepository.save(existingUser);
+	async changeUsername(user: UserI): Promise<boolean> {
+		const exists: boolean = await this.usernameExists(user.username)
+		if (!exists) {
+			const dbUser = await this.userRepository.findOne({ where: { id: user.id } })
+			dbUser.username = user.username
+			await this.userRepository.save(dbUser)
+			console.log('bend ', dbUser.username, user.username)
+			return true
+		} else {
+			return false
+		}
 	}
- }
+
+	private async usernameExists(username: string): Promise<boolean> {
+		const user = await this.userRepository.findOne({ where: { username } });
+		if (user) {
+			return true
+		} else {
+			return false
+		}
+	}
+}
