@@ -3,7 +3,9 @@
 	<br>
 	<h2 *ngIf="playerIsInQueue">Waiting players: <span class="number">{{playersWaiting}}</span></h2>
 	<button *ngIf="playerIsInQueue" class="cancel-btn" (click)="leaveQueqe()"> <i class="bi bi-x-octagon-fill"></i> Cancel</button>
-
+	<mat-checkbox class="example-margin" (change)="checkCheckBoxvalue($event)" [color]="theme">
+      <span class="game-type">Quick game</span>
+    </mat-checkbox>
 	<button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i class="bi bi-sign-turn-left-fill"></i> Go back</button>
 </div>
 

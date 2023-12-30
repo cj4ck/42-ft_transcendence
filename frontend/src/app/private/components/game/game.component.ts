@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ComponentCanDeactivate } from 'src/app/guards/pending-changes.guard';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
+import { ThemePalette } from '@angular/material/core';
 
 @Component({
   selector: 'app-game',
@@ -13,6 +14,13 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
   styleUrls: ['./game.component.css'],
 })
 export class GameComponent implements OnInit, ComponentCanDeactivate {
+
+  quickGame: boolean;
+  theme: ThemePalette = "warn"
+
+  checkCheckBoxvalue(event){
+    this.quickGame = event.checked;
+  }
 
   @HostListener('window:beforeunload')
   canDeactivate(): Observable<boolean> | boolean {
@@ -43,12 +51,12 @@ export class GameComponent implements OnInit, ComponentCanDeactivate {
   playerIsInQueue = false;
 
   joinQueqe() {
-    this.gameService.joinGame(this.changeWaitingPlayers);
+
+    this.gameService.joinGame(this.changeWaitingPlayers, this.quickGame);
     this.playerIsInQueue = true;
   }
 
   leaveQueqe() {
-    console.log("asd")
     this.gameService.leaveGame(this.changeWaitingPlayers);
     this.playerIsInQueue = false;
   }

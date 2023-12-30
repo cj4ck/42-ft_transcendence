@@ -22,24 +22,25 @@ export class GameService {
 	}
 
 	queue: PlayerI[] = [];
+	quick_queue: PlayerI[] = [];
 	games: GameI[] = [];
 	server: Server;
 
 	canvas_size = 400;
 	winscore = 5;
 
-	lookForGamePair(server: Server){
+	lookForGamePair(server: Server, q: PlayerI[]){
 		this.server = server
 
-		var queue_size = this.queue.length;
+		var queue_size = q.length;
 
 		if (queue_size > 1)
 		{
-			this.queue.sort((p1, p2) => p1.user.score - p2.user.score);
+			q.sort((p1, p2) => p1.user.score - p2.user.score);
 			var newGame: GameI = {
 
-				player1: this.queue.pop()!,
-				player2: this.queue.pop()!,
+				player1: q.pop()!,
+				player2: q.pop()!,
 				p1Score: 0,
 				p2Score: 0,
 				ballX: 400,
@@ -49,10 +50,9 @@ export class GameService {
 				p1Pos: 400,
 				p2Pos: 400
 			}
+
 			newGame.p1Id = newGame.player1.user.id
 			newGame.p2Id = newGame.player2.user.id
-
-			var id;
 
 			this.gameRepository.save(this.gameRepository.create(newGame)).then(
 				(game) => {
@@ -94,7 +94,7 @@ export class GameService {
 				element.ballY = 400;
 				element.ballX = 400;
 
-				if (element.p2Score < this.winscore && element.p1Score < this.winscore)
+				if (element.p2Score < this.winscore && element.p1Score < this.winscore && !element.player1.quickGame)
 				{
 					element.ballMoveX = 4;
 					element.ballMoveY = Math.random() * 2 - 1;

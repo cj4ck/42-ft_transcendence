@@ -123,6 +123,9 @@ h2 {
 	animation: move 3s infinite;
 }
 
+.game-type{
+	color: #eb9854;
+}
 .play:disabled {
 	background-color: green;
 }

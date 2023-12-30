@@ -11,9 +11,8 @@ export class GameService {
 
   constructor(private socket: CustomSocket, private http: HttpClient) { }
 
-  joinGame(changeWaitingPlayers) {
-    this.socket.emit('PlayerJoinQueue', changeWaitingPlayers);
-    console.log("I emit signal")
+  joinGame(changeWaitingPlayers, quickGame) {
+    this.socket.emit('PlayerJoinQueue', quickGame);
   }
 
   leaveGame(changeWaitingPlayers) {
