@@ -46,4 +46,7 @@ export class RoomEntity {
 
 	@Column({ type: 'json', nullable: true })
 	mutedUsers?: MutedUserI[];
+
+	@Column('int', { array: true, default: [] })
+	bannedUsers: number[];
 }

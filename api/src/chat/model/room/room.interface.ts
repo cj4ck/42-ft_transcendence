@@ -12,6 +12,7 @@ export interface RoomI {
 	password?: string
 	admins?: number[]
 	mutedUsers?: MutedUserI[]
+	bannedUsers?: number[]
 }
 
 export interface MutedUserI {

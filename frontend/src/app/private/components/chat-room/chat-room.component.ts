@@ -22,6 +22,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   //and I hope that it triggers the refresh - like send 'chatRoom' value again to this comp.
   chatRoomUsers: UserI[]
   roomAdmins: number[] = []
+  bannedUsers: number[] = []
   mutedUsers: MutedUserI[] = []
   userAdminToggles: { [user_id: number]: boolean } = {};
   userMuteToggles: { [user_id: number]: boolean } = {};
@@ -223,6 +224,32 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
+  async banUser(user_id: number) {
+    console.log('clicked on user_id to ban: ' + user_id)
+    if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
+      this.bannedUsers = this.chatRoom.bannedUsers
+      let banned: boolean = false
+      for (let i = 0; i < this.bannedUsers.length; i++) {
+        if (this.bannedUsers[i] === user_id) {
+          banned = true;
+          break;
+        }
+      }
+      if (!banned) {
+        this.bannedUsers.push(user_id);
+        let newUserList = []
+        newUserList = this.chatRoomUsers.filter(item => item.id !== user_id)
+        console.log('NewUserList:', newUserList)
+        this.chatRoom.users = newUserList
+        this.chatRoom.bannedUsers = this.bannedUsers
+        this.chatService.updateRoom(this.chatRoom)
+      }
+    }
+    else {
+      console.log('Only admins can ban users, cannot ban channel owner')
+    }
+  }
+
   async toggleUserMute(user_id: number) {
     if (this.chatRoom.admins.includes(this.user.id)) {
       console.log("clicked on user_id to mute: " + user_id)
@@ -366,6 +393,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   scrollToBottom(): void {
-    setTimeout(() => { this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight }, 1)
+    // setTimeout(() => { this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight }, 1)
+    this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight
   }
 }

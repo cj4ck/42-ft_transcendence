@@ -54,8 +54,9 @@
 								<span>🥾</span>
 							</span>
 						</button>
-						<button mat-raised-button>
-							<span (click)="kickUser(user.id)" [ngStyle]="{ 'cursor': 'pointer' }">
+						<!-- <button mat-raised-button> -->
+						<button>
+							<span (click)="banUser(user.id)" [ngStyle]="{ 'cursor': 'pointer' }">
 								<span>🚫</span>
 							</span>
 						</button>
@@ -150,7 +151,7 @@
 				</button>
 			</div>
 
-			<div *ngIf="!userInRoom()" class="mb-3">
+			<div *ngIf="!userInRoom() && !chatRoom.bannedUsers.includes(user.id)" class="mb-3">
 				<button mat-raised-button (click)="joinChatRoom()">Join Chatroom</button>
 			</div>
 
