@@ -55,10 +55,10 @@ mat-paginator{
 }
 
 .chatroom {
-	width: 60%
+	width: 55%
 }
 .users_list {
-	width: 20%;
+	width: 25%;
 }
 
 ._container::before {

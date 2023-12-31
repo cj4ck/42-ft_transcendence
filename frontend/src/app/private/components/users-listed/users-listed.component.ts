@@ -3,6 +3,7 @@ import { UserI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
 import { ChatService } from '../../services/chat.service';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'app-users-listed',
@@ -14,7 +15,8 @@ export class UsersListedComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private chatService: ChatService) {}
+    private chatService: ChatService,
+    private gameService: GameService) {}
 
   filteredUsers: UserI[]
   numUsers: number = 0
@@ -68,5 +70,9 @@ export class UsersListedComponent implements OnInit {
 
     this.currentUser.blocked = this.usersBlocked
     this.chatService.toggleUserBlock(this.currentUser)
+  }
+
+  fightAgainstUser(user_id: number) {
+    this.gameService.fightAgainstUser(user_id, this.currentUser.id)
   }
 }
