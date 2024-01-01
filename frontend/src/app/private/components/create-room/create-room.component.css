@@ -5,42 +5,51 @@
     margin: 0;
     box-sizing: border-box;
 }
-body{
-    background: linear-gradient(#00171F, #002634)  ;
+body {
+    background: linear-gradient(#00171F, #002634);
+    overflow: scroll;
+    margin: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
+
 .background{
     width: 430px;
     height: 520px;
-    position: absolute;
+    position: fixed;
     transform: translate(-50%,-50%);
     left: 50%;
     top: 50%;
+    z-index: 1;
 }
 .background .shape{
     height: 300px;
     width: 300px;
-    position: absolute;
     border-radius: 50%;
+    z-index: 2;
 }
 section::before {
 	content: '';
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background: linear-gradient(#00A8E8, #5FC3E4);
 	clip-path: circle(25% at 10% 10%);
+    z-index: 2;
 }
 section::after {
 	content: '';
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background: linear-gradient(-10deg, #00A8E8, #267ada);
 	clip-path: circle(40% at right 80%);
+    z-index: 2;
 }
 
 .goBack {
@@ -50,15 +59,16 @@ section::after {
 	right: 10px;
 	padding: 4px;
 	font-weight: 500;
-	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	background: linear-gradient(20deg, #00A8E8, #134e90);
+    z-index: 3;
 }
 
 form{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-    height: 600px;
     width: 400px;
+    min-height: auto;
     background-color: rgba(255,255,255,0.13);
     position: absolute;
     transform: translate(-50%,-50%);
@@ -69,6 +79,11 @@ form{
     border: 2px solid rgba(255,255,255,0.1);
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
     padding: 50px 35px;
+    z-index: 3;
+    overflow-y: auto;
+}
+form::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar */
 }
 form *{
     font-family: 'Poppins',sans-serif;
@@ -117,7 +132,7 @@ input{
 .create{
     margin-top: 10px;
     width: 80%;
-    background-color: #066206e2;
+    background: linear-gradient(-10deg, #00A8E8, #1c6fce);
     padding: 15px 0;
     font-size: 18px;
     font-weight: 600;

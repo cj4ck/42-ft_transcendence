@@ -16,8 +16,8 @@ export class SelectUsersComponent implements OnInit {
   @Output() removeuser: EventEmitter<UserI> = new EventEmitter<UserI>()
 
   searchUsername = new FormControl()
-  filteredUsers: UserI[] = []
-  selectedUser: UserI = null
+  filteredUsers: UserI[] = [];
+  selectedUser: UserI = null;
 
   constructor(private userService: UserService) {}
 
@@ -27,7 +27,9 @@ export class SelectUsersComponent implements OnInit {
       debounceTime(500),
       distinctUntilChanged(),
       switchMap((username: string) => this.userService.findByUsername(username).pipe(
-        tap((users: UserI[]) => this.filteredUsers = users)
+        tap((users: UserI[]) => {
+          this.filteredUsers = users.filter(user => !this.users.some(addedUser => addedUser.id === user.id))
+        })
       ))
     ).subscribe()
   }
