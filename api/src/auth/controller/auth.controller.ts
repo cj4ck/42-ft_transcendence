@@ -31,30 +31,25 @@ export class AuthController {
 
   @Post('42/2fa/verify')
   async verifyTwoFactor42(@Req() req, @Body() body: { token: string, email: string }): Promise<LoginResponseI> {
-    try {
-      const { token, email } = body;
-      const user = await this.authService.findByEmail(email);
+    const { token, email } = body;
+    const user = await this.authService.findByEmail(email);
 
-      if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
-      const isVerified = this.authService.verifyTwoFactorSecret(user.twoFactorSecret, token);
+    const isVerified = this.authService.verifyTwoFactorSecret(user.twoFactorSecret, token);
 
-      if (isVerified) {
-        const jwt = await this.authService.generateJwt(user);
-        return {
-          access_token: jwt,
-          token_type: 'JWT',
-          expires_in: 10000,
-          status: true,
-        };
-      } else {
-        throw new HttpException('Invalid 2FA token', HttpStatus.UNAUTHORIZED);
-      }
-    } catch (error) {
-      error('Error in verifyTwoFactor42:', error);
-      throw new HttpException(error, HttpStatus.UNAUTHORIZED);
+    if (isVerified) {
+      const jwt = await this.authService.generateJwt(user);
+      return {
+        access_token: jwt,
+        token_type: 'JWT',
+        expires_in: 10000,
+        status: true,
+      };
+    } else {
+      throw new HttpException('Invalid 2FA token', HttpStatus.UNAUTHORIZED);
     }
   }
 
