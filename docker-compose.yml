@@ -21,6 +21,8 @@ services:
       - 9229:9229
 
   frontend:
+    depends_on:
+      - api
     build:
       dockerfile: Dockerfile
       context: ./frontend

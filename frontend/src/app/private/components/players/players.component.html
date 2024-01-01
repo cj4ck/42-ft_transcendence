@@ -1,12 +1,12 @@
 <body>
-    <div class="top-container">
-        <span class="title">Show Friends</span>
-        <label class="switch" id="toggleSwitch">
-            <input type="checkbox" [(ngModel)]="loadFriendsMode" (change)="onToggleSwitchChange()">
-            <span class="slider round"></span>
-        </label>
-    </div>
     <section>
+        <div class="top-container">
+            <span class="title">Show Friends</span>
+            <label class="switch" id="toggleSwitch">
+                <input type="checkbox" [(ngModel)]="loadFriendsMode" (change)="onToggleSwitchChange()">
+                <span class="slider round"></span>
+            </label>
+        </div>
         <div class="containera">
             <div class="card" *ngFor="let user of paginatedUsers" [ngClass]="{ 'current-user-card': isCurrentUser(user) }" [routerLink]="['../user-profile/', user.id]">
                 <div class="content">
@@ -21,6 +21,9 @@
                 <ul class="sci">
                     <li>
                         <a [routerLink]='["../history", user.id]'><i class="bi bi-floppy2"></i></a>
+                    </li>
+                    <li *ngIf="isCurrentUser(user)">
+                        <a [routerLink]='["../user-settings"]'><i class="bi bi-person-circle"></i></a>
                     </li>
                 </ul>
             </div>

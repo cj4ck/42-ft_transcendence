@@ -393,7 +393,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   scrollToBottom(): void {
-    // setTimeout(() => { this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight }, 1)
-    this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight
+    setTimeout(() => {
+      if (this.messagesScroller != undefined)
+        this.messagesScroller.nativeElement.scrollTop = this.messagesScroller.nativeElement.scrollHeight
+    }, 100)
   }
 }

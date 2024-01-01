@@ -92,10 +92,11 @@ export class UserController {
 
 	@Post('loginChatroom')
 	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<boolean> {
-		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto)
-		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto)
-		const loggedIn: boolean = await this.roomService.loginChatroom(roomEntity, enteredPassword)
-		return loggedIn
+		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto);
+		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto);
+		const loggedIn: boolean = await this.roomService.loginChatroom(roomEntity, enteredPassword);
+
+		return loggedIn;
 	}
 
 	@UseGuards(JwtAuthGuard)

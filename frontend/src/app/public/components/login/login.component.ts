@@ -20,7 +20,7 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router : Router,
+    private router: Router,
     private route: ActivatedRoute,
   ) { }
 
@@ -42,19 +42,19 @@ export class LoginComponent {
         password: this.password.value
       }).subscribe({
         next:
-        (response) => {
-          if (response.status === '2FA_required') {
-            this.twoFactorRequired = true;
-          } else {
-            localStorage.setItem('nestjs_chat_app', response.access_token);
-            this.router.navigate(['private']);
-          }
-        },
+          (response) => {
+            if (response.status === '2FA_required') {
+              this.twoFactorRequired = true;
+            } else {
+              localStorage.setItem('nestjs_chat_app', response.access_token);
+              this.router.navigate(['private']);
+            }
+          },
         error:
-        (_error) => {
-          this.errorMessage = "Incorrect email or password";
-        }
-    });
+          (error) => {
+            this.errorMessage = "Incorrect email or password";
+          }
+      });
     }
   }
 

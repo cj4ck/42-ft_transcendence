@@ -10,8 +10,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 
 export function tokenGetter() {
-  // problemo with jwt local storage item
-  return (localStorage.getItem("nestjs_chat_app")!);
+  return (localStorage.getItem("nestjs_chat_app"));
 }
 
 @NgModule({

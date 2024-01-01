@@ -57,6 +57,7 @@ section::after {
 	font-weight: 500;
 	background: linear-gradient(#451063, #984eda);
 	border: none;
+	z-index: 2;
 }
 
 .containera {
@@ -163,6 +164,8 @@ section::after {
 }
 
 .pagination-controls {
+	position: relative;
+	z-index: 1;
 	text-align: center;
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -264,7 +267,7 @@ input:checked+.slider:before {
 	position: relative;
     display: flex;
 	flex-direction: row;
-    justify-content: space-between;
+	justify-content: center;
     align-items: center;
     padding: 10px;
 	z-index: 2;

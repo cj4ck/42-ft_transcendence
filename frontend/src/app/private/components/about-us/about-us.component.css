@@ -47,6 +47,7 @@ section::after {
 	padding: 4px;
 	font-weight: 500;
 	background: linear-gradient(20deg, #59d85b, #5FC3E4);
+	z-index: 1;
 }
 
 .bi-linkedin{
