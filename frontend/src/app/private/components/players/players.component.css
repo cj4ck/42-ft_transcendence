@@ -57,6 +57,7 @@ section::after {
 	font-weight: 500;
 	background: linear-gradient(#451063, #984eda);
 	border: none;
+	z-index: 2;
 }
 
 .containera {
