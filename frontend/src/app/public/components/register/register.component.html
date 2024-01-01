@@ -11,18 +11,18 @@
 
 
         <mat-form-field class="inputc">
-			<input type="email" matInput placeholder="Email" formControlName="email">
+			<input type="email" autocomplete="email" matInput placeholder="Email" formControlName="email">
 			<mat-error *ngIf ="email.touched && email.hasError('required')">Email is required</mat-error>
 			<mat-error *ngIf ="email.touched && email.hasError('email')">Email must be valid</mat-error>
 		</mat-form-field>
 
 		<mat-form-field class="inputc">
-			<input type="text" matInput placeholder="Username" formControlName="username">
+			<input type="text" autocomplete="username" matInput placeholder="Username" formControlName="username">
 			<mat-error *ngIf ="username.touched && username.hasError('required')">Username is required</mat-error>
 		</mat-form-field>
 
 		<mat-form-field class="inputc">
-			<input type="password" matInput placeholder="Password" formControlName="password">
+			<input type="password" autocomplete="new-password" matInput placeholder="Password" formControlName="password">
 			<mat-error *ngIf ="password.touched && password.hasError('required')">Password is required</mat-error>
 		</mat-form-field>
 
