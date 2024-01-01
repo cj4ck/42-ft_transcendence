@@ -9,7 +9,7 @@
       <h3>Two Factor Verification</h3>
 
       <mat-form-field class="inputc">
-        <input matInput [(ngModel)]="verificationCode" placeholder="6-digit code" maxlength="6" pattern="^[0-9]{6}$">
+        <input matInput [(ngModel)]="verificationCode" placeholder="6-digit code" maxlength="6" pattern="^[0-9]{6}$" name="verificationCode">
         <mat-error *ngIf="!isCodeValid()">Code must be 6 digits</mat-error>
       </mat-form-field>
 

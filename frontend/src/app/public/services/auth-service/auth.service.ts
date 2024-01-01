@@ -67,10 +67,10 @@ export class AuthService {
     return this.http.post<LoginResponseI>('/api/users/2fa/verify-status', body);
   }
 
-  verify42TwoFactorToken(token: string): Observable<LoginResponseI> {
-    const body = { token };
+  verify42TwoFactorToken(token: string, email: string): Observable<LoginResponseI> {
+    const body = { token, email };
     return this.http.post<LoginResponseI>('/api/auth/42/2fa/verify', body);
-  }
+  }  
 
   isTwoFactorEnabled() {
     return this.http.get('api/auth/2fa/enabled');

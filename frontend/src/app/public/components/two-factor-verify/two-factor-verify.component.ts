@@ -12,17 +12,21 @@ export class TwoFactorVerifyComponent {
   verificationCode: string;
   errorMessage: string;
   isTwoFactorEnabled: boolean;
+  userEmail: string;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    this.userEmail = this.route.snapshot.paramMap.get('email');
+  }
 
   verify2fa() {
     if (this.isCodeValid()) {
       this.authService.verify42TwoFactorToken(
         this.verificationCode,
+        this.userEmail
       ).subscribe(
         response => {
           localStorage.setItem('nestjs_chat_app', response.access_token);
