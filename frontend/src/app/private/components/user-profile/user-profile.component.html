@@ -1,13 +1,28 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>
-            Pending Friend Requests
-        </mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-        <div *ngFor="let request of friendRequests">
-            <p>{{ request.creator.username }}</p>
+<body>
+    <section>
+        <div class="_container">
+            <div *ngIf="friendRequests && friendRequests.length > 0">
+                <h1>Pending Friend Requests</h1>
+                <div class="card" *ngFor="let request of friendRequests" [routerLink]="['.', request.creator.id]">
+                    <div class="content">
+                        <div class="imgBx">
+                            <img
+                                src="https://cdn.vox-cdn.com/thumbor/Si2spWe-6jYnWh8roDPVRV7izC4=/0x0:1192x795/1400x788/filters:focal(596x398:597x399)/cdn.vox-cdn.com/uploads/chorus_asset/file/22312759/rickroll_4k.jpg">
+                        </div>
+                        <div class="contentBx">
+                            <h3>{{ request.creator.username }}<br><span>Score: {{ request.creator.score }}</span></h3>
+                        </div>
+                    </div>
+                    <ul class="sci">
+                        <li>
+                            <a [routerLink]='["../history", request.creator.id]'><i class="bi bi-floppy2"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div *ngIf="!friendRequests || friendRequests.length === 0">
+                <h1>No pending requests</h1>
+            </div>
         </div>
-    </mat-card-content>
-</mat-card>
+    </section>
+</body>
