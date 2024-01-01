@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
@@ -12,11 +13,15 @@ import { UserService } from 'src/app/public/services/user-service/user.service';
   styleUrls: ['./user-settings.component.css'],
 })
 export class UserSettingsComponent {
-	defaultAvatarUrl = '../../../assets/defaultAvatar.png';
+
+  selectedFile: File | null = null;
+
+	defaultAvatarUrl = this.http.get<UserI>(`api/users/b29399587cb27846bd81466c5a2f6bc2`);
 	userId: number = this.authService.getLoggedInUser().id
 	user: UserI = null
 
   constructor(
+    private http: HttpClient,
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
@@ -55,11 +60,32 @@ export class UserSettingsComponent {
     return this.changeUsernameForm.get('newUsername') as FormControl;
   }
 
-  changeAvatar() {
-    console.log('change avatar clicked');
-  }
-
   logout() {
     console.log('logout clicked');
   }
-}
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
+  changeAvatar() {
+    if (!this.selectedFile) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+    console.log('file', this.selectedFile + " | before api call");
+    // console.log(formData);
+    this.http.post('api/users/avatar-upload', formData)
+      .subscribe({
+        next: (response) => console.log(response),
+        error: (error) => console.error(error)
+      });
+    }
+  }

@@ -10,6 +10,7 @@ import { RoomEntity } from 'src/chat/model/room/room.entity';
 import { UserGatewayGateway } from './user-gateway/user-gateway.gateway';
 import { FriendRequestEntity } from './model/friend-request.entity';
 import { ActivityGateway } from './user-gateway/activity/activity.gateway';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -18,7 +19,10 @@ import { ActivityGateway } from './user-gateway/activity/activity.gateway';
       RoomEntity,
       FriendRequestEntity,
     ]),
-    AuthModule
+    AuthModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
   ],
   controllers: [UserController],
   providers: [UserService, UserHelperService, RoomService, UserGatewayGateway, ActivityGateway],
