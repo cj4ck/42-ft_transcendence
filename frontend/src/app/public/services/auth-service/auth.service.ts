@@ -36,7 +36,7 @@ export class AuthService {
   getLoggedInUser() {
     const token = localStorage.getItem("nestjs_chat_app");
 
-    if (token) {
+    if (token && token != 'undefined') {
         const decodedToken = this.jwtService.decodeToken(token);
         return <UserI>decodedToken?.user;
     } 
