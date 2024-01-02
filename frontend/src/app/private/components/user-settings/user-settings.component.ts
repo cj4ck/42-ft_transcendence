@@ -74,10 +74,10 @@ export class UserSettingsComponent {
 
   changeAvatar() {
     this.showFileInput = true;
-    // if (!this.selectedFile) {
-    //   alert('Please select a file first.');
-    //   return;
-    // }
+    if (!this.selectedFile) {
+      //   alert('Please select a file first.');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);

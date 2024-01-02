@@ -21,41 +21,36 @@ export class UserController {
 		private userService: UserService,
 		private userHelperService: UserHelperService,
 		private roomService: RoomService,
-		private authService: AuthService,
 	) { }
 
 	@Post()
+	@UseGuards(JwtAuthGuard)
 	async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
 		const userEntity: UserI = this.userHelperService.createUserDtoToEntity(createUserDto)
 		return this.userService.create(userEntity)
 	}
 
-	// @Get()
-	// async findAll(
-	// 	@Query('page') page: number = 1,
-	// 	@Query('limit') limit: number = 9
-	// ): Promise<Pagination<UserI>> {
-	// 	limit = limit > 100 ? 100 : limit;
-	// 	return this.userService.findAll({ page, limit, route: 'http://localhost:3000/api/users' })
-	// }
-
 	@Get()
+	@UseGuards(JwtAuthGuard)
 	async findAll(): Promise<UserI[]> {
 		return this.userService.findAll()
 	}
 
 	@Get('/find-friends')
+	@UseGuards(JwtAuthGuard)
 	async findAllFriends(@Query('id') id: number) {
 		return this.userService.findAllFriends(id)
 	}
 
 	@Get('/find-by-username')
+	@UseGuards(JwtAuthGuard)
 	async findAllByUsername(@Query('username') username: string) {
 		// console.log('FIND BY USERNAME - backend api call')
 		return this.userService.findAllByUsername(username)
 	}
 
 	@Get('/find-by-id')
+	@UseGuards(JwtAuthGuard)
 	async findById(@Query('id') id: number) {
 		console.log('FIND BY Id - backend api call')
 		return this.userService.findById(id)
@@ -91,6 +86,7 @@ export class UserController {
 	}
 
 	@Post('loginChatroom')
+	@UseGuards(JwtAuthGuard)
 	async loginChatroom(@Body() loginChatroomDto: LoginChatroomDto): Promise<boolean> {
 		const roomEntity: RoomI = this.userHelperService.loginChatroomDtoToRoom(loginChatroomDto);
 		const enteredPassword: string = this.userHelperService.loginChatroomDtoToPassword(loginChatroomDto);
@@ -177,6 +173,7 @@ export class UserController {
 		return await this.userService.getFriendRequestId(creatorId, receiverId);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post('changeUsername')
 	async changeUsername(@Body() user: UserI): Promise<boolean> {
 		console.log('controller:', user.username)
@@ -184,6 +181,7 @@ export class UserController {
 		return usernameChanged
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post('avatar-upload')
 	@UseInterceptors(FileInterceptor('file'))
 	uploadFile(@UploadedFile() file) {
@@ -198,6 +196,7 @@ export class UserController {
 		return { filePath: filePath };
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post('changeAvatar')
 	async changeAvatar(@Body() user: UserI): Promise<boolean> {
 		console.log('controller:', user.avatar)

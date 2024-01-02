@@ -58,8 +58,9 @@ export class AuthController {
   async generateTwoFactor(@Req() req): Promise<{ qrCodeUrl: string }> {
     const { otpauthUrl, secret } = await this.authService.generateTwoFactorSecret(req.user.email);
     const qrCodeUrl = await this.authService.generateQrCode(otpauthUrl);
-    req.user.temp2faSecret = secret;
-    await this.authService.saveUser(req.user);
+    const user = await this.authService.findByEmail(req.user.email);
+    user.temp2faSecret = secret;
+    await this.authService.saveUser(user);
     return { qrCodeUrl };
   }
 
