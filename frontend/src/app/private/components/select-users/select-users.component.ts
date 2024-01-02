@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
 import { UserI } from 'src/app/model/user.interface';
+import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
 
 @Component({
@@ -18,17 +19,25 @@ export class SelectUsersComponent implements OnInit {
   searchUsername = new FormControl()
   filteredUsers: UserI[] = [];
   selectedUser: UserI = null;
+  currentUserId: number;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) { }
 
   ngOnInit(): void {
     // console.log('active')
+    this.currentUserId = this.authService.getLoggedInUser().id;
     this.searchUsername.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       switchMap((username: string) => this.userService.findByUsername(username).pipe(
         tap((users: UserI[]) => {
-          this.filteredUsers = users.filter(user => !this.users.some(addedUser => addedUser.id === user.id))
+          this.filteredUsers = users.filter(user =>
+            user.id !== this.currentUserId &&
+            !this.users.some(addedUser => addedUser.id === user.id)
+          );
         })
       ))
     ).subscribe()
@@ -36,8 +45,8 @@ export class SelectUsersComponent implements OnInit {
 
   addUserToForm() {
     // console.log('add user')
-    if(this.selectedUser)
-    this.addUser.emit(this.selectedUser)
+    if (this.selectedUser)
+      this.addUser.emit(this.selectedUser)
     this.filteredUsers = []
     this.selectedUser = null
     this.searchUsername.setValue(null)
@@ -58,7 +67,7 @@ export class SelectUsersComponent implements OnInit {
 
   displayFn(user: UserI) {
     // console.log(user.username)
-    if(user) {
+    if (user) {
       return user.username
     } else {
       return ''
