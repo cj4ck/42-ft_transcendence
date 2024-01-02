@@ -1,27 +1,30 @@
-<mat-list class="c">
-  <mat-list-item class="user-item" *ngFor="let user of users">
+<body>
+  <mat-list class="c">
+    <mat-list-item class="user-item" *ngFor="let user of users">
 
-    <div class="user">
-      <div class="name">
-        {{user.username}}
+      <div class="user">
+        <div class="name">
+          {{user.username}}
+        </div>
+        <div class="buttons">
+          <button mat-icon-button [routerLink]="['../user-profile/', user.id]">
+            <mat-icon class="user-profile" [ngStyle]="{'color': 'white'}">person</mat-icon>
+          </button>
+
+          <button mat-icon-button (click)="fightAgainstUser(user.id)">
+            <mat-icon class="user-profile" [ngStyle]="{'color': 'white'}">videogame_asset</mat-icon>
+          </button>
+
+          <button mat-icon-button (click)="createPrivateChat(user.username)">
+            <mat-icon class="start-dm" [ngStyle]="{'color': 'white'}">mail_outline</mat-icon>
+          </button>
+
+          <button mat-icon-button (click)="toggleUserBlock(user.id)">
+            <mat-icon class="block-user"
+              [ngStyle]="{'color': userBlockedToggles[user.id] ? 'red' : 'white'}">block</mat-icon>
+          </button>
+        </div>
       </div>
-      <div class="buttons">
-        <button mat-icon-button [routerLink]="['../user-profile/', user.id]">
-          <mat-icon class="user-profile" [ngStyle]="{'color': 'white'}">person</mat-icon>
-        </button>
-
-        <button mat-icon-button (click)="fightAgainstUser(user.id)">
-          <mat-icon class="user-profile" [ngStyle]="{'color': 'white'}">videogame_asset</mat-icon>
-        </button>
-
-        <button mat-icon-button (click)="createPrivateChat(user.username)">
-          <mat-icon class="start-dm" [ngStyle]="{'color': 'white'}" >mail_outline</mat-icon>
-        </button>
-
-        <button mat-icon-button (click)="toggleUserBlock(user.id)">
-          <mat-icon class="block-user" [ngStyle]="{'color': userBlockedToggles[user.id] ? 'red' : 'white'}">block</mat-icon>
-        </button>
-      </div>
-    </div>
-  </mat-list-item>
-</mat-list>
+    </mat-list-item>
+  </mat-list>
+</body>
