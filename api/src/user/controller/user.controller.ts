@@ -24,7 +24,6 @@ export class UserController {
 	) { }
 
 	@Post()
-	@UseGuards(JwtAuthGuard)
 	async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
 		const userEntity: UserI = this.userHelperService.createUserDtoToEntity(createUserDto)
 		return this.userService.create(userEntity)
