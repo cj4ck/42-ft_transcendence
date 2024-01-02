@@ -3,6 +3,7 @@ import { Meta } from "./meta.interface";
 export interface UserI {
 	id?: number;
 	username?:  string;
+	avatar?:  string;
 	email: string;
 	password?: string;
 	score?: number;

@@ -25,6 +25,7 @@ export class UserService {
 		try {
 			const exists: boolean = await this.mailExists(newUser.email)
 			if (!exists) {
+				newUser.avatar = '../../../assets/defaultAvatar.png'
 				const passwordHash: string = await this.hashPassword(newUser.password)
 				newUser.password = passwordHash
 				const user = await this.userRepository.save(this.userRepository.create(newUser))
@@ -369,6 +370,14 @@ export class UserService {
 		} else {
 			return false
 		}
+	}
+
+	async changeAvatar(user: UserI): Promise<boolean> {
+		const dbUser = await this.userRepository.findOne({ where: { id: user.id } })
+		dbUser.avatar = user.avatar
+		await this.userRepository.save(dbUser)
+		console.log('bend ', dbUser.avatar, user.avatar)
+		return true
 	}
 
 	private async usernameExists(username: string): Promise<boolean> {

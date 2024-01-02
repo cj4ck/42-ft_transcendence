@@ -11,6 +11,8 @@ import { UserGatewayGateway } from './user-gateway/user-gateway.gateway';
 import { FriendRequestEntity } from './model/friend-request.entity';
 import { ActivityGateway } from './user-gateway/activity/activity.gateway';
 import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Module({
   imports: [
@@ -21,7 +23,20 @@ import { MulterModule } from '@nestjs/platform-express';
     ]),
     AuthModule,
     MulterModule.register({
-      dest: './uploads',
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+          const fileExtName = extname(file.originalname).toLowerCase();
+          // Ensure the file is a PNG, or throw an error
+          if (fileExtName !== '.png') {
+            callback(new Error('Only .png files are allowed!'), null);
+            return;
+          }
+          const filename = `${uniqueSuffix}.png`;
+          callback(null, filename);
+        },
+      }),
     }),
   ],
   controllers: [UserController],

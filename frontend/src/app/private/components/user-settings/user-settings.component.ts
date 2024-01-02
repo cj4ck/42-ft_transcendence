@@ -16,7 +16,6 @@ export class UserSettingsComponent {
 
   selectedFile: File | null = null;
 
-	defaultAvatarUrl = this.http.get<UserI>(`api/users/b29399587cb27846bd81466c5a2f6bc2`);
 	userId: number = this.authService.getLoggedInUser().id
 	user: UserI = null
 
@@ -84,8 +83,13 @@ export class UserSettingsComponent {
     // console.log(formData);
     this.http.post('api/users/avatar-upload', formData)
       .subscribe({
-        next: (response) => console.log(response),
-        error: (error) => console.error(error)
+        next: (response: any) => {
+          console.log(response);
+          this.user.avatar = 'http://localhost:3000/' + response.filePath;
+          this.userService.changeAvatar(this.user).subscribe()
+          console.log(this.user.avatar);
+        },
+        error: (error) => console.error(error),
       });
     }
   }

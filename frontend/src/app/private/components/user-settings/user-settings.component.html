@@ -4,7 +4,7 @@
 		<mat-card-content>
 		  <div class="profile-header">
 			<div class="avatar-container">
-			  <img class="avatar" [src]="defaultAvatarUrl" alt="User Avatar">
+			  <img class="avatar" [src]="user?.avatar" alt="User Avatar">
 			</div>
 			<div class="username-container">
 			  <h1 class="username">{{ user?.username }}</h1>
@@ -15,7 +15,6 @@
 		</div>
 		<div class="button-container">
 			<button mat-raised-button color="primary" (click)="changeAvatar()">Upload File & Change Avatar</button> <br>
-			<input type="file" (change)="onFileSelected($event)" #fileInput>
 		</div>
 		<div class="button-container">
 			<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Enable 2FA</button> <br>
@@ -41,6 +40,7 @@
 	</mat-card>
 </div>
 <!-- for uploading an avatar -->
+<input type="file" (change)="onFileSelected($event)" #fileInput>
 <div>
 
 </div>

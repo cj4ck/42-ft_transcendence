@@ -186,12 +186,19 @@ export class UserController {
 		if (!file) {
 			throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
 		}
-	
-		// Assuming you want to return the relative path to the client
+		if (!file.originalname.match(/\.png$/)) {
+			throw new HttpException('Only .png image files are allowed!', HttpStatus.BAD_REQUEST);
+		}
 		const filePath = `uploads/${file.filename}`;
-	
 		console.log(file);
 		return { filePath: filePath };
+	}
+
+	@Post('changeAvatar')
+	async changeAvatar(@Body() user: UserI): Promise<boolean> {
+		console.log('controller:', user.avatar)
+		const avatarChanged: boolean = await this.userService.changeAvatar(user)
+		return avatarChanged
 	}
 
 	/* Not yet implemented, just idea
