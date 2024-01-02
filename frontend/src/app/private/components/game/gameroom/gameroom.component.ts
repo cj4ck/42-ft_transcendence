@@ -39,7 +39,6 @@ export class GameroomComponent implements ComponentCanDeactivate, OnInit, OnDest
     }
 
     @ViewChild("myCanvas", { static: false }) myCanvas: ElementRef;
-    defaultAvatarUrl = '../../../assets/defaultAvatar.png';
 
     constructor(private route: ActivatedRoute,
                 private gameService: GameService,

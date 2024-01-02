@@ -371,6 +371,14 @@ export class UserService {
 		}
 	}
 
+	async changeAvatar(user: UserI): Promise<boolean> {
+		const dbUser = await this.userRepository.findOne({ where: { id: user.id } })
+		dbUser.avatar = user.avatar
+		await this.userRepository.save(dbUser)
+		console.log('bend ', dbUser.avatar, user.avatar)
+		return true
+	}
+
 	private async usernameExists(username: string): Promise<boolean> {
 		const user = await this.userRepository.findOne({ where: { username } });
 		if (user) {

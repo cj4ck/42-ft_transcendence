@@ -14,6 +14,9 @@ export class UserEntity {
 	@Column({ unique: true })
 	username: string;
 
+	@Column()
+	avatar: string = '../../../assets/defaultAvatar.png';
+
 	@Column({ unique: true })
 	email: string;
 

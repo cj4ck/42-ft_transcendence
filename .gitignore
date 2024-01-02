@@ -21,7 +21,7 @@ bundles/
 vendor/pkg/
 pyenv
 Vagrantfile
-
+api/uploads/
 # --- NPM ---
 # Logs
 logs

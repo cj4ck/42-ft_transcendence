@@ -61,6 +61,10 @@ export class UserService {
     );
   }
 
+  changeAvatar(user: UserI): Observable<boolean> {
+    return this.http.post<boolean>('api/users/changeAvatar', user).pipe();
+  }
+
   isUsernameAvailable(newUsername: string): Observable<boolean> {
     this.socket.emit('checkUsernameAvailabile', newUsername)
     return (this.socket.fromEvent('doesUsernameExist'))

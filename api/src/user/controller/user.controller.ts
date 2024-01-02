@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Query, UseGuards, Request, HttpStatus, HttpException, Param, Put } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query, UseGuards, Request, HttpStatus, HttpException, Param, Put, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { CreateUserDto } from '../model/dto/create-user.dto';
 import { UserI } from '../model/user.interface';
 import { LoginUserDto } from '../model/dto/login-user.dto';
@@ -13,6 +13,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { Observable, of } from 'rxjs';
 import { FriendRequestI, FriendRequestStatusI } from '../model/friend-request.interface';
 import { AuthService } from 'src/auth/service/auth.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -179,4 +180,32 @@ export class UserController {
 		const usernameChanged: boolean = await this.userService.changeUsername(user)
 		return usernameChanged
 	}
+
+	@Post('avatar-upload')
+	@UseInterceptors(FileInterceptor('file'))
+	uploadFile(@UploadedFile() file) {
+		if (!file) {
+			throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+		}
+		if (!file.originalname.match(/\.png$/)) {
+			throw new HttpException('Only .png image files are allowed!', HttpStatus.BAD_REQUEST);
+		}
+		const filePath = `uploads/${file.filename}`;
+		console.log(file);
+		return { filePath: filePath };
+	}
+
+	@Post('changeAvatar')
+	async changeAvatar(@Body() user: UserI): Promise<boolean> {
+		console.log('controller:', user.avatar)
+		const avatarChanged: boolean = await this.userService.changeAvatar(user)
+		return avatarChanged
+	}
+
+	/* Not yet implemented, just idea
+	@Get(':imgpath')
+	seeUploadedFile(@Param('imgpath') image,
+	@Res() res) {
+		return res.sendFile(image, {root: 'uploads'});
+	} */
 }
