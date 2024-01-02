@@ -16,8 +16,9 @@ export class UserSettingsComponent {
 
   selectedFile: File | null = null;
 
-	userId: number = this.authService.getLoggedInUser().id
-	user: UserI = null
+  userId: number = this.authService.getLoggedInUser().id;
+  user: UserI = null;
+  showFileInput: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -26,10 +27,10 @@ export class UserSettingsComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-	const userId: number = this.authService.getLoggedInUser().id;
-	this.userService.findByID(userId).subscribe(user => {
-	  this.user = user;
-	});
+    const userId: number = this.authService.getLoggedInUser().id;
+    this.userService.findByID(userId).subscribe(user => {
+      this.user = user;
+    });
   }
 
   showChangeUsernamePrompt: boolean = false;
@@ -41,14 +42,14 @@ export class UserSettingsComponent {
   });
 
   changeUsername() {
-	if (this.changeUsernameForm.valid)
-	{
-		const newUsername: string = this.changeUsernameForm.get('newUsername').value
-		this.user.username = newUsername
-		console.log('username:', this.user.username)
-		const ret = this.userService.changeUsername(this.user).subscribe()
-		console.log('changed: ', ret)
-	}
+    if (this.changeUsernameForm.valid) {
+      const newUsername: string = this.changeUsernameForm.get('newUsername').value
+      this.user.username = newUsername
+      console.log('username:', this.user.username)
+      const ret = this.userService.changeUsername(this.user).subscribe()
+      console.log('changed: ', ret)
+      this.showChangeUsernamePrompt = false;
+    }
   }
 
   toggleChangeUsernameForm() {
@@ -72,10 +73,11 @@ export class UserSettingsComponent {
   }
 
   changeAvatar() {
-    if (!this.selectedFile) {
-      alert('Please select a file first.');
-      return;
-    }
+    this.showFileInput = true;
+    // if (!this.selectedFile) {
+    //   alert('Please select a file first.');
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);
@@ -88,8 +90,10 @@ export class UserSettingsComponent {
           this.user.avatar = 'http://localhost:3000/' + response.filePath;
           this.userService.changeAvatar(this.user).subscribe()
           console.log(this.user.avatar);
+          this.selectedFile = null;
+          this.showFileInput = false;
         },
         error: (error) => console.error(error),
       });
-    }
   }
+}

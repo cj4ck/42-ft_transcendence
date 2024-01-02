@@ -329,3 +329,15 @@ h2{
 	  -6px -6px 0 #e9771a,
 	  -30px 20px 40px dimgrey
 }
+
+.settings {
+	position: absolute;
+	color: white;
+	top: 10px;
+	right: 10px;
+	padding: 10px;
+	font-weight: 500;
+	background: none;
+	border: none;
+	z-index: 2;
+}

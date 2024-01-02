@@ -176,5 +176,6 @@ section::after {
 	padding: 4px;
 	font-weight: 500;
 	background: linear-gradient(#451063, #984eda);
-    border: none;
+	border: none;
+	z-index: 2;
 }

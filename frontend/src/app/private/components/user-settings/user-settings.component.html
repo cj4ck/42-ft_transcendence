@@ -1,56 +1,56 @@
-<!-- general -->
-<div class="page">
-	<mat-card>
-		<mat-card-content>
-		  <div class="profile-header">
-			<div class="avatar-container">
-			  <img class="avatar" [src]="user?.avatar" alt="User Avatar">
-			</div>
-			<div class="username-container">
-			  <h1 class="username">{{ user?.username }}</h1>
-			</div>
-		  </div>
-		  <button mat-raised-button color="primary" (click)="toggleChangeUsernameForm()">Change Username</button> <br>
-			  <div class="button-container">
-		</div>
-		<div class="button-container">
-			<button mat-raised-button color="primary" (click)="changeAvatar()">Upload File & Change Avatar</button> <br>
-		</div>
-		<div class="button-container">
-			<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Enable 2FA</button> <br>
-		</div>
-		</mat-card-content>
-	  </mat-card>
-</div>
-<!-- for choosing a name -->
-<div *ngIf="showChangeUsernamePrompt">
-	<mat-card>
-		<mat-card-content>
-			<form [formGroup]="changeUsernameForm" (ngSubmit)="changeUsername()">
-				<mat-form-field>
-					<input type="text" matInput placeholder="New username" formControlName="newUsername">
-					<mat-error *ngIf="newUsername.touched && newUsername.hasError('required')">Can't be empty</mat-error>
-				</mat-form-field>
-				<mat-hint *ngIf="!changeUsernameForm.valid" style="margin: px"><small>Specify new username pls</small></mat-hint>
-				<div class="button">
-					<button mat-raised-button type="submit" [disabled]="!changeUsernameForm.valid">Change Username</button>
+<body>
+	<section>
+		<mat-card>
+			<mat-card-content>
+				<div class="profile-header">
+					<div class="avatar-container">
+						<img class="avatar" [src]="user?.avatar" alt="User Avatar">
+					</div>
+					<div class="username-container">
+						<h1 class="username">{{ user?.username }}</h1>
+					</div>
 				</div>
-			</form>
-		</mat-card-content>
-	</mat-card>
-</div>
-<!-- for uploading an avatar -->
-<input type="file" accept="image/png" (change)="onFileSelected($event)" #fileInput>
-<div>
-
-</div>
-
-<!-- for adding users as friends -->
-<div>
-
-</div>
-
-<!-- for stats -->
-<div>
-
-</div>
+				<div class="button-container">
+					<button mat-raised-button color="primary" (click)="toggleChangeUsernameForm()">
+						Change Username</button>
+				</div>
+				<div class="button-container">
+					<div *ngIf="showChangeUsernamePrompt">
+						<form [formGroup]="changeUsernameForm" (ngSubmit)="changeUsername()">
+							<mat-form-field>
+								<input type="text" matInput placeholder="New username" formControlName="newUsername">
+								<mat-error *ngIf="newUsername.touched && newUsername.hasError('required')">Select new
+									username</mat-error>
+							</mat-form-field>
+							<div class="button">
+								<button mat-raised-button type="submit" [disabled]="!changeUsernameForm.valid">Change
+									Username</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="button-container">
+					<button mat-raised-button color="primary" (click)="changeAvatar()">Upload File & Change
+						Avatar</button>
+				</div>
+				<div class="button-container">
+					<input *ngIf="showFileInput" type="file" accept="image/png" (change)="onFileSelected($event)"
+						#fileInput>
+				</div>
+				<div class="button-container">
+					<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Enable 2FA</button>
+				</div>
+				<div class="button-container">
+					<button mat-raised-button color="primary" [routerLink]="['../history', user?.id]">
+						Match History</button>
+				</div>
+				<div class="button-container">
+					<button mat-raised-button color="primary" [routerLink]="['../user-profile']">
+						Pending Friend Requests</button>
+				</div>
+			</mat-card-content>
+		</mat-card>
+		<button [routerLink]='["../navigation"]' type="button" class="navigation btn btn-success btn-lg"><i
+				class="bi bi-pentagon"></i> Navigation</button>
+	</section>
+</body>
