@@ -25,7 +25,6 @@ export class UserService {
 		try {
 			const exists: boolean = await this.mailExists(newUser.email)
 			if (!exists) {
-				newUser.avatar = '../../../assets/defaultAvatar.png'
 				const passwordHash: string = await this.hashPassword(newUser.password)
 				newUser.password = passwordHash
 				const user = await this.userRepository.save(this.userRepository.create(newUser))
