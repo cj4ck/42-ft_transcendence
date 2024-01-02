@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { LoginResponseI } from 'src/user/model/login-response.interface';
-import { UserI } from 'src/user/model/user.interface';
 import { FortyTwoAuthGuard } from '../guards/forty-two.guard';
 import { JwtAuthGuard } from '../guards/jwt.guard';
 import { AuthService } from '../service/auth.service';
@@ -27,36 +26,30 @@ export class AuthController {
     } else {
       const jwtToken = await this.authService.generateJwt(user);
       res.redirect(`${frontendURL}?token=${jwtToken}`);
-      // user.activityStatus = 'online'
-      // this.authService.saveUser(user)
     }
   }
 
   @Post('42/2fa/verify')
-  async verifyTwoFactor42(@Req() req, @Body() body: { token: string }): Promise<LoginResponseI> {
-    const { token } = body;
-    const user = await this.authService.findByEmail(req.user.email);
+  async verifyTwoFactor42(@Req() req, @Body() body: { token: string, email: string }): Promise<LoginResponseI> {
+    const { token, email } = body;
+    const user = await this.authService.findByEmail(email);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     const isVerified = this.authService.verifyTwoFactorSecret(user.twoFactorSecret, token);
-    const jwt = await this.authService.generateJwt(user);
+
     if (isVerified) {
-      // user.activityStatus = 'online'
-      // this.authService.saveUser(user)
+      const jwt = await this.authService.generateJwt(user);
       return {
         access_token: jwt,
         token_type: 'JWT',
         expires_in: 10000,
         status: true,
-      }
-    }
-  }
-
-  @Get('status')
-  user(@Req() request: Request) {
-    console.log(request.user);
-    if (request.user) {
-      return { msg: 'Authenticated' };
+      };
     } else {
-      return { msg: 'Not Authenticated' };
+      throw new HttpException('Invalid 2FA token', HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -93,11 +86,5 @@ export class AuthController {
     const isEnabled = await this.authService.isTwoFactorEnabled(req.user.email);
     return { isEnabled };
   }
-
-  // @Get('logout')
-  // async logout(@Req() req) {
-  //   const user: UserI = req.user
-  //   await this.authService.logout(user);
-  // }
 }
 

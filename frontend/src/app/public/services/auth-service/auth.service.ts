@@ -34,8 +34,13 @@ export class AuthService {
   }
 
   getLoggedInUser() {
-    const decodedToken = this.jwtService.decodeToken()
-    return <UserI>decodedToken?.user;
+    const token = localStorage.getItem("nestjs_chat_app");
+
+    if (token && token != 'undefined') {
+        const decodedToken = this.jwtService.decodeToken(token);
+        return <UserI>decodedToken?.user;
+    } 
+    return null;
   }
 
   logout() {
@@ -67,8 +72,8 @@ export class AuthService {
     return this.http.post<LoginResponseI>('/api/users/2fa/verify-status', body);
   }
 
-  verify42TwoFactorToken(token: string): Observable<LoginResponseI> {
-    const body = { token };
+  verify42TwoFactorToken(token: string, email: string): Observable<LoginResponseI> {
+    const body = { token, email };
     return this.http.post<LoginResponseI>('/api/auth/42/2fa/verify', body);
   }
 
@@ -82,7 +87,7 @@ export class AuthService {
       // tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
       tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
         duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
-      })), catchError((err, caught) => {return EMPTY})
+      })), catchError((err, caught) => { return EMPTY })
     ).toPromise()
   }
 

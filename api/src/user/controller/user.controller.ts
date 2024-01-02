@@ -4,13 +4,12 @@ import { UserI } from '../model/user.interface';
 import { LoginUserDto } from '../model/dto/login-user.dto';
 import { LoginResponseI } from '../model/login-response.interface';
 import { RoomI } from 'src/chat/model/room/room.interface';
-import { LoginChatroomResponseI } from '../model/login-chatroom-response.interface';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { LoginChatroomDto } from '../model/dto/login-chatroom.dto';
 import { UserService } from '../service/user-service/user.service';
 import { UserHelperService } from '../service/user-helper/user-helper.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { FriendRequestI, FriendRequestStatusI } from '../model/friend-request.interface';
 import { AuthService } from 'src/auth/service/auth.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -162,7 +161,11 @@ export class UserController {
 	getFriendRequestsForUser(
 		@Request() req,
 	): Observable<FriendRequestStatusI[]> {
-		return this.userService.getFriendRequestsForUser(req.user);
+		return this.userService.getFriendRequestsForUser(req.user).pipe(
+			map((friendRequests: FriendRequestI[]) => friendRequests.filter(
+				request => request.status === 'pending'
+			))
+		);
 	}
 
 	@UseGuards(JwtAuthGuard)
