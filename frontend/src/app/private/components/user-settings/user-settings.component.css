@@ -90,7 +90,7 @@ mat-card {
 	justify-content: space-between;
 }
 
-.navigation {
+.goBack {
 	position: absolute;
 	color: white;
 	top: 10px;
