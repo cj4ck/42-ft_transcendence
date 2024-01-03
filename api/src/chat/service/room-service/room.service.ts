@@ -88,10 +88,8 @@ export class RoomService {
 
 	async updateRoom(room: RoomI): Promise<RoomI> {
 		let existingRoom = await this.getRoom(room.id);
-		if (!existingRoom) {
 		existingRoom = room
 		return this.roomRepository.save(existingRoom);
-	}
 	}
 
 	async loginChatroom(room: RoomI, password: string): Promise<boolean> {
