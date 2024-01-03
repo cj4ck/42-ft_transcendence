@@ -29,7 +29,7 @@ export class TwoFactorVerifyComponent {
         this.userEmail
       ).subscribe(
         response => {
-          localStorage.setItem('nestjs_chat_app', response.access_token);
+          localStorage.setItem('pentacode', response.access_token);
           this.router.navigate(['private']);
         },
         error => {

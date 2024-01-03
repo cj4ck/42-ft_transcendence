@@ -10,7 +10,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { PendingChangesGuard } from './guards/pending-changes.guard';
 
 export function tokenGetter() {
-  return (localStorage.getItem("nestjs_chat_app"));
+  return (localStorage.getItem("pentacode"));
 }
 
 @NgModule({

@@ -200,8 +200,8 @@ export class UserController {
 
 	@UseGuards(JwtAuthGuard)
 	@Post('fresh')
-	async fresh(@Body() userId: number) {
-		var user = await this.userService.findById(userId)
+	async fresh(@Query('id') id: number) {
+		var user = await this.userService.findById(id)
 		if (user.fresh)
 		{
 			user.fresh = false

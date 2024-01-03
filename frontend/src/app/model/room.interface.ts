@@ -24,4 +24,4 @@ export interface RoomPaginateI {
 export interface MutedUserI {
 	id: number;
 	muteExpiry: Date;
-  }
+}

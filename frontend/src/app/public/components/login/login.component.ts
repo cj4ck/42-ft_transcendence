@@ -30,7 +30,7 @@ export class LoginComponent {
   ngOnInit() {
     const jwtToken = this.route.snapshot.queryParamMap.get('token');
     if (jwtToken) {
-      localStorage.setItem('nestjs_chat_app', jwtToken);
+      localStorage.setItem('pentacode', jwtToken);
       this.router.navigate(['private']);
     }
   }
@@ -46,7 +46,7 @@ export class LoginComponent {
             if (response.status === '2FA_required') {
               this.twoFactorRequired = true;
             } else {
-              localStorage.setItem('nestjs_chat_app', response.access_token);
+              localStorage.setItem('pentacode', response.access_token);
               this.router.navigate(['private']);
             }
           },
@@ -64,7 +64,7 @@ export class LoginComponent {
         this.twoFactorAuthCode.value, this.email.value,
       ).subscribe(
         response => {
-          localStorage.setItem('nestjs_chat_app', response.access_token);
+          localStorage.setItem('pentacode', response.access_token);
           this.router.navigate(['private/navigation']);
         },
         error => {

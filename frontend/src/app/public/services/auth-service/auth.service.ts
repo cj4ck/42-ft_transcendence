@@ -25,7 +25,7 @@ export class AuthService {
 
   login(user: UserI): Observable<LoginResponseI> {
     return this.http.post<LoginResponseI>('api/users/login', user).pipe(
-      tap((res: LoginResponseI) => localStorage.setItem("nestjs_chat_app", res.access_token)),
+      tap((res: LoginResponseI) => localStorage.setItem("pentacode", res.access_token)),
       tap(() => this.snackbar.open('Login Successful', 'Close', {
         duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
       }))
@@ -33,7 +33,7 @@ export class AuthService {
   }
 
   getLoggedInUser() {
-    const token = localStorage.getItem("nestjs_chat_app");
+    const token = localStorage.getItem("pentacode");
 
     if (token && token != 'undefined') {
       const decodedToken = this.jwtService.decodeToken(token);
@@ -44,7 +44,7 @@ export class AuthService {
 
   logout() {
     this.socket.emit("Disconnect", this.getLoggedInUser().id);
-    localStorage.removeItem("nestjs_chat_app");
+    localStorage.removeItem("pentacode");
     this.router.navigate(['/public/login']);
   }
 
