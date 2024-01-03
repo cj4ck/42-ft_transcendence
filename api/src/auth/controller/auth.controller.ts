@@ -72,7 +72,7 @@ export class AuthController {
     const secret = user.temp2faSecret;
     const isVerified = this.authService.verifyTwoFactorSecret(secret, token);
 
-    if (isVerified) {
+    if (isVerified && user) {
       user.twoFactorSecret = secret;
       user.isTwoFactorEnabled = true;
       user.temp2faSecret = null;
@@ -89,7 +89,7 @@ export class AuthController {
     const secret = user.twoFactorSecret;
     const isVerified = this.authService.verifyTwoFactorSecret(secret, token);
 
-    if (isVerified) {
+    if (isVerified && user) {
       user.twoFactorSecret = null;
       user.isTwoFactorEnabled = false;
       user.temp2faSecret = null;
