@@ -18,8 +18,8 @@ export class UserService {
   getAllUsers() {
     return this.http.get<UserI[]>(`api/users/`)
   }
-
-  findByUsername(username: string): Observable<UserI[]> {
+findByUsername
+  (username: string): Observable<UserI[]> {
     return this.http.get<UserI[]>(`api/users/find-by-username?username=${username}`)
   }
 

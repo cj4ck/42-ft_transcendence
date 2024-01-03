@@ -101,6 +101,10 @@
 					password</button>
 			</div>
 
+			<div>
+				<button mat-raised-button (click)="leaveChat()" style="margin: 5px">Leave Chatroom</button>
+			</div>
+
 			<div *ngIf="showChangePasswordForm">
 
 				<form [formGroup]="changePasswordForm" (ngSubmit)="changeChatPassword()">

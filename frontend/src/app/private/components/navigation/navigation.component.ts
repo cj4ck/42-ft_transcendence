@@ -15,7 +15,7 @@ export class NavigationComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private socket: CustomSocket, 
+    private socket: CustomSocket,
 	private snackbar: MatSnackBar, 
 	private http: HttpClient
   ) {}
