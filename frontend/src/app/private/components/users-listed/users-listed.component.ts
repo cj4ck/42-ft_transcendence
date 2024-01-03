@@ -80,7 +80,7 @@ export class UsersListedComponent implements OnInit {
           this.gameService.fightAgainstUser(user_id, this.currentUser.id)
         }
         else {
-          this.snackbar.open(`${user.username} joined the room is offline`, 'Close', {
+          this.snackbar.open(`Cannot start game, ${user.username} is offline`, 'Close', {
             duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
           })
         }

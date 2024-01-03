@@ -6,6 +6,7 @@ import { RoomI, RoomPaginateI } from 'src/app/model/room.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserI } from '../../../model/user.interface';
 import { ChatService } from '../../services/chat.service';
+import { UserService } from 'src/app/public/services/user-service/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -17,13 +18,19 @@ export class ChatComponent implements AfterViewInit {
   rooms$: Observable<RoomPaginateI>
   filteredRooms: RoomI[]
   selectedRoom = null
-  user: UserI = this.authService.getLoggedInUser()
+  user: UserI;
   @ViewChild(MatSelectionList) selectionList: MatSelectionList
+  userId: number = this.authService.getLoggedInUser().id;
 
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
-  ) { }
+    private userService: UserService,
+  ) { 
+    this.userService.findByID(this.userId).subscribe(user => {
+      this.user = user;
+    });
+  }
 
   async ngOnInit() {
     this.rooms$ = this.chatService.getMyRooms()

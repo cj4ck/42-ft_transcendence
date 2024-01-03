@@ -76,7 +76,7 @@ export class UserSettingsComponent {
     this.http.post('api/users/avatar-upload', formData)
       .subscribe({
         next: (response: any) => {
-          this.user.avatar = 'http://localhost:3000/' + response.filePath;
+          this.user.avatar = 'http://10.12.18.110:3000/' + response.filePath;
           this.userService.changeAvatar(this.user).subscribe()
           this.selectedFile = null;
           this.showFileInput = false;

@@ -87,14 +87,14 @@ export class GameService {
 			{
 				element.ballX = 50;
 				element.ballMoveX = (element.ballMoveX - 1) * -1;
-				element.ballMoveY = Math.random() * 2 - 1;
+				element.ballMoveY = Math.random() * 5 - 2.5;
 			}
 
 			if (element.ballX > 750 && element.p2Pos - 10 < element.ballY && element.p2Pos + 110 > element.ballY)
 			{
 				element.ballX = 750;
 				element.ballMoveX = (element.ballMoveX + 1) * -1;
-				element.ballMoveY = Math.random() * 2 - 1;
+				element.ballMoveY = Math.random() * 5 - 2.5;
 			}
 
 			if (element.ballX < 20 || element.ballX > 780)
