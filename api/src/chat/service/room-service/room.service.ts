@@ -21,24 +21,13 @@ export class RoomService {
 	async createRoom(room: RoomI, creator: UserI): Promise<RoomI> {
 		room.mutedUsers = []
 		for (const user of room.users) {
-			// console.log('user#: adding empty to mutedUsers in room', user.id, user.username)
-			// let muteObject: MutedUserI = {id: user.id, muteExpiry: null}
-			// room.mutedUsers.push(muteObject)
 			if (creator.id === user.id){
-				// console.log('type: ', room.type)
-				// console.log('creator: ', creator)
 				room.owner_id = creator.id
-				// console.log('owner:', room.owner_id)
 				return this.roomRepository.save(room)
 			}
 		}
-		// console.log('will add creator to room [id]:', creator.id)
 		const newRoom = await this.addCreatorToRoom(room, creator)
-		// console.log('type: ', room.type)
-		// console.log('creator: ', creator)
-		// newRoom.owner = creator
 		newRoom.owner_id = creator.id
-		// console.log('owner:', newRoom.owner_id)
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -57,14 +46,6 @@ export class RoomService {
 		  .leftJoinAndSelect('room.users', 'all_users')
 		  .distinctOn(["room.id"])
 		  .orderBy('room.id', 'DESC')
-		  
-		//for debugging sql query x pagination
-		// const querySQL = query.getQueryAndParameters();
-		// console.log('Generated SQL query:', querySQL[0]);
-	  
-		// const result = await paginate(queryBuilder, options);
-		// console.log('Result:', result);
-	  
 		return paginate(query, options);
 	  }
 
@@ -85,24 +66,17 @@ export class RoomService {
 
 	async setChatPassword(room: RoomI): Promise<RoomI> {
 		const existingRoom = await this.getRoom(room.id);
-		if (!existingRoom) {
-			console.log('room not found')
-		} else {
-			// console.log("new password", room.password)
+		if (existingRoom) {
 			const passwordHash: string = await this.hashPassword(room.password)
-			// console.log(passwordHash, '-> password hash in set password')
 			existingRoom.password = passwordHash
 			existingRoom.type = 'protected'
-			// Save the updated room to the database
 			return this.roomRepository.save(existingRoom);
 		}
 	  }
 
 	async getChatPassword(room: RoomI): Promise<string> {
 		const existingRoom = await this.getRoom(room.id);
-		if (!existingRoom) {
-			console.log('room not found; password not set')
-		} else {
+		if (existingRoom) {
 			const activePassword = existingRoom.password
 			return activePassword
 		}
@@ -113,15 +87,11 @@ export class RoomService {
 	}
 
 	async updateRoom(room: RoomI): Promise<RoomI> {
-		console.log('update room')
-		// Assuming you have a method to retrieve the room from the database
 		let existingRoom = await this.getRoom(room.id);
 		if (!existingRoom) {
-			console.log('Room not found')
-		}
 		existingRoom = room
-		// Save the updated room to the database
 		return this.roomRepository.save(existingRoom);
+	}
 	}
 
 	async loginChatroom(room: RoomI, password: string): Promise<boolean> {
@@ -149,28 +119,18 @@ export class RoomService {
 	async removeChatPassword(roomId: number): Promise<RoomI> {
 		const existingRoom = await this.getRoom(roomId);
 		if (!existingRoom) {
-			console.log('room not found')
-		} else {
 			existingRoom.password = null
 			existingRoom.type = 'private'
 			return this.roomRepository.save(existingRoom);
 		}
 	  }
 
-	  async leaveChat(userId: number, roomId: number): Promise<RoomI> {
-		console.log('leavechat', userId, roomId)
+	async leaveChat(userId: number, roomId: number): Promise<RoomI> {
 		const existingRoom = await this.getRoom(roomId)
-		// const userToLeave = await this.userService.getOne(userId)
-
-		if (!existingRoom) {
-			console.log('room not found')
-		} else {
-			existingRoom.users = existingRoom.users.filter(user => user.id !== userId)
-			if (userId === existingRoom.owner_id) {
-				existingRoom.owner_id = null
-			}
-			console.log('leaveChat upd userI[]', existingRoom.users)
-			return this.roomRepository.save(existingRoom)
+		existingRoom.users = existingRoom.users.filter(user => user.id !== userId)
+		if (userId === existingRoom.owner_id) {
+			existingRoom.owner_id = null
 		}
-	  }
+		return this.roomRepository.save(existingRoom)
+	}
 }

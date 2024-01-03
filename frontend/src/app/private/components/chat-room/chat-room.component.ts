@@ -66,7 +66,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       this.filteredMessagesPaginate.items = messagePaginate.items.filter((item) => {
         return !blockedUsers.includes(item.user.id);
       });
-      // console.log('After filter on messagePaginate: ', this.filteredMessagesPaginate)
       return this.filteredMessagesPaginate; // Return the modified messagePaginate
     }),
     tap(() => this.scrollToBottom())
@@ -74,7 +73,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
 
   async updateCurrentChatroom(updatedRoom: RoomI) {
-    // console.log('room in updateCurrentChatroom TEST:', updatedRoom)
     this.chatRoomUpdate.emit(updatedRoom)
   }
 
@@ -97,11 +95,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       const newPassword: string = this.setPasswordForm.get('password').value
       this.chatRoom.password = newPassword
       this.chatService.setChatPassword(this.chatRoom)
-      // console.log('Password is set')
       this.toggleSetPasswordForm()
       this.chatService.returnUpdatedRoom().pipe(
         map((room: RoomI) => {
-          // console.log('updated room here hehe', room)
           this.updateCurrentChatroom(room)
         })
       ).subscribe()
@@ -129,10 +125,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
   async checkChatPassword() {
     if (this.passwordPrompt.valid) {
       const passwordEntered: string = this.passwordPrompt.get('passwordValidation').value
-      // console.log('given password is:', passwordEntered)
       this.passwordValidated = await this.authService.loginChatroom(this.chatRoom, passwordEntered);
     }
-    console.log("Password Validated:", this.passwordValidated)
     this.chatService.joinRoom(this.chatRoom)
   }
 
@@ -155,11 +149,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       const newPassword: string = this.changePasswordForm.get('password').value
       this.chatRoom.password = newPassword
       this.chatService.setChatPassword(this.chatRoom)
-      // console.log('Password is changed')
       this.toggleChangePasswordForm()
       this.chatService.returnUpdatedRoom().pipe(
         map((room: RoomI) => {
-          // console.log('updated room here hehe', room)
           this.updateCurrentChatroom(room)
         })
       ).subscribe()
@@ -179,7 +171,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     await this.chatService.removeChatPassword(this.chatRoom.id)
     this.chatService.returnUpdatedRoom().pipe(
       map((room: RoomI) => {
-        // console.log('updated room here hehe', room)
         this.updateCurrentChatroom(room)
       })
     ).subscribe()
@@ -190,12 +181,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   leaveChat() {
     this.chatService.leaveChat(this.user.id, this.chatRoom.id)
-    // this.chatService.returnUpdatedRoom().pipe(
-    // 	map((room: RoomI) => {
-    // 		console.log('updated room here hehe', room)
-    // 		this.updateCurrentChatroom(null)
-    // 	})
-    // ).subscribe()
     this.snackbar.open(`${this.user.username} left the room '${this.chatRoom.name}' succesfully`, 'Close', {
       duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
     })
@@ -203,7 +188,6 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   async toggleRoomAdmin(user_id: number) {
     if (this.chatRoom.owner_id === this.user.id) {
-      //   console.log("clicked on user_id to make admin: " + user_id)
       this.roomAdmins = this.chatRoom.admins
       let admin: boolean = false
       for (let i = 0; i < this.roomAdmins.length; i++) {
@@ -220,12 +204,13 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       this.chatRoom.admins = this.roomAdmins
       this.chatService.updateRoom(this.chatRoom)
     } else {
-      console.log('Only channel owners can make users admin')
+      this.snackbar.open('Only channel owners can make users admin', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      })
     }
   }
 
   async banUser(user_id: number) {
-    console.log('clicked on user_id to ban: ' + user_id)
     if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
       this.bannedUsers = this.chatRoom.bannedUsers
       let banned: boolean = false
@@ -239,50 +224,53 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
         this.bannedUsers.push(user_id);
         let newUserList = []
         newUserList = this.chatRoomUsers.filter(item => item.id !== user_id)
-        console.log('NewUserList:', newUserList)
         this.chatRoom.users = newUserList
         this.chatRoom.bannedUsers = this.bannedUsers
         this.chatService.updateRoom(this.chatRoom)
       }
     }
     else {
-      console.log('Only admins can ban users, cannot ban channel owner')
+      this.snackbar.open('Only admins can ban users, cannot ban channel owner', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      });
     }
   }
 
   async toggleUserMute(user_id: number) {
     if (this.chatRoom.admins.includes(this.user.id)) {
-      console.log("clicked on user_id to mute: " + user_id)
       let mutedUserSet: boolean = false
       let currentTime = new Date();
       let muteExpiry: Date = new Date(currentTime.getTime() + 10 * 1000); //x seconds from now
       this.mutedUsers = this.chatRoom.mutedUsers
-      console.log('before', this.mutedUsers)
       if (this.mutedUsers) {
         this.mutedUsers.forEach(muted => {
           if (muted.id === user_id) {
             if (muted.muteExpiry > currentTime) {
-              console.log("User already has an active mute");
+              this.snackbar.open('User already has an active mute', 'Close', {
+                duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+              })
             } else {
               muted.muteExpiry = muteExpiry
-              console.log('User has been muted until: ' + muteExpiry);
-              // let muteObject: MutedUserI = {id: user_id, muteExpiry: muteExpiry}
+              let info: string = 'User has been muted until: ' + muteExpiry
+              this.snackbar.open(info, 'Close', {
+                duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+              })
             }
             mutedUserSet = true
             return;
           }
         })
       }
-      console.log('after', this.mutedUsers)
       if (!mutedUserSet) {
-        console.log('add to list here')
         let muteObject: MutedUserI = { id: user_id, muteExpiry: muteExpiry }
         this.chatRoom.mutedUsers.push(muteObject);
       }
       this.chatRoom.mutedUsers = this.mutedUsers
       this.chatService.updateRoom(this.chatRoom)
     } else {
-      console.log('Only admins can mute users')
+      this.snackbar.open('Only admins can mute users', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      })
     }
   }
 
@@ -290,12 +278,13 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
       let newUserList = []
       newUserList = this.chatRoomUsers.filter(item => item.id !== user_id)
-      console.log('NewUserList:', newUserList)
       this.chatRoom.users = newUserList
       this.chatService.updateRoom(this.chatRoom)
     }
     else {
-      console.log('Only admins can kick users, cannot kick channel owner')
+      this.snackbar.open('Only admins can kick users, cannot kick channel owner', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      })
     }
   }
 
@@ -317,7 +306,9 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
       })
     }
     else {
-      console.log('User already in room')
+      this.snackbar.open('User already in room', 'Close', {
+        duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+      })
     }
   }
 
@@ -375,13 +366,11 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.chatRoom) {
-      console.log('afterviewinit:', this.chatRoom.users)
       this.scrollToBottom()
     }
   }
 
   ngOnDestroy() {
-    console.log('ondestroy')
     this.chatService.leaveRoom(this.chatRoom)
   }
 

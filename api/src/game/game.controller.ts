@@ -8,7 +8,6 @@ export class GameController {
 
 	@Get('/game')
 	async findGameByID(@Query('id') id: number) {
-		console.log('FIND GAME BY ID - backend api call');
 		return this.gameService.gameByID(id);
 	}
 

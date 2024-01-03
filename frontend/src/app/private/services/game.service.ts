@@ -32,7 +32,6 @@ export class GameService {
   }
 
   fightAgainstUser(id_guest: number, host_id: number){
-    console.log('click')
     this.socket.emit('PlayerWannaDuel', id_guest, host_id);
   }
 }

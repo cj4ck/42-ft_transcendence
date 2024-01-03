@@ -63,7 +63,6 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     this.getUserIdFromUrl().subscribe(userId => {
       this.friendProfileService.isFriend(userId).subscribe(isFriend => {
         this.isFriend = isFriend;
-        console.log("Is Friend", this.isFriend);
       });
     });
   }

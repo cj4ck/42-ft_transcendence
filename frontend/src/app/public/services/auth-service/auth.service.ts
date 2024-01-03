@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { EMPTY, generate, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators'
-import { LoginChatroomResponseI } from 'src/app/model/login-chatroom-response.interface';
 import { LoginResponseI } from 'src/app/model/login-response.interface';
 import { RoomI } from 'src/app/model/room.interface';
 import { UserI } from 'src/app/model/user.interface'
@@ -37,9 +36,9 @@ export class AuthService {
     const token = localStorage.getItem("nestjs_chat_app");
 
     if (token && token != 'undefined') {
-        const decodedToken = this.jwtService.decodeToken(token);
-        return <UserI>decodedToken?.user;
-    } 
+      const decodedToken = this.jwtService.decodeToken(token);
+      return <UserI>decodedToken?.user;
+    }
     return null;
   }
 
@@ -84,7 +83,6 @@ export class AuthService {
   async loginChatroom(room: RoomI, password: string): Promise<boolean> {
     const requestBody = { room, password }
     return this.http.post<boolean>('api/users/loginChatroom', requestBody).pipe(
-      // tap((res: LoginChatroomResponseI) => localStorage.setItem("nest_js_chat_app", res.access_token)),
       tap(() => this.snackbar.open('Entered Chatroom successfully', 'Close', {
         duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
       })), catchError((err, caught) => { return EMPTY })

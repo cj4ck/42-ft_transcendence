@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, throwError } from 'rxjs';
-import { UserI, UserPaginateI } from '../../../model/user.interface';
+import { UserI } from '../../../model/user.interface';
 import { catchError, tap } from 'rxjs/operators';
 import { CustomSocket } from 'src/app/private/sockets/custom-socket';
 
@@ -42,17 +42,13 @@ export class UserService {
   }
 
   changeUsername(user: UserI): Observable<boolean> {
-    console.log('hello?', user.username)
     return this.http.post<boolean>('api/users/changeUsername', user).pipe(
       tap((success: boolean) => {
-        console.log('anything...?')
         if (success) {
-          console.log('success, ', user.username)
           this.snackbar.open('Username changed successfully', 'Close', {
             duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
           });
         } else {
-          console.log('fail, ', user.username)
           this.snackbar.open('Failed to change username', 'Close', {
             duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
           });

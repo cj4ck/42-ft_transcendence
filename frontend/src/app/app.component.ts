@@ -39,7 +39,6 @@ export class AppComponent implements OnInit{
       if (this.authService.getLoggedInUser() != null)
       {
         var i = this.socket.connect();
-        console.log('check 1', i.connected);
         this.socket.emit("UserConnect", this.authService.getLoggedInUser().id);
       }
     }, 5000)

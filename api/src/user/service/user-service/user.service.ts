@@ -143,7 +143,6 @@ export class UserService {
 		})
 	}
 	async findOneByUsername(username: string): Promise<UserI> {
-		// console.log('findonebyusername ' + username)
 		return this.userRepository.findOne({
 			where: {
 				username: Like(`%${username.toLowerCase()}%`)
@@ -164,36 +163,14 @@ export class UserService {
 	}
 
 	async updateBlockedIds(user: UserI): Promise<UserI> {
-		console.log('update Blocked Ids')
-		// Assuming you have a method to retrieve the room from the database
 		const existingUser = await this.getOne(user.id);
-		if (!existingUser) {
-			console.log('user not found')
-		}
 		existingUser.blocked = user.blocked
-		// Save the updated room to the database
 		return this.userRepository.save(existingUser);
 	}
 
 	async getBlockedUsers(user_id: number): Promise<number[]> {
 		const foundUser = await this.userRepository.findOne({ where: { id: user_id } })
-		console.log('get blocked users ' + user_id, 'blocked:', foundUser.blocked)
-
 		return foundUser.blocked
-		// .then(user => {
-		//   if (user) {
-		// 	console.log('User found, returning ' + user.blocked);
-		// 	return(user.blocked);
-		//   } else {
-		// 	console.log('User not found');
-		// 	return []
-		//   }
-		// })
-		// .catch(error => {
-		// 	console.log(error)
-		// 	return []
-		// });
-		// return []
 	}
 
 	findUserById(id: number): Observable<UserI> {
@@ -364,7 +341,6 @@ export class UserService {
 			const dbUser = await this.userRepository.findOne({ where: { id: user.id } })
 			dbUser.username = user.username
 			await this.userRepository.save(dbUser)
-			console.log('bend ', dbUser.username, user.username)
 			return true
 		} else {
 			return false
@@ -375,7 +351,6 @@ export class UserService {
 		const dbUser = await this.userRepository.findOne({ where: { id: user.id } })
 		dbUser.avatar = user.avatar
 		await this.userRepository.save(dbUser)
-		console.log('bend ', dbUser.avatar, user.avatar)
 		return true
 	}
 

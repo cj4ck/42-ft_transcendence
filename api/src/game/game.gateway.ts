@@ -28,13 +28,10 @@ export class GameGateway implements OnGatewayDisconnect {
     const playerGame = this.gameService.games.find((game) => game.player1.user == user || game.player2.user == user)
 
     if (indexQueue > -1) {
-      console.log("player " + socket.data.user.username + " leave queue");
       q.splice(indexQueue, 1);
       this.server.emit('PlayerInQueueChange', this.gameService.queue.length + this.gameService.quick_queue.length);
     }
     else if (playerGame != undefined) {
-      console.log("Player " + socket.data.user.username + " quit game");
-
       if (playerGame.player1.user == user) {
         playerGame.p2Score = this.gameService.winscore;
       }
@@ -53,10 +50,8 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('PlayerJoinQueue')
   JoinQueue(socket: Socket, quickGame: boolean) {
-    console.log("player " + socket.data.user.username + " join queue");
     if (!this.gameService.queue.some((player) => player.user.id == socket.data.user.id)) {
       if (quickGame) {
-        console.log("New quick game")
         this.gameService.quick_queue.push(
           {
             user: socket.data.user,
@@ -89,7 +84,6 @@ export class GameGateway implements OnGatewayDisconnect {
       index = q.findIndex((user) => user.socketId == socket.id);
     }
     if (index > -1) {
-      console.log("player " + socket.data.user.username + " leave queue");
       q.splice(index, 1);
       this.server.emit('PlayerInQueueChange', this.gameService.queue.length + this.gameService.quick_queue.length);
     }

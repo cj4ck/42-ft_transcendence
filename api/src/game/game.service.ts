@@ -141,8 +141,6 @@ export class GameService {
 
 	async finishGame(game: GameI)
 	{
-		console.log("End of the game");
-		console.log("Game score: ", game.p1Score, ":", game.p2Score);
 		await this.gameRepository.save(game);
 
 		if (game.p1Score == this.winscore)

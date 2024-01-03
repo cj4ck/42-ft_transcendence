@@ -22,7 +22,6 @@ export class SelectUsersComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    // console.log('active')
     this.searchUsername.valueChanges.pipe(
       debounceTime(500),
       distinctUntilChanged(),
@@ -35,7 +34,6 @@ export class SelectUsersComponent implements OnInit {
   }
 
   addUserToForm() {
-    // console.log('add user')
     if(this.selectedUser)
     this.addUser.emit(this.selectedUser)
     this.filteredUsers = []
@@ -44,20 +42,14 @@ export class SelectUsersComponent implements OnInit {
   }
 
   removeUserFromForm(user: UserI) {
-    // console.log('remove user')
-
     this.removeuser.emit(user)
   }
 
   setSelectedUser(user: UserI) {
-    // console.log('selected user')
-    // add here a check if the selected user is the current user id?
-
     this.selectedUser = user
   }
 
   displayFn(user: UserI) {
-    // console.log(user.username)
     if(user) {
       return user.username
     } else {

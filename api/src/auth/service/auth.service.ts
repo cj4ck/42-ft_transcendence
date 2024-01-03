@@ -35,19 +35,10 @@ export class AuthService {
 	}
 
 	async validateUser(email: string, username: string) {
-		console.log('AuthService');
-		console.log(email);
-		console.log(username);
 		const user = await this.userRepository.findOneBy({ email });
-		console.log(user);
 		if (user) return user;
-		console.log('User not found. Creating...');
-		const newUser = this.userRepository.create({ email, username });
-		console.log('User created: ');
-		console.log(newUser);
-		const savedUser = await this.userRepository.save(newUser);
-		console.log('User saved: ');
-		console.log(savedUser);
+			const newUser = this.userRepository.create({ email, username });
+			const savedUser = await this.userRepository.save(newUser);
 		return savedUser;
 	}
 

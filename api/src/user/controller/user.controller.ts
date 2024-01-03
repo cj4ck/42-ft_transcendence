@@ -51,13 +51,11 @@ export class UserController {
 
 	@Get('/find-by-username')
 	async findAllByUsername(@Query('username') username: string) {
-		// console.log('FIND BY USERNAME - backend api call')
 		return this.userService.findAllByUsername(username)
 	}
 
 	@Get('/find-by-id')
 	async findById(@Query('id') id: number) {
-		console.log('FIND BY Id - backend api call')
 		return this.userService.findById(id)
 	}
 
@@ -179,7 +177,6 @@ export class UserController {
 
 	@Post('changeUsername')
 	async changeUsername(@Body() user: UserI): Promise<boolean> {
-		console.log('controller:', user.username)
 		const usernameChanged: boolean = await this.userService.changeUsername(user)
 		return usernameChanged
 	}
@@ -194,13 +191,11 @@ export class UserController {
 			throw new HttpException('Only .png image files are allowed!', HttpStatus.BAD_REQUEST);
 		}
 		const filePath = `uploads/${file.filename}`;
-		console.log(file);
 		return { filePath: filePath };
 	}
 
 	@Post('changeAvatar')
 	async changeAvatar(@Body() user: UserI): Promise<boolean> {
-		console.log('controller:', user.avatar)
 		const avatarChanged: boolean = await this.userService.changeAvatar(user)
 		return avatarChanged
 	}

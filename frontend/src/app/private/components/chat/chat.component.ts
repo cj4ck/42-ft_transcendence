@@ -14,7 +14,8 @@ import { ChatService } from '../../services/chat.service';
 })
 export class ChatComponent implements AfterViewInit {
 
-  rooms$: Observable<RoomPaginateI> = this.chatService.getMyRooms() //?? ask Karol about this
+  rooms$: Observable<RoomPaginateI>
+  filteredRooms: RoomI[]
   selectedRoom = null
   user: UserI = this.authService.getLoggedInUser()
   @ViewChild(MatSelectionList) selectionList: MatSelectionList
@@ -22,19 +23,21 @@ export class ChatComponent implements AfterViewInit {
   constructor(
     private chatService: ChatService,
     private authService: AuthService,
-	// private cdr: ChangeDetectorRef
-    // private userService: UserService
-    ) { }
+  ) { }
 
   async ngOnInit() {
-	  this.rooms$ = this.chatService.getMyRooms() //?? ask Karol about this await stuff
+    this.rooms$ = this.chatService.getMyRooms()
     this.chatService.emitPaginateRooms(15, 0)
   }
 
   ngAfterViewInit(): void {
-	this.rooms$.subscribe((rooms: RoomPaginateI) => {
-		console.log('rooms:', rooms);
-	  });
+    this.rooms$.subscribe((rooms: RoomPaginateI) => {
+      this.filteredRooms = rooms.items.filter(room =>
+        !(room.type == 'private' &&
+          (!room.users.some(user => user.username == this.user.username)
+            && room.owner_id != this.user.id))
+      );
+    });
     this.chatService.emitPaginateRooms(15, 0)
   }
 
@@ -47,19 +50,15 @@ export class ChatComponent implements AfterViewInit {
   }
 
   async updateRoom(event: Event) {
-	const updatedRoom = event as unknown as RoomI
-	this.selectedRoom = updatedRoom
-	console.log()
-	if (updatedRoom === null) {
-		this.selectionList.deselectAll()
-		// this.reloadCurrentPage()
-		// this.rooms$ = this.chatService.getMyRooms()
-	}
-	// console.log('selected room is updated, room:', this.selectedRoom)
+    const updatedRoom = event as unknown as RoomI
+    this.selectedRoom = updatedRoom
+    if (updatedRoom === null) {
+      this.selectionList.deselectAll()
+    }
   }
 
   reloadCurrentPage() {
-	window.location.reload()
+    window.location.reload()
   }
 
 }

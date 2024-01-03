@@ -46,12 +46,10 @@ export class UsersListedComponent implements OnInit {
   }
 
   createPrivateChat(username: string) {
-    console.log('Clicked on username: ' + username)
     this.chatService.createDmRoom(username);
   }
 
   toggleUserBlock(user_id: number) {
-    console.log("clicked on id to block: " + user_id)
     let blocked: boolean = false
 
     for (let i = 0; i < this.usersBlocked.length; i++) {

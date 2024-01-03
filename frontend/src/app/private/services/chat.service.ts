@@ -20,7 +20,6 @@ export class ChatService {
   }
 
   sendMessage(message: MessageI) {
-    // console.log('message send emit')
     this.socket.emit('addMessage', message)
   }
 
@@ -50,16 +49,16 @@ export class ChatService {
 
   createRoom(room: RoomI) {
     this.socket.emit('createRoom', room)
-    this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
+    this.snackbar.open(`Room ${room.name} created successfully`, 'Close', {
       duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
     });
   }
 
   createDmRoom(username: string) {
     this.socket.emit('createDmRoom', username)
-    // this.snackbar.open(`Room ${room.name} created succesfully`, 'Close', {
-    //   duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
-    // });
+    this.snackbar.open(`DM Room created successfully`, 'Close', {
+      duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+    });
   }
 
   toggleUserBlock(user: UserI) {
@@ -79,7 +78,6 @@ export class ChatService {
   }
 
   getBlockedUsers(user_id: number): Observable<number[]> {
-    // console.log('get blocked users chat.service')
     this.socket.emit('getBlockedUsers', user_id)
     return this.socket.fromEvent<number[]>('checkBlockedRes')
   }

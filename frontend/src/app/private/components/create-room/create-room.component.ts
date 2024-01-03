@@ -31,13 +31,11 @@ export class CreateRoomComponent {
 	create() {
 		if (this.form.valid) {
 		this.chatService.createRoom(this.form.getRawValue())
-			// console.log(this.form.getRawValue())
 		this.router.navigate(['../chat'], {relativeTo: this.activatedRoute})
 		}
 	}
 
 	initUser(user: UserI) {
-		// console.log('init_user')
 		return new FormControl({
 		id: user.id,
 		username: user.username,
@@ -63,7 +61,6 @@ export class CreateRoomComponent {
 	}
 
 	get users(): FormArray {
-		// console.log('get_users')
 		return this.form.get('users') as FormArray
 	}
 
