@@ -210,7 +210,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  async banUser(user_id: number) {
+  banUser(user_id: number) {
     if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
       this.bannedUsers = this.chatRoom.bannedUsers
       let banned: boolean = false
@@ -236,7 +236,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  async toggleUserMute(user_id: number) {
+  toggleUserMute(user_id: number) {
     if (this.chatRoom.admins.includes(this.user.id)) {
       let mutedUserSet: boolean = false
       let currentTime = new Date();
@@ -274,7 +274,7 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
-  async kickUser(user_id: number) {
+  kickUser(user_id: number) {
     if (this.chatRoom.admins.includes(this.user.id) && user_id !== this.chatRoom.owner_id) {
       let newUserList = []
       newUserList = this.chatRoomUsers.filter(item => item.id !== user_id)
@@ -320,6 +320,8 @@ export class ChatRoomComponent implements OnChanges, OnDestroy, AfterViewInit {
     if (this.chatRoom) {
       //resetting some stuff
       this.passwordValidated = false
+      this.showSetPasswordForm = false
+      this.showChangePasswordForm = false
       this.passwordPrompt.reset()
       this.setPasswordForm.reset()
       this.changePasswordForm.reset()

@@ -71,7 +71,6 @@ export class UserSettingsComponent {
       //   alert('Please select a file first.');
       return;
     }
-
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);
     this.http.post('api/users/avatar-upload', formData)
