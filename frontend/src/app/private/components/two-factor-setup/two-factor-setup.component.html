@@ -2,7 +2,8 @@
   <section>
     <div class="_container">
       <mat-card>
-        <mat-card-title>Two Factor Authentication Setup</mat-card-title>
+        <mat-card-title *ngIf="!isTwoFactorEnabled">Two Factor Authentication Setup</mat-card-title>
+        <mat-card-title *ngIf="isTwoFactorEnabled">Disable Two Factor Authentication</mat-card-title>
         <mat-card-content>
           <div *ngIf="!isTwoFactorEnabled">
             <p>Scan the QR code below using Google Authenticator:</p>
@@ -17,7 +18,13 @@
           </div>
 
           <div *ngIf="isTwoFactorEnabled">
-            <p>Two-factor authentication is already set up for your account.</p>
+            <p>Enter the 6-digit code displayed in the app:</p>
+            <mat-form-field>
+              <input matInput [(ngModel)]="verificationCode" placeholder="6-digit code" maxlength="6"
+                pattern="^[0-9]{6}$">
+              <mat-error *ngIf="!isCodeValid()">Code must be 6 digits</mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="verifySetup()">Disable</button>
           </div>
         </mat-card-content>
       </mat-card>

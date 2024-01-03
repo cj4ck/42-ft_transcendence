@@ -37,9 +37,9 @@ export class AuthService {
     const token = localStorage.getItem("nestjs_chat_app");
 
     if (token && token != 'undefined') {
-        const decodedToken = this.jwtService.decodeToken(token);
-        return <UserI>decodedToken?.user;
-    } 
+      const decodedToken = this.jwtService.decodeToken(token);
+      return <UserI>decodedToken?.user;
+    }
     return null;
   }
 
@@ -53,9 +53,23 @@ export class AuthService {
     return this.http.get('api/auth/2fa/generate');
   }
 
-  verifySetup(code: string, secret: string): Observable<boolean> {
+  verifySetup(code: string): Observable<boolean> {
     const url = 'api/auth/2fa/verify';
-    const body = { token: code, secret: secret };
+    const body = { token: code };
+    return this.http.post<{ success: boolean }>(url, body).pipe(
+      tap((response) => {
+      }),
+      map((response) => response.success),
+      catchError((error) => {
+        console.error('Verification failed', error);
+        return of(false);
+      })
+    );
+  }
+
+  disableTwoFactorToken(code: string): Observable<boolean> {
+    const url = 'api/auth/2fa/disable';
+    const body = { token: code };
     return this.http.post<{ success: boolean }>(url, body).pipe(
       tap((response) => {
       }),

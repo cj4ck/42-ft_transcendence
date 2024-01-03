@@ -81,6 +81,23 @@ export class AuthController {
     return { success: isVerified };
   }
 
+  @Post('2fa/disable')
+  @UseGuards(JwtAuthGuard)
+  async disableTwoFactor(@Req() req, @Body() body: { token: string }): Promise<{ success: boolean }> {
+    const { token } = body;
+    const user = await this.authService.findByEmail(req.user.email);
+    const secret = user.twoFactorSecret;
+    const isVerified = this.authService.verifyTwoFactorSecret(secret, token);
+
+    if (isVerified) {
+      user.twoFactorSecret = null;
+      user.isTwoFactorEnabled = false;
+      user.temp2faSecret = null;
+      await this.authService.saveUser(user);
+    }
+    return { success: isVerified };
+  }
+
   @Get('2fa/enabled')
   @UseGuards(JwtAuthGuard)
   async isTwoFactorEnabled(@Req() req): Promise<{ isEnabled: boolean }> {

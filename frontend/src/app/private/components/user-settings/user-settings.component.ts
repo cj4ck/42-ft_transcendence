@@ -19,17 +19,18 @@ export class UserSettingsComponent {
   userId: number = this.authService.getLoggedInUser().id;
   user: UserI = null;
   showFileInput: boolean = false;
+  is2faEnabled: boolean;
+  errorMessage: string;
 
   constructor(
     private http: HttpClient,
     private userService: UserService,
     private authService: AuthService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
   ) {
     const userId: number = this.authService.getLoggedInUser().id;
     this.userService.findByID(userId).subscribe(user => {
       this.user = user;
+      this.is2faEnabled = user.isTwoFactorEnabled;
     });
   }
 

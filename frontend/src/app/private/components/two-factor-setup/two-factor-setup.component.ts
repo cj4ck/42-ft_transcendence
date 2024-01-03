@@ -12,7 +12,6 @@ export class TwoFactorSetupComponent {
   qrCodeUrl: string;
   verificationCode: string;
   errorMessage: string;
-  secret: string;
   isTwoFactorEnabled: boolean;
 
   constructor(
@@ -34,11 +33,19 @@ export class TwoFactorSetupComponent {
 
   verifySetup() {
     if (this.isTwoFactorEnabled) {
-      this.errorMessage = "Two Factor authentication is already set up.";
-      return;
+      if (this.isCodeValid) {
+        this.authService.disableTwoFactorToken(this.verificationCode).subscribe(success => {
+          if (success) {
+            this.router.navigate(['private']);
+            this.snackbar.open('2FA disabled successfully', 'Close')
+          } else {
+            this.errorMessage = "Verification failed. Please try again.";
+          }
+        })
+      }
     }
     if (this.isCodeValid()) {
-      this.authService.verifySetup(this.verificationCode, this.secret).subscribe(success => {
+      this.authService.verifySetup(this.verificationCode).subscribe(success => {
         if (success) {
           this.router.navigate(['private']);
           this.snackbar.open('2FA enabled successfully', 'Close')

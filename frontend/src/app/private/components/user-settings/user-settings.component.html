@@ -37,8 +37,11 @@
 					<input *ngIf="showFileInput" type="file" accept="image/png" (change)="onFileSelected($event)"
 						#fileInput>
 				</div>
-				<div class="button-container">
+				<div *ngIf="!is2faEnabled" class="button-container">
 					<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Enable 2FA</button>
+				</div>
+				<div *ngIf="is2faEnabled" class="button-container">
+					<button mat-raised-button color="primary" [routerLink]="['../2fa-setup']">Disable 2FA</button>
 				</div>
 				<div class="button-container">
 					<button mat-raised-button color="primary" [routerLink]="['../history', user?.id]">
