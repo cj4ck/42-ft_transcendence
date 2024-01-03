@@ -9,8 +9,10 @@ export interface UserI {
 	score?: number;
 	wins?: number;
 	losses?: number;
+	isTwoFactorEnabled?: boolean;
 	blocked?: number[];
 	activityStatus?: ActivityStatus;
+	
 }
 
 export interface UserPaginateI {

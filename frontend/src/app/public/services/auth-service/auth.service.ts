@@ -52,9 +52,23 @@ export class AuthService {
     return this.http.get('api/auth/2fa/generate');
   }
 
-  verifySetup(code: string, secret: string): Observable<boolean> {
+  verifySetup(code: string): Observable<boolean> {
     const url = 'api/auth/2fa/verify';
-    const body = { token: code, secret: secret };
+    const body = { token: code };
+    return this.http.post<{ success: boolean }>(url, body).pipe(
+      tap((response) => {
+      }),
+      map((response) => response.success),
+      catchError((error) => {
+        console.error('Verification failed', error);
+        return of(false);
+      })
+    );
+  }
+
+  disableTwoFactorToken(code: string): Observable<boolean> {
+    const url = 'api/auth/2fa/disable';
+    const body = { token: code };
     return this.http.post<{ success: boolean }>(url, body).pipe(
       tap((response) => {
       }),

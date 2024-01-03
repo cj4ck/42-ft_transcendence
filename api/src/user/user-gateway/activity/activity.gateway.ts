@@ -10,7 +10,7 @@ export class ActivityGateway implements  OnGatewayDisconnect{
   @SubscribeMessage('UserConnect')
   async hello(socket: Socket, userID: number){
     var user = await this.userService.findById(userID);
-    if (user.activityStatus != 'in game')
+    if (user?.activityStatus != 'in game')
       await this.userService.userOnline(userID);
   }
 

@@ -8,7 +8,8 @@
             </label>
         </div>
         <div class="containera">
-            <div class="card" *ngFor="let user of paginatedUsers" [ngClass]="{ 'current-user-card': isCurrentUser(user) }" [routerLink]="['../user-profile/', user.id]">
+            <div class="card" *ngFor="let user of paginatedUsers"
+                [ngClass]="{ 'current-user-card': isCurrentUser(user) }" [routerLink]="['../user-profile/', user.id]">
                 <div class="content">
                     <div class="imgBx">
                         <img [src]="user?.avatar">
@@ -36,6 +37,6 @@
                 [disabled]="!isNextPageAvailable()">Next</button>
         </div>
         <button [routerLink]='["../navigation"]' type="button" class="goBack btn btn-success btn-lg"><i
-                class="bi bi-sign-turn-left-fill"></i> Go back</button>
+                class="bi bi-sign-turn-left-fill"></i> Go back</button><br>
     </section>
 </body>

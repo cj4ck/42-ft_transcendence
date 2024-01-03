@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { map, Observable, Subscription, switchMap, take, tap } from 'rxjs';
+import { EMPTY, map, Observable, Subscription, switchMap, take, tap } from 'rxjs';
 import { FriendRequestI, FriendRequestStatus, FriendRequestStatusI } from 'src/app/model/friend-request.interface';
 import { UserI } from 'src/app/model/user.interface';
 import { FriendProfileService } from '../../services/friend-profile.service';
@@ -52,7 +52,10 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
 
     this.friendRequestIdSubscription$ = this.getUserIdFromUrl().pipe(
       switchMap((userId: number) => {
-        return this.friendProfileService.getFriendRequestId(userId, this.authService.getLoggedInUser().id);
+        const currentUserId = this.authService.getLoggedInUser().id;
+        if (userId == null || currentUserId == null)
+          return EMPTY;
+        return this.friendProfileService.getFriendRequestId(userId, currentUserId);
       })
     ).subscribe(
       (friendRequestId: number) => {
@@ -61,10 +64,14 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     );
 
     this.getUserIdFromUrl().subscribe(userId => {
+      if (userId == null) {
+        return;
+      }
       this.friendProfileService.isFriend(userId).subscribe(isFriend => {
         this.isFriend = isFriend;
       });
     });
+
   }
 
   getUser(): Observable<UserI> {
@@ -75,8 +82,7 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     )
   }
 
-  fightAgainstUser()
-  {
+  fightAgainstUser() {
     this.gameService.fightAgainstUser(this.user.id, this.authService.getLoggedInUser().id)
   }
 
@@ -84,7 +90,7 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     if (this.userSubscription$)
       this.userSubscription$.unsubscribe();
     if (this.friendRequestStatusSubscription$)
-    this.friendRequestStatusSubscription$.unsubscribe();
+      this.friendRequestStatusSubscription$.unsubscribe();
     if (this.friendRequestsSubscription$)
       this.friendRequestsSubscription$.unsubscribe();
     if (this.friendRequestIdSubscription$)
@@ -103,6 +109,9 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
   getFriendRequestStatus(): Observable<FriendRequestStatusI> {
     return this.getUserIdFromUrl().pipe(
       switchMap((userId: number) => {
+        if (userId == null) {
+          return EMPTY;
+        }
         return this.friendProfileService.getFriendRequestStatus(userId);
       })
     )
@@ -112,6 +121,8 @@ export class FriendProfileComponent implements OnInit, OnDestroy {
     return this.route.url.pipe(
       map((urlSegment: UrlSegment[]) => {
         const userId = +urlSegment[1].path
+        if (Number.isNaN(userId))
+          return null;
         return userId
       })
     )

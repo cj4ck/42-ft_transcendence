@@ -58,8 +58,9 @@ export class AuthController {
   async generateTwoFactor(@Req() req): Promise<{ qrCodeUrl: string }> {
     const { otpauthUrl, secret } = await this.authService.generateTwoFactorSecret(req.user.email);
     const qrCodeUrl = await this.authService.generateQrCode(otpauthUrl);
-    req.user.temp2faSecret = secret;
-    await this.authService.saveUser(req.user);
+    const user = await this.authService.findByEmail(req.user.email);
+    user.temp2faSecret = secret;
+    await this.authService.saveUser(user);
     return { qrCodeUrl };
   }
 
@@ -74,6 +75,23 @@ export class AuthController {
     if (isVerified) {
       user.twoFactorSecret = secret;
       user.isTwoFactorEnabled = true;
+      user.temp2faSecret = null;
+      await this.authService.saveUser(user);
+    }
+    return { success: isVerified };
+  }
+
+  @Post('2fa/disable')
+  @UseGuards(JwtAuthGuard)
+  async disableTwoFactor(@Req() req, @Body() body: { token: string }): Promise<{ success: boolean }> {
+    const { token } = body;
+    const user = await this.authService.findByEmail(req.user.email);
+    const secret = user.twoFactorSecret;
+    const isVerified = this.authService.verifyTwoFactorSecret(secret, token);
+
+    if (isVerified) {
+      user.twoFactorSecret = null;
+      user.isTwoFactorEnabled = false;
       user.temp2faSecret = null;
       await this.authService.saveUser(user);
     }

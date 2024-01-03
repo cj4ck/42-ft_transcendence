@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { UserI } from 'src/app/model/user.interface';
 import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
@@ -15,20 +14,22 @@ export class UserSettingsComponent {
 
   selectedFile: File | null = null;
 
-	userId: number = this.authService.getLoggedInUser().id
-	user: UserI = null
+  userId: number = this.authService.getLoggedInUser().id;
+  user: UserI = null;
+  showFileInput: boolean = false;
+  is2faEnabled: boolean;
+  errorMessage: string;
 
   constructor(
     private http: HttpClient,
     private userService: UserService,
     private authService: AuthService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
   ) {
-	const userId: number = this.authService.getLoggedInUser().id;
-	this.userService.findByID(userId).subscribe(user => {
-	  this.user = user;
-	});
+    const userId: number = this.authService.getLoggedInUser().id;
+    this.userService.findByID(userId).subscribe(user => {
+      this.user = user;
+      this.is2faEnabled = user.isTwoFactorEnabled;
+    });
   }
 
   showChangeUsernamePrompt: boolean = false;
@@ -40,12 +41,12 @@ export class UserSettingsComponent {
   });
 
   changeUsername() {
-	if (this.changeUsernameForm.valid)
-	{
-		const newUsername: string = this.changeUsernameForm.get('newUsername').value
-		this.user.username = newUsername
-		const ret = this.userService.changeUsername(this.user).subscribe()
-	}
+    if (this.changeUsernameForm.valid) {
+      const newUsername: string = this.changeUsernameForm.get('newUsername').value
+      this.user.username = newUsername
+      const ret = this.userService.changeUsername(this.user).subscribe()
+      this.showChangeUsernamePrompt = false;
+    }
   }
 
   toggleChangeUsernameForm() {
@@ -65,8 +66,9 @@ export class UserSettingsComponent {
   }
 
   changeAvatar() {
+    this.showFileInput = true;
     if (!this.selectedFile) {
-      alert('Please select a file first.');
+      //   alert('Please select a file first.');
       return;
     }
 
@@ -77,8 +79,10 @@ export class UserSettingsComponent {
         next: (response: any) => {
           this.user.avatar = 'http://localhost:3000/' + response.filePath;
           this.userService.changeAvatar(this.user).subscribe()
+          this.selectedFile = null;
+          this.showFileInput = false;
         },
         error: (error) => console.error(error),
       });
-    }
   }
+}

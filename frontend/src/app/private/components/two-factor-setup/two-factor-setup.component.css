@@ -1,27 +1,79 @@
-  .container {
-    max-width: 500px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  mat-form-field {
-    width: 100%;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
-  
-  .container mat-card-title {
-    text-align: center;
-    width: 100%;
-  }
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #161616;
+  min-height: 100vh;
+  background-attachment: fixed;
+  z-index: 1;
+}
 
-  .container mat-card-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
+section::before,
+section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+section::before {
+  background: linear-gradient(-10deg, #2b9c30, #157a35);
+  clip-path: circle(30% at right 80%);
+}
+
+section::after {
+  background: linear-gradient(#bf9031, #93d018);
+  clip-path: circle(30% at 30% 10%);
+}
+
+._container {
+  margin: auto;
+  padding: 20px;
+}
+
+mat-card {
+  height: 600px;
+  width: 600px;
+  margin: 0;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  color: white;
+  z-index: 3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+._container mat-card-title {
+  text-align: center;
+  width: 100%;
+}
+
+._container mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.navigation {
+	position: absolute;
+	color: white;
+	top: 10px;
+	right: 10px;
+	padding: 4px;
+	font-weight: 500;
+	background: linear-gradient(#2b9c30, #93d018);
+	border: none;
+	z-index: 2;
+}
