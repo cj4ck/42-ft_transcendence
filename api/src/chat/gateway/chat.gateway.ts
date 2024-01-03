@@ -223,7 +223,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, On
                 const rooms = await this.roomService.getRoomsForUser(userId, {page: 1, limit: 15});
                 rooms.meta.currentPage = rooms.meta.currentPage -1
                 return this.server.to(socket.id).emit('rooms', rooms)
-
             }
         } catch (error) {
             socket.emit('setError', { message: 'Failed to get chatroom', error });
