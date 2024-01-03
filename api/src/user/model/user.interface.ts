@@ -14,6 +14,7 @@ export interface UserI {
 	temp2faSecret?: string;
 	blocked?: number[];
 	activityStatus?: ActivityStatus;
+	fresh?: boolean
 }
 
 export interface UserPaginateI {

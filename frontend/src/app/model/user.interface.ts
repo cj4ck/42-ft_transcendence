@@ -12,7 +12,7 @@ export interface UserI {
 	isTwoFactorEnabled?: boolean;
 	blocked?: number[];
 	activityStatus?: ActivityStatus;
-	
+	fresh?: boolean	
 }
 
 export interface UserPaginateI {

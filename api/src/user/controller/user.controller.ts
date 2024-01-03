@@ -198,6 +198,18 @@ export class UserController {
 		return avatarChanged
 	}
 
+	@UseGuards(JwtAuthGuard)
+	@Post('fresh')
+	async fresh(@Body() userId: number) {
+		var user = await this.userService.findById(userId)
+		if (user.fresh)
+		{
+			user.fresh = false
+			await this.userService.savePlayer(user)
+		}
+	}
+
+
 	/* Not yet implemented, just idea
 	@Get(':imgpath')
 	seeUploadedFile(@Param('imgpath') image,

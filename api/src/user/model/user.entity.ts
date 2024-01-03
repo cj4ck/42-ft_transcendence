@@ -70,6 +70,9 @@ export class UserEntity {
 
 	@Column({default: 'offline'})
 	activityStatus: ActivityStatus
+
+	@Column({default: true})
+	fresh: boolean;
 }
 
 export type ActivityStatus = 'online' | 'in game' | 'offline'
