@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/public/services/auth-service/auth.service';
 import { UserService } from 'src/app/public/services/user-service/user.service';
 import { ChatService } from '../../services/chat.service';
 import { GameService } from '../../services/game.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-users-listed',
@@ -16,14 +17,16 @@ export class UsersListedComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private chatService: ChatService,
-    private gameService: GameService) {}
+    private gameService: GameService,
+    private snackbar: MatSnackBar
+  ) { }
 
   filteredUsers: UserI[]
   numUsers: number = 0
   users: UserI[] = []
   usersBlocked: number[] = []
   currentUser: UserI = this.authService.getLoggedInUser()
-  userBlockedToggles: {[user_id: number]: boolean } = {};
+  userBlockedToggles: { [user_id: number]: boolean } = {};
 
   ngOnInit(): void {
     this.userService.findByID(this.currentUser.id).subscribe((user: UserI) => {
@@ -71,6 +74,17 @@ export class UsersListedComponent implements OnInit {
   }
 
   fightAgainstUser(user_id: number) {
-    this.gameService.fightAgainstUser(user_id, this.currentUser.id)
+    this.users.forEach((user) => {
+      if (user.id == user_id) {
+        if (user.activityStatus == 'online') {
+          this.gameService.fightAgainstUser(user_id, this.currentUser.id)
+        }
+        else {
+          this.snackbar.open(`${user.username} joined the room is offline`, 'Close', {
+            duration: 2000, horizontalPosition: 'right', verticalPosition: 'top'
+          })
+        }
+      }
+    })
   }
 }
