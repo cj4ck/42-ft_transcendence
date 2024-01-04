@@ -36,25 +36,25 @@
 				</div>
 				<div class="buttons">
 					<div *ngFor="let user of chatRoomUsers">
-						<button mat-raised-button class="username">
+						<button mat-raised-button class="username" title="Click to toggle admin">
 							<span (click)="toggleRoomAdmin(user.id)"
 								[ngStyle]="{ 'cursor': 'pointer', 'color': userAdminToggles[user.id] ? 'green' : 'red' }">
 								<span *ngIf="userAdminToggles[user.id]">[ADMIN 🤠]</span>
 								💃 {{ user.username }} 🕺
 							</span>
 						</button>
-						<button mat-raised-button>
+						<button mat-raised-button title="Mute user">
 							<span (click)="toggleUserMute(user.id)" [ngStyle]="{ 'cursor': 'pointer' }">
 								<span *ngIf="userMuteToggles[user.id]">🔇</span>
 								<span *ngIf="!userMuteToggles[user.id]">🗣️</span>
 							</span>
 						</button>
-						<button mat-raised-button>
+						<button mat-raised-button title="Kick user">
 							<span (click)="kickUser(user.id)" [ngStyle]="{ 'cursor': 'pointer' }">
 								<span>🥾</span>
 							</span>
 						</button>
-						<button mat-raised-button>
+						<button mat-raised-button title="Ban user">
 							<span (click)="banUser(user.id)" [ngStyle]="{ 'cursor': 'pointer' }">
 								<span>🚫</span>
 							</span>
