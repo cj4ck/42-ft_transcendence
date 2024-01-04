@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 @Component({
@@ -20,10 +20,18 @@ export class TwoFactorVerifyComponent {
     private route: ActivatedRoute,
   ) {
     this.userEmail = this.route.snapshot.paramMap.get('email');
+	if (this.userEmail == null)
+	{
+		this.route.queryParams.subscribe((params) => {
+			this.userEmail = params['email']
+		});
+	}
   }
 
   verify2fa() {
+	console.log(this.userEmail)
     if (this.isCodeValid()) {
+		
       this.authService.verify42TwoFactorToken(
         this.verificationCode,
         this.userEmail

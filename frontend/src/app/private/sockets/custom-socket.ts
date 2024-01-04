@@ -3,7 +3,7 @@ import { Socket, SocketIoConfig } from "ngx-socket-io";
 import { tokenGetter } from "src/app/app.module";
 
 const config: SocketIoConfig = {
-	url: 'http://10.12.18.110:3000', options: {
+	url: 'http://localhost:3000', options: {
 		autoConnect: true,
 		reconnection: true,
 		reconnectionDelay: 1,

@@ -22,7 +22,7 @@ export class AuthController {
     const user = req.user;
     const frontendURL = process.env.FRONTEND_URL;
     if (user.isTwoFactorEnabled) {
-      res.redirect(`${frontendURL}/2fa-verify`);
+      res.redirect(`${frontendURL}/2fa-verify?email=${user.email}`);
     } else {
       const jwtToken = await this.authService.generateJwt(user);
       res.redirect(`${frontendURL}?token=${jwtToken}`);

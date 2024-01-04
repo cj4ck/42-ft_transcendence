@@ -5,7 +5,7 @@ import { GameService } from './game.service';
 import { GameI } from './model/game.interface';
 import { UserService } from 'src/user/service/user-service/user.service';
 
-@WebSocketGateway({ cors: { origin: ['http://localhost:3000', 'http://10.12.18.110:3000', 'http://localhost:4200', 'http://10.12.18.110:4200'] } })
+@WebSocketGateway({ cors: { origin: ['http://localhost:3000', 'http://localhost:4200',] } })
 export class GameGateway implements OnGatewayDisconnect {
 
   constructor(private gameService: GameService, private userService: UserService) { }
